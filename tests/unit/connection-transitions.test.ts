@@ -219,3 +219,4 @@ describe("Milestone 6: Dual Mutual Consent Contact Exchange Engine", () => {
     expect(localConsent.message).toContain("Both parties have confirmed");
   });
 });
+

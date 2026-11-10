@@ -217,10 +217,10 @@ export default async function ExperiencesDirectoryPage({
                     {isHindi ? "निशुल्क पूछताछ (चरण 1)" : "Enquiry-only (Phase 1)"}
                   </span>
                   <Link
-                    href={`/messages/new?experienceId=${item.id}`}
+                    href={`/experiences/${item.id}`}
                     className="tap-target px-4 py-2 bg-primary text-white hover:bg-primary-hover rounded-sm text-xs font-medium transition-colors"
                   >
-                    {isHindi ? "पूछताछ भेजें" : "Send Enquiry"}
+                    {isHindi ? "विवरण देखें और पूछताछ करें" : "View Details & Enquire"}
                   </Link>
                 </div>
               </article>

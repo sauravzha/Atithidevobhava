@@ -435,3 +435,4 @@ export async function getConnectionById(
 export async function listUserConnections(): Promise<StoredConnection[]> {
   return Array.from(connectionsStore.values());
 }
+

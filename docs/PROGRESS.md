@@ -1,7 +1,7 @@
 # Project Progress: Atithi Devo Bhava (अतिथि देवो भवः)
 
 Last Updated: 2026-11-10
-Current Milestone: Milestone 6 - Meet a Local, Connection Management, Database Transition Functions, Contact Exchange Engine
+Current Milestone: Milestone 7 - Experience Marketplace, Provider Dashboard, Admin Approval (Enquiry Mode)
 
 ## Milestone Status Overview
 
@@ -18,6 +18,8 @@ Current Milestone: Milestone 6 - Meet a Local, Connection Management, Database T
 - Milestone 6: Meet a Local, Connection Management, Database Transition Functions, Contact Exchange Engine
   Status: Completed
 - Milestone 7: Experience Marketplace, Provider Dashboard, Admin Approval (Enquiry Mode)
+  Status: Completed
+- Milestone 8: Messaging (Realtime), Notifications, Reviews (Blind), Safety Tools (Reports, Blocks, Check-ins, Trip Share, Help Page)
   Status: Ready to Start (Waiting for user confirmation to continue)
 - Milestone 8: Messaging (Realtime), Notifications, Reviews (Blind), Safety Tools (Reports, Blocks, Check-ins, Trip Share, Help Page)
   Status: Not Started
@@ -32,7 +34,7 @@ Current Milestone: Milestone 6 - Meet a Local, Connection Management, Database T
 - Milestone 13: End-to-End Verification, Performance, Axe Accessibility, Lighthouse, Production Deployment Package
   Status: Not Started
 
-## What is Done (Milestones 1 to 5)
+## What is Done (Milestones 1 to 7)
 - Milestone 1:
   - Verified development environment (Node v24.11.0, npm 11.6.2, git 2.51.2).
   - Initialized git repository.
@@ -116,12 +118,36 @@ Current Milestone: Milestone 6 - Meet a Local, Connection Management, Database T
     - Connection dashboard (`app/[locale]/(public)/connections/page.tsx`) with filter tabs (All, Active, Pending, Past) and status cards.
   - Vitest test suite (`tests/unit/connection-transitions.test.ts`) covering request validation, state transitions, decline/withdraw behaviors, and dual mutual consent contact reveal, bringing total tests to 58 passing across 7 suites.
   - Zero emojis and zero banned words verified across all files.
+- Milestone 7:
+  - Database Migration (`supabase/migrations/20261110000006_experience_marketplace.sql`):
+    - Admin moderation function `moderate_experience()` enforcing permissions (`moderator`, `content`, `super_admin`), mandatory reason (5+ chars) for rejections, suspensions, and changes, and writing to `admin_audit_logs`.
+    - Experience submission function `submit_experience_for_review()` verifying completeness invariants.
+    - Enquiry lifecycle functions: `submit_experience_enquiry()` (creates pending booking + conversation record, masks prices during Phase 1) and `respond_to_experience_enquiry()` (accept/decline transitions, capacity lock, messaging initialization).
+  - Validation Schemas (`lib/validation/experience.ts`):
+    - 12 official categories validated against platform taxonomy.
+    - Public meeting place validation strictly rejecting private residential addresses (flats, apartments, house numbers).
+    - Duration (30-720 mins), capacity (1-50, min <= max), required licensed photography with credit.
+    - Enquiry schema enforcing 20-1000 chars message, safety rules acknowledgment, and idempotency keys.
+    - Schedule slot schema verifying future dates and end time after start time.
+    - Admin review schema enforcing mandatory 5+ character reason on non-approval decisions.
+  - Server Actions (`app/actions/experiences.ts`):
+    - `createExperienceAction`, `submitExperienceForReviewAction`, `createScheduleAction`, `submitExperienceEnquiryAction`, `respondToExperienceEnquiryAction`, `adminModerateExperienceAction`.
+  - User Interface:
+    - Marketplace Directory (`app/[locale]/(public)/explore/experiences/page.tsx`): Filterable by 12 categories, state, district, linking directly to experience detail.
+    - Experience Detail Page (`app/[locale]/(public)/experiences/[id]/page.tsx`): Bilingual title, cultural category, host verified card, public meeting area notice, highlights, included/excluded, cancellation terms, and interactive cultural enquiry form (`enquiry-form.tsx`).
+    - Experience Publishing (`app/[locale]/(dashboard)/experiences/new/page.tsx` & `form.tsx`): Detailed editorial submission form with official geography, public landmark enforcement, and Save as Draft / Submit for Review workflows.
+    - Provider Dashboard (`app/[locale]/(dashboard)/dashboard/experiences/page.tsx` & `enquiries-manager.tsx`): Listing cards with status badges, schedule links, and active enquiry manager with Accept and Decline actions.
+    - Experience Schedules (`app/[locale]/(dashboard)/dashboard/experiences/[id]/schedules/page.tsx` & `schedule-client.tsx`): Interactive calendar slot manager with capacity tracking.
+    - Admin Moderation Queue (`app/[locale]/(admin)/admin/experiences/page.tsx` & `admin-moderation-client.tsx`): Dense table interface, status filters, full inspection drawer, Approve, Request Changes, Reject, and Suspend actions, with real-time append-only audit trail display.
+  - Automated Tests: `tests/unit/experience-marketplace.test.ts` (19 passing unit tests covering taxonomy, creation rules, private address rejection, enquiry constraints, admin review justifications, slot timing, and capacity boundaries).
+  - Total test suite: 77/77 tests passing across 8 suites.
+  - Production build: `next build` compiled cleanly with all new routes. Zero emojis, zero banned words.
 
 ## What is Half-Done
-- Milestone 6 complete; awaiting user confirmation ("continue") to begin Milestone 7.
+- Milestone 7 complete; awaiting user confirmation ("continue") to begin Milestone 8.
 
 ## What is Next
-- Milestone 7: Experience Marketplace, Provider Dashboard, Admin Approval (Enquiry-only mode per Phase 1: zero prices displayed, zero payments).
+- Milestone 8: Messaging (Supabase Realtime text-only, no attachments, links as plain text), Notifications center, Blind reviews (14-day hold or mutual submit), and Safety tools (report modal with 20-message transcript snapshot, block user, safety check-in, trip share, Help center).
 
 ## What is Broken
-- None. Build, lint, types, and all 58 tests are 100% green.
+- None. Build, lint, types, and all 77 tests are 100% green.
