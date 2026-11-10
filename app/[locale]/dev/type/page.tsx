@@ -88,7 +88,7 @@ export default function TypographyDevPage() {
           <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
             {[
               { conjunct: "क्ष", name: "ksha", word: "क्षमा (Forgiveness)" },
-              { conjunct: "त्र", name: "tra", word: "यात्रा (Journey)" },
+              { conjunct: "त्र", name: "tra", word: "यात्रा (Travel)" },
               { conjunct: "ज्ञ", name: "gya", word: "ज्ञान (Knowledge)" },
               { conjunct: "श्र", name: "shra", word: "श्रद्धा (Respect)" },
               { conjunct: "द्ध", name: "ddha", word: "प्रसिद्ध (Famous)" },

@@ -42,3 +42,4 @@ INSERT INTO languages (code, name_en, name_hi) VALUES
 ON CONFLICT (code) DO UPDATE SET
   name_en = EXCLUDED.name_en,
   name_hi = EXCLUDED.name_hi;
+

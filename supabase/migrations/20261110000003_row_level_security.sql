@@ -345,3 +345,4 @@ CREATE POLICY platform_settings_select ON platform_settings
 
 CREATE POLICY platform_settings_super_admin ON platform_settings
   FOR ALL USING (has_admin_permission('super_admin'));
+

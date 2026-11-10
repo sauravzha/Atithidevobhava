@@ -43,3 +43,4 @@ INSERT INTO platform_settings (key, value, description)
 VALUES
   ('COMMISSION_RATE_MEETUPS', '{"rate_percent": 0.00}', 'Free cultural connection requests have 0% fee.')
 ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value;
+

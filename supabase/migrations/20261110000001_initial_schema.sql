@@ -672,3 +672,4 @@ CREATE INDEX IF NOT EXISTS idx_connections_traveller ON connections(traveller_id
 CREATE INDEX IF NOT EXISTS idx_connections_local ON connections(local_member_id, status);
 CREATE INDEX IF NOT EXISTS idx_messages_conversation ON messages(conversation_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_reports_status ON reports(status, is_urgent);
+

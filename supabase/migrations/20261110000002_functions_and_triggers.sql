@@ -269,3 +269,4 @@ CREATE TRIGGER trg_urgent_reports_deindex
 AFTER INSERT ON reports
 FOR EACH ROW
 EXECUTE FUNCTION trg_check_urgent_reports();
+

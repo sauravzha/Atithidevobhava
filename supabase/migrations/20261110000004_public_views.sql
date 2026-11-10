@@ -113,3 +113,4 @@ SELECT
   ) AS published_experiences_count
 FROM districts d
 JOIN states s ON s.id = d.state_id;
+

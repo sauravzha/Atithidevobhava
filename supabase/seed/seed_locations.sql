@@ -103,3 +103,4 @@ FROM districts WHERE lgd_code = '193';
 INSERT INTO cities (district_id, name, name_hi, lgd_code)
 SELECT id, 'Jhanjharpur', 'झंझारपुर', '243461'
 FROM districts WHERE lgd_code = '193';
+
