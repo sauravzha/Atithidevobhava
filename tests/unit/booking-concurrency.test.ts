@@ -20,7 +20,7 @@ class ConcurrentSlotEngine {
 
   // Atomically locks the slot row, performs capacity check, and updates booked count
   public async book(
-    travellerId: string,
+    _travellerId: string,
     participants: number,
     idempotencyKey: string
   ): Promise<{ success: boolean; bookingId?: string; error?: string }> {

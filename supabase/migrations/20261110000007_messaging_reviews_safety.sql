@@ -527,3 +527,4 @@ BEGIN
   RETURN v_token;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+

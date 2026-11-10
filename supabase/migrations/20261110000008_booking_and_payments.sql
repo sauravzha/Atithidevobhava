@@ -581,3 +581,4 @@ BEGIN
   RETURN (v_inserted_id IS NOT NULL);
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+

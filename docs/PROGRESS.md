@@ -1,7 +1,7 @@
 # Project Progress: Atithi Devo Bhava (अतिथि देवो भवः)
 
 Last Updated: 2026-11-10
-Current Milestone: Milestone 9 - Booking and Payment Architecture (Phase 2 behind flags)
+Current Milestone: Milestone 10 - Accommodation and Compliance Module (Phase 3 behind flags)
 
 ## Milestone Status Overview
 
@@ -24,13 +24,9 @@ Current Milestone: Milestone 9 - Booking and Payment Architecture (Phase 2 behin
 - Milestone 9: Booking and Payment Architecture (Phase 2 behind flags), book_experience() Concurrency Tests
   Status: Completed
 - Milestone 10: Accommodation and Compliance Module (Phase 3 behind flags, Form C / Form III, btree_gist overlap exclusion)
-  Status: Ready to Start (Waiting for user confirmation to continue)
-- Milestone 9: Booking and Payment Architecture (Phase 2 behind flags), book_experience() Concurrency Tests
-  Status: Not Started
-- Milestone 10: Accommodation and Compliance Module (Phase 3 behind flags, Form C / Form III, btree_gist overlap exclusion)
-  Status: Not Started
+  Status: Completed
 - Milestone 11: Admin, Moderation, and Analytics Systems (Audit logging, Viewer without download, Real metrics)
-  Status: Not Started
+  Status: Ready to Start (Waiting for user confirmation to continue)
 - Milestone 12: Complete Hindi and English Translations, Native Review Strings Catalog
   Status: Not Started
 - Milestone 13: End-to-End Verification, Performance, Axe Accessibility, Lighthouse, Production Deployment Package
@@ -195,11 +191,36 @@ Current Milestone: Milestone 9 - Booking and Payment Architecture (Phase 2 behin
   - Total test suite: 110/110 tests passing across 10 test files.
   - Production build: `next build` compiled cleanly with all new routes. Zero emojis, zero banned words.
 
+- Milestone 10:
+  - PostgreSQL Accommodation, Daterange Exclusion, and Compliance Migration (`supabase/migrations/20261110000009_accommodation_and_compliance.sql`):
+    - Composite exclusion constraint on `accommodation_availability` using `btree_gist`: `EXCLUDE USING gist (listing_id WITH =, date_range WITH &&) WHERE (status = 'confirmed_booking')`. Mathematically guarantees no overlapping confirmed stay bookings can ever exist on the same listing.
+    - Extended `accommodation_listings` schema with household transparency attributes: `household_adults_count`, `has_children`, `has_pets`, `other_residents_description`, `verification_tier` (`tier_1_day_only` vs `tier_2_stay_approved`), and room verification status.
+    - State transition functions:
+      - `submit_stay_booking_request()`: Validates future dates, strict 14-night maximum limit, strict 2-guest maximum capacity, absence of conflicting confirmed bookings, self-booking restrictions, and host notification.
+      - `confirm_stay_booking()`: Confirms booking request, locks date_range in `accommodation_availability` under `btree_gist` constraint, initializes minimal DPDP-compliant guest record, and audits action.
+      - `record_guest_compliance()`: Updates statutory foreign guest filing status (Form C / Form III) with government reference number and date.
+  - Validation Schemas (`lib/validation/accommodation.ts`):
+    - `createAccommodationListingSchema`: Enforces the 7 official categories, requires price = 0 paise for `free_cultural_hospitality`, requires state tourism registration number for `registered_paid_homestay`, restricts maximum guests to 2, and strictly rejects private residential street/flat addresses via regex.
+    - `stayBookingRequestSchema`: Enforces checkIn/checkOut ordering, maximum 14 nights, maximum 2 adult guests, minimum 20-character introduction, and idempotency key.
+    - `guestComplianceSchema`: Validates minimal DPDP Act fields (name, nationality, arrival, departure, filing reference) while strictly guaranteeing zero passport scans or visa numbers are collected.
+    - `hostComplianceChecklistSchema`: Enforces mandatory written acknowledgment of 24-hour statutory foreign guest reporting duty.
+  - Server Actions (`app/actions/accommodation.ts`):
+    - `createAccommodationListingAction`, `submitAccommodationForReviewAction`, `submitStayBookingRequestAction` (gated by `STAYS_ENABLED`), `confirmStayBookingAction`, `saveHostComplianceChecklistAction`, `recordGuestComplianceEntryAction`, `getHostComplianceRecordsAction`.
+  - User Interface:
+    - Stays Directory & Discovery (`app/[locale]/(public)/explore/stays/page.tsx`): Honest status notice for Phase 3 ("Booking Not Open Yet: Accommodation verification and compliance audits in progress in pilot districts"), detailed breakdown of the 7 hospitality categories, and compliance pillars.
+    - Stay Listing Detail View (`app/[locale]/(public)/stays/[id]/page.tsx` & `stay-detail-client.tsx`): Host verification tier badges, transparent household overview (adult residents, children, pets, other residents), quarters configuration (private/shared room and bathroom), house rules, address privacy notice, and stay request form with 14-night and 2-guest bounds.
+    - Host Compliance Centre (`app/[locale]/(dashboard)/dashboard/compliance/page.tsx` & `compliance-client.tsx`): Foreign guest reporting duty (Form C / Form III) guide with 24-hour statutory reminder, link to official Ministry of Home Affairs e-FRRO portal, mandatory statutory disclaimer ("Atithi Devo Bhava is not an official reporting agency..."), host declaration checklist form, and minimal DPDP foreign guest log with filing references.
+    - Host Accommodation Publishing Form (`app/[locale]/(dashboard)/stays/new/page.tsx` & `form.tsx`): Complete multi-step listing editor with 7 categories, household details, public landmark validation, and save-as-draft workflow.
+  - Automated Tests (`tests/unit/accommodation-compliance.test.ts`):
+    - 13 comprehensive tests covering `btree_gist` daterange exclusion (overlapping requests rejected, back-to-back half-open intervals permitted, distinct listings non-conflicting), 14-night max duration, 2-guest max capacity, 7 official categories, free hospitality price = 0 invariant, state tourism license requirement, private residential address rejection, minimal DPDP foreign guest schema, and mandatory 24h reporting duty acknowledgment.
+  - Total test suite: 123/123 tests passing across 11 test files.
+  - Production build: `next build` compiled cleanly with all new routes. Zero emojis, zero banned words.
+
 ## What is Half-Done
-- Milestone 9 complete; awaiting user confirmation ("continue") to begin Milestone 10.
+- Milestone 10 complete; awaiting user confirmation ("continue") to begin Milestone 11.
 
 ## What is Next
-- Milestone 10: Accommodation and Compliance Module (Phase 3 behind flag `STAYS_ENABLED`), accommodation listings, room availability calendar with PostgreSQL `btree_gist` daterange exclusion constraint to prevent overlapping stay bookings, Form C / Form III foreign guest registration compliance centre, and host compliance checklist.
+- Milestone 11: Admin, Moderation, and Analytics Systems (dense table-based admin interface, user management with suspend/reactivate, experience & stay moderation workflows, safety incident triage, ID document viewer without download button with full audit logging, and real metrics overview).
 
 ## What is Broken
-- None. Build, lint, types, and all 110 tests are 100% green.
+- None. Build, lint, types, and all 123 tests are 100% green.

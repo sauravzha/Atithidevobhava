@@ -346,6 +346,36 @@ export interface Database {
         };
         Returns: boolean;
       };
+      submit_stay_booking_request: {
+        Args: {
+          p_listing_id: string;
+          p_traveller_id: string;
+          p_check_in: string;
+          p_check_out: string;
+          p_adult_count: number;
+          p_child_count: number;
+          p_idempotency_key: string;
+          p_special_requirements?: string;
+        };
+        Returns: string;
+      };
+      confirm_stay_booking: {
+        Args: {
+          p_request_id: string;
+          p_host_id: string;
+        };
+        Returns: boolean;
+      };
+      record_guest_compliance: {
+        Args: {
+          p_guest_record_id: string;
+          p_host_id: string;
+          p_form_submitted: boolean;
+          p_submission_date?: string;
+          p_submission_reference?: string;
+        };
+        Returns: boolean;
+      };
     };
   };
 }

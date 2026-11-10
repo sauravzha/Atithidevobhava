@@ -49,3 +49,4 @@ if (!failed) {
 } else {
   process.exit(1);
 }
+

@@ -145,3 +145,4 @@ export const createTripShareSchema = z
   });
 
 export type CreateTripShareInput = z.infer<typeof createTripShareSchema>;
+

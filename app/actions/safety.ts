@@ -381,3 +381,4 @@ export async function markNotificationReadAction(
     return { success: false, error: msg };
   }
 }
+
