@@ -87,7 +87,7 @@ describe("Milestone 12: Translation Catalog Parity and Authenticity", () => {
     const pluralKeys = enLeaves.filter((l) => l.value.includes("{count, plural,"));
     expect(pluralKeys.length).toBeGreaterThan(0);
 
-    for (const { path: keyPath, value: enVal } of pluralKeys) {
+    for (const { path: keyPath } of pluralKeys) {
       const hiVal = hiKeyMap.get(keyPath);
       expect(hiVal).toBeDefined();
       expect(hiVal).toContain("{count, plural,");

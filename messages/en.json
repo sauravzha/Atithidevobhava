@@ -281,7 +281,22 @@
     "roleHost": "Indian Resident / Cultural Host",
     "loginButton": "Log in",
     "registerButton": "Create Account",
-    "termsNotice": "By proceeding, you agree to our Terms of Service and Privacy Policy."
+    "termsNotice": "By proceeding, you agree to our Terms of Service and Privacy Policy.",
+    "continueWithGoogle": "Continue with Google",
+    "orOtp": "Or continue with Mobile or Email OTP",
+    "devModeNotice": "Development simulation mode active",
+    "devModeDescription": "Firebase keys not detected in environment. Using simulated Google profile for local testing.",
+    "signingIn": "Signing in...",
+    "mobileTab": "Mobile OTP",
+    "emailTab": "Email OTP",
+    "sendCode": "Send Verification Code",
+    "verifyAndLogin": "Verify and Enter",
+    "noAccount": "Do not have an account yet?",
+    "joinCommunity": "Join the community",
+    "haveAccount": "Already registered?",
+    "loginTitle": "Sign in to Atithi Devo Bhava",
+    "loginSubtitle": "Access your community connections, bookings, and cultural itineraries.",
+    "adultDeclaration": "I confirm that I am 18 years of age or older and agree to abide by the Community Guidelines."
   },
   "footer": {
     "about": "About",

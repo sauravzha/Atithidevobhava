@@ -1,17 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { canRevealContactSimulation } from "../unit/connection-transitions.test";
-import { bookingValidationSchema } from "@/lib/validation/booking";
-import {
-  createAccommodationListingSchema,
-  stayBookingRequestSchema,
-  guestComplianceSchema,
-} from "@/lib/validation/accommodation";
-import {
-  adminUserActionSchema,
-  adminAccommodationReviewSchema,
-  adminReportTriageSchema,
-  adminIdViewSchema,
-} from "@/lib/validation/admin";
+import { stayBookingRequestSchema } from "@/lib/validation/accommodation";
+import { adminReportTriageSchema, adminIdViewSchema } from "@/lib/validation/admin";
 
 // In-Memory Simulation of Full System Lifecycle for End-to-End Validation
 class MarketplaceEndToEndSimulator {
@@ -378,7 +367,7 @@ describe("Milestone 13: End-to-End System Integration Flows", () => {
     // 3. Form C foreign guest reporting log
     sim.logForeignGuest("Arthur Pendelton", "United Kingdom", "EFRRO-2026-BHR-0987");
     expect(sim.foreignGuestLogs.length).toBe(1);
-    expect(sim.foreignGuestLogs[0].form_c_reference).toBe("EFRRO-2026-BHR-0987");
+    expect(sim.foreignGuestLogs[0]?.form_c_reference).toBe("EFRRO-2026-BHR-0987");
   });
 
   it("Flow 4: Safety report triage, automatic deindexing trigger, and cascading suspension", () => {
@@ -428,7 +417,7 @@ describe("Milestone 13: End-to-End System Integration Flows", () => {
     );
 
     expect(sim.auditLogs.length).toBe(1);
-    expect(sim.auditLogs[0].action).toBe("VIEW_IDENTITY_DOCUMENT");
-    expect(sim.auditLogs[0].performed_by).toBe(adminId);
+    expect(sim.auditLogs[0]?.action).toBe("VIEW_IDENTITY_DOCUMENT");
+    expect(sim.auditLogs[0]?.performed_by).toBe(adminId);
   });
 });

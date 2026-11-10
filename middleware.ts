@@ -22,7 +22,7 @@ export function middleware(request: NextRequest) {
     "Permissions-Policy",
     "camera=(self), microphone=(), geolocation=(), browsing-topics=()"
   );
-  response.headers.set("Cross-Origin-Opener-Policy", "same-origin");
+  response.headers.set("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
   response.headers.set("Cross-Origin-Resource-Policy", "same-origin");
 
   return response;
