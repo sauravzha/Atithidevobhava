@@ -1,7 +1,7 @@
 # Project Progress: Atithi Devo Bhava (अतिथि देवो भवः)
 
 Last Updated: 2026-11-10
-Current Milestone: Milestone 7 - Experience Marketplace, Provider Dashboard, Admin Approval (Enquiry Mode)
+Current Milestone: Milestone 8 - Messaging, Realtime Notifications, Blind Reviews, and Safety Tools
 
 ## Milestone Status Overview
 
@@ -20,8 +20,10 @@ Current Milestone: Milestone 7 - Experience Marketplace, Provider Dashboard, Adm
 - Milestone 7: Experience Marketplace, Provider Dashboard, Admin Approval (Enquiry Mode)
   Status: Completed
 - Milestone 8: Messaging (Realtime), Notifications, Reviews (Blind), Safety Tools (Reports, Blocks, Check-ins, Trip Share, Help Page)
+  Status: Completed
+- Milestone 9: Booking and Payment Architecture (Phase 2 behind flags), book_experience() Concurrency Tests
   Status: Ready to Start (Waiting for user confirmation to continue)
-- Milestone 8: Messaging (Realtime), Notifications, Reviews (Blind), Safety Tools (Reports, Blocks, Check-ins, Trip Share, Help Page)
+- Milestone 10: Accommodation and Compliance Module (Phase 3 behind flags, Form C / Form III, btree_gist overlap exclusion)
   Status: Not Started
 - Milestone 9: Booking and Payment Architecture (Phase 2 behind flags), book_experience() Concurrency Tests
   Status: Not Started
@@ -143,11 +145,34 @@ Current Milestone: Milestone 7 - Experience Marketplace, Provider Dashboard, Adm
   - Total test suite: 77/77 tests passing across 8 suites.
   - Production build: `next build` compiled cleanly with all new routes. Zero emojis, zero banned words.
 
+- Milestone 8:
+  - PostgreSQL Messaging, Safety, and Blind Reviews Migration (`supabase/migrations/20261110000007_messaging_reviews_safety.sql`):
+    - `send_message()`: RLS-protected procedure, rate limited to 20 messages per minute, length checked (1-1000 characters), active block check, contact disclosure soft warning detector, and in-app recipient notification generation.
+    - `block_user()`: Inserts into `blocked_users`, immediately closes active conversation, revokes mutual contact disclosure, cancels pending connection requests, and logs to `admin_audit_logs`.
+    - `create_safety_report()`: Automatic snapshot of last 20 messages into `snapshot_messages` JSONB when reporting from a chat room; triage of urgent categories (`unsafe_or_threatening`, `suspected_trafficking_or_exploitation`, `harassment`); de-indexes reported user on 2 urgent reports from distinct reporters; audit logged with reporter confidentiality.
+    - `submit_blind_review()`: Enforces 14-day post-completion review window, stores review with `is_published = false` (blind), holds private moderator safety comment, and automatically publishes both reviews simultaneously when the counterpart submits or when the 14-day window closes.
+    - `submit_safety_check_in()`: Check-in prompt ("arrival_start", "departure_end"); "need_help" immediately dispatches urgent incident report.
+    - `create_trip_share()`: Generates random hex token with 7-day expiry and public read policy for trusted emergency contacts.
+  - Validation Schemas (`lib/validation/safety.ts`):
+    - `sendMessageSchema` (1-1000 chars, no attachments), `blockUserSchema` (formal reason), `createReportSchema` (8 official reasons, 20-2000 chars details, emergency alert acknowledgment), `submitReviewSchema` (3 category ratings 1-5, public text 20-800 chars, moderator-only box), `safetyCheckInSchema`, `createTripShareSchema`.
+  - Server Actions (`app/actions/safety.ts`):
+    - `sendMessageAction`, `blockUserAction`, `createReportAction`, `submitBlindReviewAction`, `submitSafetyCheckInAction`, `createTripShareAction`, `markNotificationReadAction`.
+  - User Interface:
+    - Realtime Chat Room (`app/[locale]/(public)/messages/[id]/page.tsx` & `chat-room.tsx`): Text-only messages, plain-text non-clickable links, soft warning on contact detection pattern, report and block action modals, inline safety check-in card, emergency helpline footer (112, 1091, 1363).
+    - Inbox (`app/[locale]/(public)/messages/page.tsx`): Active conversations with status badges.
+    - Notification Center (`app/[locale]/(public)/notifications/page.tsx` & `notifications-client.tsx`): Unread/read status, quick action links, mark-as-read server action.
+    - Safety Modals (`components/safety/`): `report-modal.tsx`, `block-modal.tsx`, `review-modal.tsx`, `check-in-card.tsx`.
+    - Trip Share Generator & Trusted Contact View (`app/[locale]/(public)/safety/share/page.tsx` & `app/[locale]/(public)/safety/share/[token]/page.tsx`): Shareable URL displaying sanitized itinerary, emergency helplines, and masked host details (first name and district only).
+  - Automated Tests (`tests/unit/messaging-reviews-safety.test.ts`):
+    - 21 passing tests covering message character limits, contact detection heuristics, block cascades, urgent report de-indexing, blind review mutual release hold, check-in flows, and trip share masking.
+  - Total test suite: 98/98 tests passing across 9 test files.
+  - Production build: `next build` compiled cleanly. Zero emojis, zero banned words.
+
 ## What is Half-Done
-- Milestone 7 complete; awaiting user confirmation ("continue") to begin Milestone 8.
+- Milestone 8 complete; awaiting user confirmation ("continue") to begin Milestone 9.
 
 ## What is Next
-- Milestone 8: Messaging (Supabase Realtime text-only, no attachments, links as plain text), Notifications center, Blind reviews (14-day hold or mutual submit), and Safety tools (report modal with 20-message transcript snapshot, block user, safety check-in, trip share, Help center).
+- Milestone 9: Booking and Payment Architecture (Phase 2 behind feature flags `PRICES_VISIBLE` and `PAYMENTS_ENABLED`), atomic `book_experience()` concurrency tests, commission calculation (15%), payment gateway provider interface with dev fallback, booking management views.
 
 ## What is Broken
-- None. Build, lint, types, and all 77 tests are 100% green.
+- None. Build, lint, types, and all 98 tests are 100% green.
