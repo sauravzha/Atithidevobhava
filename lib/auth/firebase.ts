@@ -27,6 +27,7 @@ export interface FirebaseClientConfig {
 export interface GoogleAuthResult {
   success: boolean;
   isDevSimulation?: boolean;
+  errorCode?: string;
   user?: {
     uid: string;
     email: string | null;
@@ -115,9 +116,12 @@ export function getFirebaseAuth(): Auth | null {
  *   Returns a clearly labelled simulated credential so developers and testers can verify
  *   the authentication flow and session cookies without external cloud setup.
  */
-export async function signInWithGoogleFirebase(simulatedEmail?: string): Promise<GoogleAuthResult> {
-  // Check for client environment and active configuration
-  if (!isFirebaseConfigured() || typeof window === "undefined") {
+export async function signInWithGoogleFirebase(
+  simulatedEmail?: string,
+  options?: { forceSimulation?: boolean }
+): Promise<GoogleAuthResult> {
+  // Check for client environment, active configuration, or forced simulation
+  if (options?.forceSimulation || !isFirebaseConfigured() || typeof window === "undefined") {
     // Development fallback simulation mode
     const email = simulatedEmail || "dev.traveller@example.com";
     const name = email.split("@")[0]?.replace(/[._]/g, " ") || "Verified Traveller";
@@ -166,21 +170,60 @@ export async function signInWithGoogleFirebase(simulatedEmail?: string): Promise
     };
   } catch (err: unknown) {
     const error = err as { code?: string; message?: string };
-    if (error.code === "auth/popup-closed-by-user") {
+    const code = error.code || "";
+    const rawMessage = error.message || "";
+
+    if (code === "auth/popup-closed-by-user") {
       return {
         success: false,
+        errorCode: code,
         error: "Google sign-in window was closed before completion.",
       };
     }
-    if (error.code === "auth/cancelled-popup-request") {
+    if (code === "auth/cancelled-popup-request") {
       return {
         success: false,
+        errorCode: code,
         error: "Sign-in request was cancelled. Please try again.",
       };
     }
+    if (code === "auth/configuration-not-found" || rawMessage.includes("configuration-not-found")) {
+      return {
+        success: false,
+        errorCode: "auth/configuration-not-found",
+        error:
+          "Firebase Authentication has not been enabled in your Firebase Console yet. Click 'Get Started' and enable Google in Build > Authentication > Sign-in method.",
+      };
+    }
+    if (code === "auth/operation-not-allowed" || rawMessage.includes("operation-not-allowed")) {
+      return {
+        success: false,
+        errorCode: "auth/operation-not-allowed",
+        error:
+          "Google Sign-In is not enabled in Firebase Console. Please enable Google under Build > Authentication > Sign-in method.",
+      };
+    }
+    if (code === "auth/unauthorized-domain" || rawMessage.includes("unauthorized-domain")) {
+      return {
+        success: false,
+        errorCode: "auth/unauthorized-domain",
+        error:
+          "This domain (localhost) is not in your Firebase Authorized domains list. Add it in Firebase Console > Authentication > Settings > Authorized domains.",
+      };
+    }
+    if (code === "auth/popup-blocked" || rawMessage.includes("popup-blocked")) {
+      return {
+        success: false,
+        errorCode: "auth/popup-blocked",
+        error:
+          "Sign-in popup was blocked by your browser. Please allow popups for localhost and try again.",
+      };
+    }
+
     return {
       success: false,
-      error: error.message || "Failed to complete Google sign-in. Please try again.",
+      errorCode: code,
+      error: rawMessage || "Failed to complete Google sign-in. Please try again.",
     };
   }
 }

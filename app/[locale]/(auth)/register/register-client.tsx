@@ -20,9 +20,10 @@ export function RegisterClient({ initialRole }: { initialRole?: string }) {
   const [isAdultConfirmed, setIsAdultConfirmed] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [devSimulationActive] = useState(!isFirebaseConfigured());
+  const [devSimulationActive, setDevSimulationActive] = useState(!isFirebaseConfigured());
+  const [isFirebaseConsoleSetupNeeded, setIsFirebaseConsoleSetupNeeded] = useState(false);
 
-  const handleGoogleSignUp = async () => {
+  const handleGoogleSignUp = async (options?: { forceSimulation?: boolean }) => {
     if (!isAdultConfirmed) {
       setErrorMessage(
         isHindi
@@ -36,9 +37,16 @@ export function RegisterClient({ initialRole }: { initialRole?: string }) {
     setIsLoading(true);
 
     try {
-      const result = await signInWithGoogleFirebase();
+      const result = await signInWithGoogleFirebase(undefined, options);
 
       if (!result.success || !result.user) {
+        if (
+          result.errorCode === "auth/configuration-not-found" ||
+          result.errorCode === "auth/operation-not-allowed" ||
+          result.errorCode === "auth/unauthorized-domain"
+        ) {
+          setIsFirebaseConsoleSetupNeeded(true);
+        }
         setErrorMessage(
           result.error ||
             (isHindi
@@ -47,6 +55,11 @@ export function RegisterClient({ initialRole }: { initialRole?: string }) {
         );
         setIsLoading(false);
         return;
+      }
+
+      setIsFirebaseConsoleSetupNeeded(false);
+      if (result.isDevSimulation) {
+        setDevSimulationActive(true);
       }
 
       // Sync user profile session
@@ -129,9 +142,32 @@ export function RegisterClient({ initialRole }: { initialRole?: string }) {
 
         {/* Error Notification */}
         {errorMessage && (
-          <div className="mb-6 p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/60 rounded-sm flex items-start gap-2 text-xs text-red-800 dark:text-red-200">
-            <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-600 mt-0.5" strokeWidth={1.75} />
-            <span>{errorMessage}</span>
+          <div className="mb-6 p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/60 rounded-sm text-xs text-red-800 dark:text-red-200">
+            <div className="flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-600 mt-0.5" strokeWidth={1.75} />
+              <span className="leading-relaxed">{errorMessage}</span>
+            </div>
+
+            {isFirebaseConsoleSetupNeeded && (
+              <div className="mt-3 pt-3 border-t border-red-200/80 dark:border-red-800/60 space-y-2">
+                <a
+                  href="https://console.firebase.google.com/project/studio-5645738071-b5b38/authentication"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs font-medium text-primary hover:underline inline-flex items-center gap-1"
+                >
+                  <span>{isHindi ? "गूगल साइन-इन सक्षम करने के लिए फायरबेस कंसोल खोलें" : "Open Firebase Console to enable Google Sign-In"}</span>
+                  <ArrowRight className="w-3 h-3" strokeWidth={2} />
+                </a>
+                <button
+                  type="button"
+                  onClick={() => handleGoogleSignUp({ forceSimulation: true })}
+                  className="w-full py-2 px-3 bg-surface hover:bg-page border border-rule rounded-sm text-xs font-medium text-text transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+                >
+                  <span>{isHindi ? "सिमुलेशन मोड से खाता बनाएं" : "Register with Development Simulation"}</span>
+                </button>
+              </div>
+            )}
           </div>
         )}
 
@@ -183,7 +219,7 @@ export function RegisterClient({ initialRole }: { initialRole?: string }) {
         <div className="space-y-4">
           <button
             type="button"
-            onClick={handleGoogleSignUp}
+            onClick={() => handleGoogleSignUp()}
             disabled={isLoading}
             className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-sm shadow-sm text-sm font-medium text-text transition-colors duration-150 disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
