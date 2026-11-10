@@ -312,6 +312,40 @@ export interface Database {
         };
         Returns: string;
       };
+      cancel_booking: {
+        Args: {
+          p_booking_id: string;
+          p_cancelled_by: string;
+          p_reason: string;
+        };
+        Returns: boolean;
+      };
+      record_payment_capture: {
+        Args: {
+          p_booking_id: string;
+          p_payment_order_id: string;
+          p_payment_id: string;
+          p_amount_paise: number;
+          p_provider?: string;
+        };
+        Returns: string;
+      };
+      record_payment_refund: {
+        Args: {
+          p_payment_id: string;
+          p_reason: string;
+        };
+        Returns: string;
+      };
+      record_payment_webhook: {
+        Args: {
+          p_provider: string;
+          p_event_id: string;
+          p_event_type: string;
+          p_payload: Json;
+        };
+        Returns: boolean;
+      };
     };
   };
 }

@@ -1,7 +1,7 @@
 # Project Progress: Atithi Devo Bhava (अतिथि देवो भवः)
 
 Last Updated: 2026-11-10
-Current Milestone: Milestone 8 - Messaging, Realtime Notifications, Blind Reviews, and Safety Tools
+Current Milestone: Milestone 9 - Booking and Payment Architecture (Phase 2 behind flags)
 
 ## Milestone Status Overview
 
@@ -22,9 +22,9 @@ Current Milestone: Milestone 8 - Messaging, Realtime Notifications, Blind Review
 - Milestone 8: Messaging (Realtime), Notifications, Reviews (Blind), Safety Tools (Reports, Blocks, Check-ins, Trip Share, Help Page)
   Status: Completed
 - Milestone 9: Booking and Payment Architecture (Phase 2 behind flags), book_experience() Concurrency Tests
-  Status: Ready to Start (Waiting for user confirmation to continue)
+  Status: Completed
 - Milestone 10: Accommodation and Compliance Module (Phase 3 behind flags, Form C / Form III, btree_gist overlap exclusion)
-  Status: Not Started
+  Status: Ready to Start (Waiting for user confirmation to continue)
 - Milestone 9: Booking and Payment Architecture (Phase 2 behind flags), book_experience() Concurrency Tests
   Status: Not Started
 - Milestone 10: Accommodation and Compliance Module (Phase 3 behind flags, Form C / Form III, btree_gist overlap exclusion)
@@ -168,11 +168,38 @@ Current Milestone: Milestone 8 - Messaging, Realtime Notifications, Blind Review
   - Total test suite: 98/98 tests passing across 9 test files.
   - Production build: `next build` compiled cleanly. Zero emojis, zero banned words.
 
+- Milestone 9:
+  - PostgreSQL Booking, Capacity Lock, and Ledger Migration (`supabase/migrations/20261110000008_booking_and_payments.sql`):
+    - `book_experience()`: Atomic booking function utilizing PostgreSQL `SELECT FOR UPDATE` on schedule rows to prevent race conditions and overbooking. Handles future slot validation, min/max participants verification, self-booking prevention, commission snapshot from `platform_settings` (15%), gating via `PAYMENTS_ENABLED`, conversation linkage, and provider notification.
+    - `cancel_booking()`: Capacity-restoring cancellation function releasing schedule capacity atomically (`booked_count = GREATEST(0, booked_count - participant_count)`), updating status to `cancelled`, dispatching notifications, and logging to `admin_audit_logs`.
+    - `record_payment_capture()`: Atomic payment confirmation capturing payment, updating booking to `confirmed`, and inserting balanced double-entry accounting ledger entries (`traveller_funds` debit, `host_payable` credit, `platform_commission` credit).
+    - `record_payment_refund()`: Reversing balanced double-entry accounting ledger entries, updating payment to `refunded`, restoring schedule capacity, and updating booking status.
+    - `record_payment_webhook()`: Webhook idempotency engine with database `ON CONFLICT (event_id) DO NOTHING` deduplication.
+  - Payment Provider Architecture (`lib/payments/`):
+    - Interface `PaymentProviderAdapter` enforcing order creation, payment verification, refunds, and webhook signature verification.
+    - `DevPaymentProcessor`: Clearly labelled development payment simulator with deterministic signature generation and simulation notices (no fake claims of live bank operations).
+    - `RazorpayPaymentProcessor`: Production Razorpay adapter with HMAC-SHA256 timing-safe signature comparison, order creation, and refund processing.
+    - `CashfreePaymentProcessor`: Documented stub interface per Section 22 pending CA approval and credentials.
+    - `runBookingReconciliation()`: Background reconciliation job cleaning stale unpaid bookings and checking double-entry ledger balance (`Sum(debit) == Sum(credit)`).
+  - Validation Schemas (`lib/validation/booking.ts`):
+    - `createBookingSchema` (1-50 pax, participant names, idempotency key), `confirmPaymentSchema`, `cancelBookingSchema` (mandatory reason), `paymentWebhookSchema`.
+  - Server Actions & Routes:
+    - `app/actions/bookings.ts`: `createBookingAction`, `confirmPaymentAction`, `cancelBookingAction`, `getBookingDetailsAction`.
+    - `app/api/webhooks/payment/route.ts`: Webhook receiver with signature verification, duplicate webhook prevention, and automated payment capture.
+  - User Interface:
+    - Experience Booking & Slot Reservation (`app/[locale]/(public)/experiences/[id]/book/page.tsx` & `book-client.tsx`): Interactive slot selection with real-time remaining capacity counter, participant count control, dynamic participant roster names, itemized price summary (gated by `PRICES_VISIBLE`), development payment simulator modal, and redirect to booking receipt.
+    - Booking Details & Receipt (`app/[locale]/(public)/bookings/[id]/page.tsx` & `booking-detail-client.tsx`): Detailed booking reference, status badges, date/time slot, public meeting landmark, participant roster, financial breakdown, cancellation modal with audit reason, print receipt action, and emergency helpline reminders.
+    - User Bookings Dashboard (`app/[locale]/(dashboard)/dashboard/bookings/page.tsx` & `bookings-list-client.tsx`): Status tabs (All, Confirmed, Pending/Enquiry, Cancelled), reservation cards, and quick navigation.
+  - Automated Tests (`tests/unit/booking-concurrency.test.ts`):
+    - 12 comprehensive unit tests: 5 concurrent requests on 3-capacity slot (exactly 3 succeed, 2 rejected with capacity exceeded), group race conditions, idempotency deduplication under concurrency, capacity restoration upon cancellation, 15% commission snapshot calculations, double-entry ledger balance verification (`Sum(debit) === Sum(credit)`), payment simulation and signature verification, and Zod input boundaries.
+  - Total test suite: 110/110 tests passing across 10 test files.
+  - Production build: `next build` compiled cleanly with all new routes. Zero emojis, zero banned words.
+
 ## What is Half-Done
-- Milestone 8 complete; awaiting user confirmation ("continue") to begin Milestone 9.
+- Milestone 9 complete; awaiting user confirmation ("continue") to begin Milestone 10.
 
 ## What is Next
-- Milestone 9: Booking and Payment Architecture (Phase 2 behind feature flags `PRICES_VISIBLE` and `PAYMENTS_ENABLED`), atomic `book_experience()` concurrency tests, commission calculation (15%), payment gateway provider interface with dev fallback, booking management views.
+- Milestone 10: Accommodation and Compliance Module (Phase 3 behind flag `STAYS_ENABLED`), accommodation listings, room availability calendar with PostgreSQL `btree_gist` daterange exclusion constraint to prevent overlapping stay bookings, Form C / Form III foreign guest registration compliance centre, and host compliance checklist.
 
 ## What is Broken
-- None. Build, lint, types, and all 98 tests are 100% green.
+- None. Build, lint, types, and all 110 tests are 100% green.
