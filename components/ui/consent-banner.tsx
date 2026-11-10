@@ -69,3 +69,4 @@ export function ConsentBanner({ className, lang = "en" }: ConsentBannerProps) {
     </aside>
   );
 }
+

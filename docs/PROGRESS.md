@@ -10,9 +10,9 @@ Current Milestone: Milestone 1 - Specification Analysis, Implementation Plan, an
 - Milestone 2: Next.js, TypeScript, Tailwind, Fonts, Design System, /dev/type, /dev/components, WCAG Contrast Table
   Status: Completed
 - Milestone 3: Supabase, Migrations, Auth, RLS Policies, Feature Flags, Audit Log, RLS Tests
-  Status: Ready to Start (Waiting for user confirmation to continue)
+  Status: Completed
 - Milestone 4: Homepage, Navigation, Locale Routing (en/hi), Discovery Shell with Real Location Data
-  Status: Not Started
+  Status: Ready to Start (Waiting for user confirmation to continue)
 - Milestone 5: Traveller and Local Profiles, Visibility Controls, Verification Flow
   Status: Not Started
 - Milestone 6: Meet a Local, Connection Management, Database Transition Functions, Contact Exchange Engine
@@ -32,7 +32,7 @@ Current Milestone: Milestone 1 - Specification Analysis, Implementation Plan, an
 - Milestone 13: End-to-End Verification, Performance, Axe Accessibility, Lighthouse, Production Deployment Package
   Status: Not Started
 
-## What is Done (Milestone 1 & 2)
+## What is Done (Milestone 1, 2, & 3)
 - Milestone 1:
   - Verified development environment (Node v24.11.0, npm 11.6.2, git 2.51.2).
   - Initialized git repository.
@@ -47,14 +47,29 @@ Current Milestone: Milestone 1 - Specification Analysis, Implementation Plan, an
   - Created Design System Component Showcase and Contrast Table at app/dev/components/page.tsx.
   - Implemented automated WCAG 2.2 AA relative luminance and contrast engine in lib/contrast.ts.
   - Authored 23 automated unit and component tests in tests/unit/ passing cleanly with Vitest.
-  - Verified production build (npm run build), type checking (npm run type-check), linting (npm run lint), and tests (npm run test).
-  - Verified 0 emojis and 0 banned words across all code and documentation.
+- Milestone 3:
+  - Configured Supabase infrastructure in Mumbai region (ap-south-1) with extensions (postgis, pg_trgm, unaccent, btree_gist, pgcrypto).
+  - Created complete database schema migration (supabase/migrations/20261110000001_initial_schema.sql) defining 45+ tables, foreign keys, CHECK constraints, and performance indexes.
+  - Created database functions and triggers (supabase/migrations/20261110000002_functions_and_triggers.sql):
+    - Append-only trigger trg_prevent_audit_log_mutation() prohibiting UPDATE and DELETE on admin_audit_logs.
+    - Authoritative contact revelation function can_reveal() enforcing mutual consent, block revocation, and 72-hour address lock.
+    - Atomic booking transaction book_experience() with SELECT FOR UPDATE capacity locking and idempotency protection.
+    - Two-report automatic de-indexing trigger trg_urgent_reports_deindex().
+  - Enabled Row Level Security (RLS) on all tables with default-deny policies (supabase/migrations/20261110000003_row_level_security.sql).
+  - Created sanitized public views v_public_people, v_public_experiences, and v_public_locations (supabase/migrations/20261110000004_public_views.sql) projecting strictly non-sensitive attributes.
+  - Seeded default platform feature flags and commission rates (supabase/seed/seed_platform_settings.sql).
+  - Seeded official Indian geography with all 28 States and 8 Union Territories and pilot districts (supabase/seed/seed_locations.sql).
+  - Seeded 12 cultural experience categories and official Indian languages (supabase/seed/seed_taxonomy.sql).
+  - Implemented browser client (lib/supabase/client.ts), SSR server client (lib/supabase/server.ts), administrative service-role client (lib/supabase/admin.ts), and feature flags engine (lib/supabase/flags.ts).
+  - Generated complete TypeScript schema types (types/database.ts).
+  - Authored 13 automated RLS & database security tests in tests/rls/rls_security.test.ts (36 total tests passing).
+  - Verified 0 emojis and 0 banned words across all migrations, seeds, code, and tests.
 
 ## What is Half-Done
-- Milestone 2 complete; awaiting user confirmation ("continue") to begin Milestone 3.
+- Milestone 3 complete; awaiting user confirmation ("continue") to begin Milestone 4.
 
 ## What is Next
-- Milestone 3: Configure Supabase, migrations, Auth, RLS policies, feature flags, audit log triggers, and automated RLS tests.
+- Milestone 4: Build the homepage, navigation, locale routing (next-intl en/hi), and the discovery shell with real location data.
 
 ## What is Broken
-- None. Build, lint, types, and test suites are 100% green.
+- None. Build, lint, types, and all 36 tests are 100% green.

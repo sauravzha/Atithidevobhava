@@ -71,6 +71,8 @@ In accordance with standing project rules, every installed package requires a do
 - `@fontsource/ibm-plex-sans`: Self-hosted IBM Plex Sans for Latin body text and user interface.
 - `@fontsource/ibm-plex-sans-devanagari`: Self-hosted IBM Plex Sans Devanagari for Hindi body text and user interface.
 - `clsx`: Utility for conditional class name merging.
+- `@supabase/supabase-js`: Official Supabase JavaScript client for querying Postgres, Auth, Storage, and Realtime.
+- `@supabase/ssr`: Official Supabase SSR package for Next.js App Router cookie-based session handling.
 - `vitest`, `@vitejs/plugin-react`, `jsdom`: Unit and component test runner with DOM simulation.
 - `@testing-library/react`, `@testing-library/jest-dom`: Accessible component testing utilities verifying user-facing roles.
 
