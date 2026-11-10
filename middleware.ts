@@ -32,3 +32,4 @@ export const config = {
   // Match all request paths except api, _next, static assets, and favicon
   matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"],
 };
+

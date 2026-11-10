@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils";
 
 export interface OtpInputProps {
   length?: number;
+  value?: string;
+  onChange?: (value: string) => void;
   onComplete: (value: string) => void;
   disabled?: boolean;
   error?: boolean;
@@ -19,13 +21,22 @@ export interface OtpInputProps {
  */
 export function OtpInput({
   length = 6,
+  value,
+  onChange,
   onComplete,
   disabled = false,
   error = false,
   className,
   lang = "en",
 }: OtpInputProps) {
-  const [digits, setDigits] = useState<string[]>(Array(length).fill(""));
+  const [digits, setDigits] = useState<string[]>(() => {
+    if (value) {
+      const chars = value.split("").slice(0, length);
+      while (chars.length < length) chars.push("");
+      return chars;
+    }
+    return Array(length).fill("");
+  });
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
@@ -41,11 +52,13 @@ export function OtpInput({
     newDigits[index] = numericChar;
     setDigits(newDigits);
 
+    const combined = newDigits.join("");
+    onChange?.(combined);
+
     if (numericChar && index < length - 1) {
       inputRefs.current[index + 1]?.focus();
     }
 
-    const combined = newDigits.join("");
     if (combined.length === length && !newDigits.includes("")) {
       onComplete(combined);
     }

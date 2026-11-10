@@ -1,7 +1,7 @@
 # Project Progress: Atithi Devo Bhava (अतिथि देवो भवः)
 
 Last Updated: 2026-11-10
-Current Milestone: Milestone 4 - Public Shell, Homepage, Geography Discovery, and Category Discovery
+Current Milestone: Milestone 5 - Traveller and Local Profiles, Visibility Controls, Verification Flow
 
 ## Milestone Status Overview
 
@@ -14,9 +14,9 @@ Current Milestone: Milestone 4 - Public Shell, Homepage, Geography Discovery, an
 - Milestone 4: Homepage, Navigation, Locale Routing (en/hi), Discovery Shell with Real Location Data
   Status: Completed
 - Milestone 5: Traveller and Local Profiles, Visibility Controls, Verification Flow
-  Status: Ready to Start (Waiting for user confirmation to continue)
+  Status: Completed
 - Milestone 6: Meet a Local, Connection Management, Database Transition Functions, Contact Exchange Engine
-  Status: Not Started
+  Status: Ready to Start (Waiting for user confirmation to continue)
 - Milestone 7: Experience Marketplace, Provider Dashboard, Admin Approval (Enquiry Mode)
   Status: Not Started
 - Milestone 8: Messaging (Realtime), Notifications, Reviews (Blind), Safety Tools (Reports, Blocks, Check-ins, Trip Share, Help Page)
@@ -32,7 +32,7 @@ Current Milestone: Milestone 4 - Public Shell, Homepage, Geography Discovery, an
 - Milestone 13: End-to-End Verification, Performance, Axe Accessibility, Lighthouse, Production Deployment Package
   Status: Not Started
 
-## What is Done (Milestones 1, 2, 3, & 4)
+## What is Done (Milestones 1 to 5)
 - Milestone 1:
   - Verified development environment (Node v24.11.0, npm 11.6.2, git 2.51.2).
   - Initialized git repository.
@@ -42,67 +42,67 @@ Current Milestone: Milestone 4 - Public Shell, Homepage, Geography Discovery, an
   - Scaffolded Next.js App Router application with strict TypeScript and custom Tailwind configuration.
   - Installed and configured self-hosted fontsource packages: Newsreader, Tiro Devanagari Hindi, IBM Plex Sans, IBM Plex Sans Devanagari.
   - Authored global CSS (app/globals.css) with light (Ivory/Charcoal/Forest/Terracotta) and dark (Paper/Text/Green/Terracotta) CSS variable palettes, 3px border radius, 12-column grid, and focus rings.
-  - Built 18 accessible editorial UI components in components/ui/ (Bi, Button, Field, OtpInput, Select, RuledTable, ListingRow, PersonRow, StatusLabel, VerificationLabel, Notice, Toast, Dialog, CalendarRange, PhotoUploader, MapView, ConsentBanner, Figure).
-  - Created Typography and Devanagari Testing Laboratory at app/[locale]/dev/type/page.tsx testing conjuncts (क्ष, त्र, ज्ञ, श्र, द्ध), matras, numerals, and mixed baselines at 320px, 768px, 1280px.
+  - Built 18 accessible editorial UI components in components/ui/.
+  - Created Typography and Devanagari Testing Laboratory at app/[locale]/dev/type/page.tsx.
   - Created Design System Component Showcase and Contrast Table at app/[locale]/dev/components/page.tsx.
   - Implemented automated WCAG 2.2 AA relative luminance and contrast engine in lib/contrast.ts.
   - Authored 23 automated unit and component tests in tests/unit/ passing cleanly with Vitest.
 - Milestone 3:
   - Configured Supabase infrastructure in Mumbai region (ap-south-1) with extensions (postgis, pg_trgm, unaccent, btree_gist, pgcrypto).
   - Created complete database schema migration (supabase/migrations/20261110000001_initial_schema.sql) defining 45+ tables, foreign keys, CHECK constraints, and performance indexes.
-  - Created database functions and triggers (supabase/migrations/20261110000002_functions_and_triggers.sql):
+  - Created database functions and triggers:
     - Append-only trigger trg_prevent_audit_log_mutation() prohibiting UPDATE and DELETE on admin_audit_logs.
     - Authoritative contact revelation function can_reveal() enforcing mutual consent, block revocation, and 72-hour address lock.
     - Atomic booking transaction book_experience() with SELECT FOR UPDATE capacity locking and idempotency protection.
     - Two-report automatic de-indexing trigger trg_urgent_reports_deindex().
-  - Enabled Row Level Security (RLS) on all tables with default-deny policies (supabase/migrations/20261110000003_row_level_security.sql).
-  - Created sanitized public views v_public_people, v_public_experiences, and v_public_locations (supabase/migrations/20261110000004_public_views.sql) projecting strictly non-sensitive attributes.
-  - Seeded default platform feature flags and commission rates (supabase/seed/seed_platform_settings.sql).
-  - Seeded official Indian geography with all 28 States and 8 Union Territories and pilot districts (supabase/seed/seed_locations.sql).
-  - Seeded 12 cultural experience categories and official Indian languages (supabase/seed/seed_taxonomy.sql).
-  - Implemented browser client (lib/supabase/client.ts), SSR server client (lib/supabase/server.ts), administrative service-role client (lib/supabase/admin.ts), and feature flags engine (lib/supabase/flags.ts).
-  - Generated complete TypeScript schema types (types/database.ts).
-  - Authored 13 automated RLS & database security tests in tests/rls/rls_security.test.ts (36 total tests passing).
+  - Enabled Row Level Security (RLS) on all tables with default-deny policies.
+  - Created sanitized public views v_public_people, v_public_experiences, and v_public_locations projecting strictly non-sensitive attributes.
+  - Seeded default platform feature flags, official Indian geography, 12 cultural experience categories, and official Indian languages.
+  - Implemented browser, SSR, and admin Supabase clients and TypeScript schema types.
+  - Authored 13 automated RLS & database security tests in tests/rls/rls_security.test.ts.
 - Milestone 4:
   - Bilingual public shell with next-intl (English default at `/`, Hindi at `/hi`).
-  - Next.js middleware with strict security headers (HSTS 2 years, X-Content-Type-Options: nosniff, X-Frame-Options: DENY, Referrer-Policy, Permissions-Policy, COOP, CORP).
-  - Bilingual header with two-line navigation, language switcher (`EN` / `हिन्दी`), theme switcher, and accessible mobile drawer.
-  - Bilingual editorial footer with 4-column directory, Indian emergency numbers, and "No ads. No tracking." declaration.
+  - Next.js middleware with strict security headers (HSTS 2 years, X-Content-Type-Options, X-Frame-Options: DENY, Referrer-Policy, Permissions-Policy, COOP, CORP).
+  - Bilingual header and editorial footer with Indian emergency numbers (112, 1091, 1363).
   - 10-section text-led Homepage (`app/[locale]/(public)/page.tsx`) per Section 17 of SPEC.md.
-  - Official Indian administrative boundary engine (`lib/location/data.ts`) with all 28 States, 8 UTs, pilot districts, and Census centroids.
-  - Unified search component (`components/search/unified-search.tsx`) supporting People, Experiences, Stays, and Places with dynamic cascading dropdowns.
-  - Geography directory:
-    - `/india`: Complete index of 28 States & 8 Union Territories with pilot spotlight.
-    - `/india/[state]`: State landing page (e.g. `/india/bihar`) with district index, cultural profiles, and LGD codes.
-    - `/india/[state]/[district]`: District landing page (e.g. `/india/bihar/darbhanga`, `/india/bihar/madhubani`) with urban bodies, culture profiles, and centroid coordinates.
-  - Discovery directory:
-    - `/explore`: Unified exploration hub with search, pillar links, and category directory.
-    - `/explore/people`: Product A (Meet a Local) directory with verified pilot resident profiles, language badges, and public meeting spot recommendations.
-    - `/explore/experiences`: Product B (Explore with a Local) directory in Phase 1 ENQUIRY-ONLY mode (no prices displayed, no payment gateway invoked).
-    - `/explore/stays`: Product C (Stay with a Local) directory with honest "Not open yet" Phase 3 notice and compliance framework explanation.
-  - 12 Cultural Category pages:
-    - `/categories/[slug]`: Dedicated landing pages for all 12 cultural categories with pilot highlights and listed experiences.
-  - Complete Informational and Legal pages:
-    - `/how-it-works`: Editorial walkthrough of Meet a Local, Explore with a Local, and Stay with a Local.
-    - `/become-a-host`: Onboarding guide and criteria for local residents, artisans, and families.
-    - `/about`: Non-commercial founding philosophy, Sanskrit origin, and Mithila pilot context.
-    - `/safety`: Comprehensive safety protocol, public venue mandate, mutual consent contact reveal, and emergency helplines.
-    - `/help`: Categorized help center with emergency callout accessible without JavaScript.
-    - `/contact`: Support inquiry form and Resident Grievance Officer details under Indian IT Rules 2021.
-    - `/faq`: Categorized FAQs for Travellers, Local Residents, Safety, and Platform Ethics.
-    - `/privacy`: Full Privacy Policy compliant with India's DPDP Act 2023 (zero ad trackers, no Aadhaar/passport storage, data minimization).
-    - `/terms`: Terms of Service enforcing 18+ strict requirement, zero harassment tolerance, and two-report automated search de-indexing.
-    - `/host-responsibilities`: Legal and cultural obligations for hosts in India.
-  - Tests & Verification:
-    - 43 automated tests passing cleanly with Vitest (unit contrast, unit components, unit geography, and RLS security).
-    - Production build compiles cleanly with zero errors across all routes.
-    - Zero emojis and zero banned words across all application files.
+  - Official Indian administrative boundary engine (`lib/location/data.ts`) with all 28 States, 8 UTs, pilot districts (Darbhanga & Madhubani), and Census centroids.
+  - Unified search component supporting People, Experiences, Stays, and Places.
+  - Geography directory (`/india`, `/india/[state]`, `/india/[state]/[district]`).
+  - Discovery directory (`/explore`, `/explore/people`, `/explore/experiences` in Phase 1 enquiry mode, `/explore/stays` in Phase 3 notice mode).
+  - 12 Cultural Category pages (`/categories/[slug]`).
+  - Informational and legal pages (`/how-it-works`, `/become-a-host`, `/about`, `/safety`, `/help`, `/contact`, `/faq`, `/privacy`, `/terms`, `/host-responsibilities`).
+- Milestone 5:
+  - Zod validation schemas (`lib/validation/profile.ts`) for Traveller, Local Member, Experience Provider, and Accommodation Host preliminary interest.
+  - Invariants strictly enforced:
+    - Adults only (18+ via birth year schema).
+    - 150+ characters introduction for travellers.
+    - Indian mobile validation (`+91` / 10-digit).
+    - Zero collection or storage of passport, visa, or Aadhaar fields.
+    - Local member default profile visibility is `members_only`.
+  - OTP Verification services (`lib/auth/otp.ts`) behind explicit interfaces (`EmailSender`, `SmsSender`) with clearly labelled development fallbacks.
+  - Cryptographic helpers (`lib/utils/crypto.ts`) implementing timing-safe string comparison and Web Crypto SHA-256 hashing.
+  - Profile Sanitization Engine (`lib/profile/sanitizer.ts`) ensuring legal full names, exact residential addresses, exact GPS coordinates, and private contact numbers are strictly stripped from public and member views.
+  - Server actions (`app/actions/onboarding.ts`) for OTP dispatch, OTP verification, and generic auth responses on duplicate email signups.
+  - Multi-step onboarding experience (`app/[locale]/(auth)/onboarding/page.tsx`):
+    - Text progress line ("Step X of 5").
+    - Save-as-draft capability in localStorage.
+    - Explanatory sentences stating why each piece of data is needed.
+    - 18+ adult age confirmation.
+    - Suggested public meeting spot requirement.
+    - Consent agreements (Terms, DPDP Act 2023 Privacy Policy, Public Meeting Safety Agreement).
+  - Profile detail page (`app/[locale]/(public)/users/[id]/page.tsx`):
+    - Sanitized display name and locality centroid.
+    - Members-only access barrier for anonymous visitors.
+    - Mobile verified and email verified line badges.
+    - Suggested public meeting venues.
+  - Vitest test suite (`tests/unit/profile-validation.test.ts`, `tests/unit/profile-sanitizer.test.ts`) bringing test count to 52 passing tests across 6 suites.
+  - Zero emojis and zero banned words verified across all source files.
 
 ## What is Half-Done
-- Milestone 4 complete; awaiting user confirmation ("continue") to begin Milestone 5.
+- Milestone 5 complete; awaiting user confirmation ("continue") to begin Milestone 6.
 
 ## What is Next
-- Milestone 5: Traveller and local profiles, multi-step onboarding, visibility controls, and verification flow.
+- Milestone 6: Meet a Local connection requests, state machine transitions in PostgreSQL, connection management dashboard, and mutual consent contact exchange engine (`can_reveal()`).
 
 ## What is Broken
-- None. Build, lint, types, and all 43 tests are 100% green.
+- None. Build, lint, types, and all 52 tests are 100% green.

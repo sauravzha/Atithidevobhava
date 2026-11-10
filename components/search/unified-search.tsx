@@ -263,3 +263,4 @@ export function UnifiedSearch({ className }: { className?: string }) {
     </div>
   );
 }
+

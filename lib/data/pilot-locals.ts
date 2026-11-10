@@ -149,3 +149,4 @@ export function getPilotLocals(districtId?: string): LocalProfile[] {
 export function getLocalById(id: string): LocalProfile | undefined {
   return PILOT_LOCALS.find((l) => l.id === id);
 }
+
