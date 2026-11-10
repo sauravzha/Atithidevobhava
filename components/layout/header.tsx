@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { Sun, Moon, Globe, Menu, X } from "lucide-react";
 import { useLocale } from "next-intl";
@@ -37,20 +38,19 @@ export function Header() {
     <header className="w-full bg-surface border-b border-rule sticky top-0 z-40">
       <div className="site-container">
         <div className="flex items-center justify-between h-20">
-          {/* Brand lockup */}
+          {/* Brand lockup with official logo */}
           <Link
             href="/"
-            className="flex flex-col focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest py-1"
+            className="flex items-center gap-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest py-1 group"
           >
-            <span
-              lang="hi"
-              className="font-heading font-medium text-xl sm:text-2xl text-text leading-tight"
-            >
-              अतिथि देवो भवः
-            </span>
-            <span className="font-heading text-xs sm:text-sm text-secondary font-normal tracking-wide">
-              Atithi Devo Bhava
-            </span>
+            <Image
+              src="/images/logo.png"
+              alt="Atithi Devo Bhava - अतिथि देवो भवः"
+              width={200}
+              height={68}
+              priority
+              className="h-10 sm:h-12 w-auto object-contain transition-transform duration-150 group-hover:scale-[1.02] dark:brightness-110"
+            />
           </Link>
 
           {/* Desktop Navigation: Two-line bilingual labels */}

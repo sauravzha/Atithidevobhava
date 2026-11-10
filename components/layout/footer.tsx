@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import { Link } from "@/i18n/routing";
 import { useLocale, useTranslations } from "next-intl";
 
@@ -11,13 +12,21 @@ export function Footer() {
       <div className="site-container py-12">
         {/* Top row: Brand summary and language selector */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-8 mb-8 border-b border-rule gap-6">
-          <div>
-            <span lang="hi" className="font-heading font-medium text-lg text-text block">
-              अतिथि देवो भवः
-            </span>
-            <span className="font-heading text-xs text-secondary">
-              Atithi Devo Bhava · Cultural Hospitality & Experience Marketplace
-            </span>
+          <div className="flex items-center gap-4">
+            <Image
+              src="/images/logo.png"
+              alt="Atithi Devo Bhava - अतिथि देवो भवः"
+              width={180}
+              height={61}
+              className="h-10 sm:h-12 w-auto object-contain dark:brightness-110"
+            />
+            <div className="hidden sm:block border-l border-rule pl-4">
+              <span className="font-heading text-xs text-secondary block">
+                {locale === "hi"
+                  ? "सांस्कृतिक आतिथ्य एवं अनुभव मंच · उत्तरी बिहार पायलट"
+                  : "Cultural Hospitality & Experience Marketplace · Northern Bihar Pilot"}
+              </span>
+            </div>
           </div>
 
           <div className="flex items-center gap-4 text-xs text-secondary">

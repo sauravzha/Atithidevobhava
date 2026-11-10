@@ -5,6 +5,15 @@ import { useRouter } from "@/i18n/routing";
 import { Link } from "@/i18n/routing";
 import { useLocale, useTranslations } from "next-intl";
 import {
+  Users,
+  Compass,
+  Home,
+  MapPin,
+  Calendar,
+  Search,
+  CheckCircle2,
+} from "lucide-react";
+import {
   OFFICIAL_STATES,
   getDistricts,
   getCities,
@@ -74,12 +83,17 @@ export function UnifiedSearch({ className }: { className?: string }) {
   };
 
   return (
-    <div className={cn("w-full border border-rule bg-surface rounded-sm p-4 sm:p-6", className)}>
-      {/* Search Mode Tabs */}
+    <div
+      className={cn(
+        "w-full border border-rule/80 bg-surface rounded-sm p-4 sm:p-6 shadow-sm border-t-2 border-t-terracotta",
+        className
+      )}
+    >
+      {/* Search Mode Segmented Tabs with Semantic Icons */}
       <div
         role="tablist"
         aria-label="Search Mode Selection"
-        className="flex items-center gap-1 pb-4 mb-4 border-b border-rule overflow-x-auto text-xs font-medium"
+        className="flex items-center gap-1.5 pb-4 mb-5 border-b border-rule overflow-x-auto text-xs"
       >
         <button
           type="button"
@@ -87,13 +101,14 @@ export function UnifiedSearch({ className }: { className?: string }) {
           aria-selected={mode === "people"}
           onClick={() => setMode("people")}
           className={cn(
-            "tap-target px-3 py-1.5 rounded-sm transition-colors duration-[120ms]",
+            "tap-target inline-flex items-center px-3.5 py-2 rounded-sm font-medium transition-all duration-150",
             mode === "people"
-              ? "bg-primary text-white font-medium"
-              : "text-secondary hover:text-text"
+              ? "bg-primary text-white shadow-xs"
+              : "text-secondary hover:text-text hover:bg-warm-grey/30"
           )}
         >
-          {isHindi ? "स्थानीय नागरिक (People)" : "People"}
+          <Users className="w-3.5 h-3.5 mr-1.5" strokeWidth={1.5} />
+          <span>{isHindi ? "स्थानीय नागरिक" : "People"}</span>
         </button>
 
         <button
@@ -102,13 +117,14 @@ export function UnifiedSearch({ className }: { className?: string }) {
           aria-selected={mode === "experiences"}
           onClick={() => setMode("experiences")}
           className={cn(
-            "tap-target px-3 py-1.5 rounded-sm transition-colors duration-[120ms]",
+            "tap-target inline-flex items-center px-3.5 py-2 rounded-sm font-medium transition-all duration-150",
             mode === "experiences"
-              ? "bg-primary text-white font-medium"
-              : "text-secondary hover:text-text"
+              ? "bg-primary text-white shadow-xs"
+              : "text-secondary hover:text-text hover:bg-warm-grey/30"
           )}
         >
-          {isHindi ? "अनुभव (Experiences)" : "Experiences"}
+          <Compass className="w-3.5 h-3.5 mr-1.5" strokeWidth={1.5} />
+          <span>{isHindi ? "सांस्कृतिक अनुभव" : "Experiences"}</span>
         </button>
 
         <button
@@ -117,13 +133,14 @@ export function UnifiedSearch({ className }: { className?: string }) {
           aria-selected={mode === "stays"}
           onClick={() => setMode("stays")}
           className={cn(
-            "tap-target px-3 py-1.5 rounded-sm transition-colors duration-[120ms]",
+            "tap-target inline-flex items-center px-3.5 py-2 rounded-sm font-medium transition-all duration-150",
             mode === "stays"
-              ? "bg-primary text-white font-medium"
-              : "text-secondary hover:text-text"
+              ? "bg-primary text-white shadow-xs"
+              : "text-secondary hover:text-text hover:bg-warm-grey/30"
           )}
         >
-          {isHindi ? "प्रवास (Stays)" : "Stays"}
+          <Home className="w-3.5 h-3.5 mr-1.5" strokeWidth={1.5} />
+          <span>{isHindi ? "पारिवारिक आवास" : "Stays"}</span>
         </button>
 
         <button
@@ -132,29 +149,31 @@ export function UnifiedSearch({ className }: { className?: string }) {
           aria-selected={mode === "places"}
           onClick={() => setMode("places")}
           className={cn(
-            "tap-target px-3 py-1.5 rounded-sm transition-colors duration-[120ms]",
+            "tap-target inline-flex items-center px-3.5 py-2 rounded-sm font-medium transition-all duration-150",
             mode === "places"
-              ? "bg-primary text-white font-medium"
-              : "text-secondary hover:text-text"
+              ? "bg-primary text-white shadow-xs"
+              : "text-secondary hover:text-text hover:bg-warm-grey/30"
           )}
         >
-          {isHindi ? "स्थान (Places)" : "Places"}
+          <MapPin className="w-3.5 h-3.5 mr-1.5" strokeWidth={1.5} />
+          <span>{isHindi ? "स्थान एवं धरोहर" : "Places"}</span>
         </button>
       </div>
 
       {/* Dependent Search Form */}
       <form onSubmit={handleSearch} className="space-y-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
           {/* Dependent State Select */}
           <div>
-            <label htmlFor="search-state" className="block text-xs font-medium text-secondary mb-1">
-              {t("stateLabel")}
+            <label htmlFor="search-state" className="flex items-center gap-1.5 text-xs font-medium text-secondary mb-1.5">
+              <MapPin className="w-3 h-3 text-terracotta" strokeWidth={1.5} />
+              <span>{t("stateLabel")}</span>
             </label>
             <select
               id="search-state"
               value={selectedStateId}
               onChange={(e) => handleStateChange(e.target.value)}
-              className="h-[44px] w-full px-3 text-xs bg-page text-text border border-rule rounded-sm focus:border-forest focus:outline-none"
+              className="h-[44px] w-full px-3 text-xs bg-page text-text border border-rule rounded-sm focus:border-forest focus:outline-none transition-colors"
             >
               {OFFICIAL_STATES.map((s) => (
                 <option key={s.id} value={s.id}>
@@ -166,14 +185,15 @@ export function UnifiedSearch({ className }: { className?: string }) {
 
           {/* Dependent District Select */}
           <div>
-            <label htmlFor="search-district" className="block text-xs font-medium text-secondary mb-1">
-              {t("districtLabel")}
+            <label htmlFor="search-district" className="flex items-center gap-1.5 text-xs font-medium text-secondary mb-1.5">
+              <Compass className="w-3 h-3 text-forest" strokeWidth={1.5} />
+              <span>{t("districtLabel")}</span>
             </label>
             <select
               id="search-district"
               value={selectedDistrictId}
               onChange={(e) => handleDistrictChange(e.target.value)}
-              className="h-[44px] w-full px-3 text-xs bg-page text-text border border-rule rounded-sm focus:border-forest focus:outline-none"
+              className="h-[44px] w-full px-3 text-xs bg-page text-text border border-rule rounded-sm focus:border-forest focus:outline-none transition-colors"
             >
               {districts.map((d) => (
                 <option key={d.id} value={d.id}>
@@ -185,14 +205,15 @@ export function UnifiedSearch({ className }: { className?: string }) {
 
           {/* Dependent Town / City Select */}
           <div>
-            <label htmlFor="search-city" className="block text-xs font-medium text-secondary mb-1">
-              {t("cityLabel")}
+            <label htmlFor="search-city" className="flex items-center gap-1.5 text-xs font-medium text-secondary mb-1.5">
+              <Home className="w-3 h-3 text-secondary" strokeWidth={1.5} />
+              <span>{t("cityLabel")}</span>
             </label>
             <select
               id="search-city"
               value={selectedCityId}
               onChange={(e) => setSelectedCityId(e.target.value)}
-              className="h-[44px] w-full px-3 text-xs bg-page text-text border border-rule rounded-sm focus:border-forest focus:outline-none"
+              className="h-[44px] w-full px-3 text-xs bg-page text-text border border-rule rounded-sm focus:border-forest focus:outline-none transition-colors"
             >
               <option value="">{isHindi ? "सभी नगर (All Towns)" : "All Towns"}</option>
               {cities.map((c) => (
@@ -205,8 +226,9 @@ export function UnifiedSearch({ className }: { className?: string }) {
 
           {/* Date Picker (Optional) */}
           <div>
-            <label htmlFor="search-date" className="block text-xs font-medium text-secondary mb-1">
-              {t("dateLabel")}
+            <label htmlFor="search-date" className="flex items-center gap-1.5 text-xs font-medium text-secondary mb-1.5">
+              <Calendar className="w-3 h-3 text-secondary" strokeWidth={1.5} />
+              <span>{t("dateLabel")}</span>
             </label>
             <input
               id="search-date"
@@ -214,21 +236,22 @@ export function UnifiedSearch({ className }: { className?: string }) {
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
               min={new Date().toISOString().split("T")[0]}
-              className="h-[44px] w-full px-3 text-xs bg-page text-text border border-rule rounded-sm focus:border-forest focus:outline-none"
+              className="h-[44px] w-full px-3 text-xs bg-page text-text border border-rule rounded-sm focus:border-forest focus:outline-none transition-colors"
             />
           </div>
 
           {/* Guests Count (Only for Experiences and Stays) */}
           {(mode === "experiences" || mode === "stays") && (
             <div>
-              <label htmlFor="search-guests" className="block text-xs font-medium text-secondary mb-1">
-                {t("guestsLabel")} (Max 2 for Stays)
+              <label htmlFor="search-guests" className="flex items-center gap-1.5 text-xs font-medium text-secondary mb-1.5">
+                <Users className="w-3 h-3 text-secondary" strokeWidth={1.5} />
+                <span>{t("guestsLabel")} (Max 2 for Stays)</span>
               </label>
               <select
                 id="search-guests"
                 value={guestCount}
                 onChange={(e) => setGuestCount(parseInt(e.target.value, 10))}
-                className="h-[44px] w-full px-3 text-xs bg-page text-text border border-rule rounded-sm focus:border-forest focus:outline-none"
+                className="h-[44px] w-full px-3 text-xs bg-page text-text border border-rule rounded-sm focus:border-forest focus:outline-none transition-colors"
               >
                 <option value={1}>{isHindi ? "1 व्यक्ति (1 Guest)" : "1 Guest"}</option>
                 <option value={2}>{isHindi ? "2 व्यक्ति (2 Guests)" : "2 Guests"}</option>
@@ -243,21 +266,33 @@ export function UnifiedSearch({ className }: { className?: string }) {
           )}
         </div>
 
-        {/* Action row: Submit button + Secondary link */}
-        <div className="pt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <button
-            type="submit"
-            className="tap-target px-6 py-2.5 bg-primary hover:bg-primary-hover text-white rounded-sm text-xs font-medium transition-colors duration-[120ms] text-center"
-          >
-            {isHindi ? "भारत देखें / Explore India" : "Explore India / भारत देखें"}
-          </button>
+        {/* Action row: Submit button + Pilot notice badge */}
+        <div className="pt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-t border-rule/50">
+          <div className="flex items-center gap-2 text-xs text-secondary">
+            <CheckCircle2 className="w-3.5 h-3.5 text-forest shrink-0" strokeWidth={1.5} />
+            <span>
+              {isHindi
+                ? "पायलट क्षेत्र: उत्तरी बिहार (दरभंगा और मधुबनी) · १००% सत्यापित नागरिक"
+                : "Pilot area: Northern Bihar (Darbhanga & Madhubani) · 100% verified residents"}
+            </span>
+          </div>
 
-          <Link
-            href="/become-a-host"
-            className="text-xs font-medium text-secondary hover:text-primary underline underline-offset-4 transition-colors duration-[120ms]"
-          >
-            {isHindi ? "स्थानीय मेज़बान बनें" : "Become a local host"}
-          </Link>
+          <div className="flex items-center gap-3">
+            <Link
+              href="/become-a-host"
+              className="text-xs font-medium text-secondary hover:text-primary transition-colors duration-[120ms]"
+            >
+              {isHindi ? "स्थानीय मेज़बान बनें →" : "Become a local host →"}
+            </Link>
+
+            <button
+              type="submit"
+              className="tap-target px-6 py-2.5 bg-primary hover:bg-primary-hover text-white rounded-sm text-xs font-medium transition-all duration-150 inline-flex items-center justify-center gap-2 shadow-xs"
+            >
+              <Search className="w-3.5 h-3.5" strokeWidth={1.5} />
+              <span>{isHindi ? "खोजें · Search" : "Search"}</span>
+            </button>
+          </div>
         </div>
       </form>
     </div>
