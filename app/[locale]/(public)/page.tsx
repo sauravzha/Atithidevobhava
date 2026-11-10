@@ -98,7 +98,7 @@ export default async function HomePage({
         <div className="pb-4 mb-2">
           <Bi
             hindi={tThreeWays("titleHi")}
-            english={tThreeWays("title")}
+            english={isHindi ? "Three ways to experience India" : tThreeWays("title")}
             as="h2"
             className="text-xl sm:text-2xl"
           />
@@ -111,8 +111,8 @@ export default async function HomePage({
               <span className="font-mono text-xs text-terracotta font-medium">01</span>
               <div>
                 <h3 className="font-heading font-medium text-lg text-text">
-                  <span lang="hi" className="block text-sm text-secondary font-normal">
-                    {tThreeWays("way1TitleHi")}
+                  <span lang={isHindi ? "en" : "hi"} className="block text-sm text-secondary font-normal">
+                    {isHindi ? "Meet a local" : tThreeWays("way1TitleHi")}
                   </span>
                   {tThreeWays("way1Title")}
                 </h3>
@@ -139,8 +139,8 @@ export default async function HomePage({
               <span className="font-mono text-xs text-terracotta font-medium">02</span>
               <div>
                 <h3 className="font-heading font-medium text-lg text-text">
-                  <span lang="hi" className="block text-sm text-secondary font-normal">
-                    {tThreeWays("way2TitleHi")}
+                  <span lang={isHindi ? "en" : "hi"} className="block text-sm text-secondary font-normal">
+                    {isHindi ? "Explore with a local" : tThreeWays("way2TitleHi")}
                   </span>
                   {tThreeWays("way2Title")}
                 </h3>
@@ -167,8 +167,8 @@ export default async function HomePage({
               <span className="font-mono text-xs text-terracotta font-medium">03</span>
               <div>
                 <h3 className="font-heading font-medium text-lg text-text">
-                  <span lang="hi" className="block text-sm text-secondary font-normal">
-                    {tThreeWays("way3TitleHi")}
+                  <span lang={isHindi ? "en" : "hi"} className="block text-sm text-secondary font-normal">
+                    {isHindi ? "Stay with a local" : tThreeWays("way3TitleHi")}
                   </span>
                   {tThreeWays("way3Title")}
                 </h3>
@@ -195,7 +195,7 @@ export default async function HomePage({
         <div className="pb-6">
           <Bi
             hindi={tInterests("titleHi")}
-            english={tInterests("title")}
+            english={isHindi ? "Explore by cultural tradition" : tInterests("title")}
             as="h2"
             className="text-xl sm:text-2xl"
           />
@@ -258,7 +258,7 @@ export default async function HomePage({
         <div className="pb-6">
           <Bi
             hindi={tStates("titleHi")}
-            english={tStates("title")}
+            english={isHindi ? "Explore by state and region" : tStates("title")}
             as="h2"
             className="text-xl sm:text-2xl"
           />
@@ -313,7 +313,7 @@ export default async function HomePage({
         <div className="pb-4 flex items-center justify-between">
           <Bi
             hindi={tExp("titleHi")}
-            english={tExp("title")}
+            english={isHindi ? "Published cultural experiences" : tExp("title")}
             as="h2"
             className="text-xl sm:text-2xl"
           />
@@ -339,7 +339,7 @@ export default async function HomePage({
         <div className="pb-4 flex items-center justify-between">
           <Bi
             hindi={tComm("titleHi")}
-            english={tComm("title")}
+            english={isHindi ? "Local community members" : tComm("title")}
             as="h2"
             className="text-xl sm:text-2xl"
           />
@@ -365,7 +365,7 @@ export default async function HomePage({
         <div className="pb-4">
           <Bi
             hindi={tStays("titleHi")}
-            english={tStays("title")}
+            english={isHindi ? "Stay with a local family" : tStays("title")}
             as="h2"
             className="text-xl sm:text-2xl"
           />
@@ -384,7 +384,7 @@ export default async function HomePage({
         <div className="pb-6">
           <Bi
             hindi={tHow("titleHi")}
-            english={tHow("title")}
+            english={isHindi ? "How it works" : tHow("title")}
             as="h2"
             className="text-xl sm:text-2xl"
           />
@@ -393,8 +393,8 @@ export default async function HomePage({
         <div className="divide-y divide-rule border-y border-rule">
           <div className="py-6 grid-12 items-baseline">
             <div className="col-4">
-              <span lang="hi" className="block text-xs text-secondary font-medium">
-                {tHow("step1TitleHi")}
+              <span lang={isHindi ? "en" : "hi"} className="block text-xs text-secondary font-medium">
+                {isHindi ? "1. Discover" : tHow("step1TitleHi")}
               </span>
               <h3 className="font-heading font-medium text-lg text-text">
                 {tHow("step1Title")}
@@ -409,8 +409,8 @@ export default async function HomePage({
 
           <div className="py-6 grid-12 items-baseline">
             <div className="col-4">
-              <span lang="hi" className="block text-xs text-secondary font-medium">
-                {tHow("step2TitleHi")}
+              <span lang={isHindi ? "en" : "hi"} className="block text-xs text-secondary font-medium">
+                {isHindi ? "2. Connect" : tHow("step2TitleHi")}
               </span>
               <h3 className="font-heading font-medium text-lg text-text">
                 {tHow("step2Title")}
@@ -425,8 +425,8 @@ export default async function HomePage({
 
           <div className="py-6 grid-12 items-baseline">
             <div className="col-4">
-              <span lang="hi" className="block text-xs text-secondary font-medium">
-                {tHow("step3TitleHi")}
+              <span lang={isHindi ? "en" : "hi"} className="block text-xs text-secondary font-medium">
+                {isHindi ? "3. Experience" : tHow("step3TitleHi")}
               </span>
               <h3 className="font-heading font-medium text-lg text-text">
                 {tHow("step3Title")}
@@ -448,7 +448,7 @@ export default async function HomePage({
         <div className="pb-4">
           <Bi
             hindi={tTrust("titleHi")}
-            english={tTrust("title")}
+            english={isHindi ? "Trust and community safety" : tTrust("title")}
             as="h2"
             className="text-xl sm:text-2xl"
           />
@@ -477,7 +477,7 @@ export default async function HomePage({
         <div className="pb-4">
           <Bi
             hindi={tHost("titleHi")}
-            english={tHost("title")}
+            english={isHindi ? "Share your culture with travellers" : tHost("title")}
             as="h2"
             className="text-xl sm:text-2xl"
           />

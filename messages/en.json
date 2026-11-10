@@ -46,24 +46,30 @@
   },
   "threeWays": {
     "title": "Three ways to experience India",
+    "titleHi": "भारत का अनुभव करने के तीन मार्ग",
     "way1Title": "Meet a local",
+    "way1TitleHi": "स्थानीय नागरिक से मिलें",
     "way1Desc": "Connect with an Indian resident for tea, a neighbourhood walk, or language exchange. This is not a paid service by default and requires no commercial hospitality business.",
     "way1Link": "Browse local people",
     "way2Title": "Explore with a local",
+    "way2TitleHi": "सांस्कृतिक अनुभव साझा करें",
     "way2Desc": "Participate in cultural sessions organized by residents, artists, and families. Experiences include cooking, traditional crafts, village walks, and music.",
     "way2Link": "Browse experiences",
     "way3Title": "Stay with a local",
+    "way3TitleHi": "स्थानीय परिवार के साथ रहें",
     "way3Desc": "Eligible hosts offering home hospitality with verified standards. This feature is in preparation.",
     "way3Status": "Not open yet",
     "way3Link": "Learn about stays"
   },
   "interests": {
     "title": "Explore by cultural tradition",
+    "titleHi": "सांस्कृतिक परंपरा के अनुसार खोजें",
     "subtitle": "Discover Indian traditions directly through the people who practice them.",
     "activeListings": "{count, plural, =0 {No listings yet} =1 {1 listing} other {# listings}}"
   },
   "statesSection": {
     "title": "Explore by state and region",
+    "titleHi": "राज्य और क्षेत्र के अनुसार खोजें",
     "colState": "State or Territory",
     "colHosts": "Active Hosts",
     "colExperiences": "Published Experiences",
@@ -71,32 +77,41 @@
   },
   "recentExperiences": {
     "title": "Published cultural experiences",
+    "titleHi": "प्रकाशित सांस्कृतिक अनुभव",
     "emptyState": "No experiences published in this region yet. Local residents are currently preparing initial listings."
   },
   "communitySection": {
     "title": "Local community members",
+    "titleHi": "स्थानीय समुदाय के सदस्य",
     "emptyState": "No public member profiles active in this location yet."
   },
   "staysSection": {
     "title": "Stay with a local family",
+    "titleHi": "स्थानीय परिवार के साथ प्रवास",
     "status": "Not open yet. Stays will open in Phase 3 following legal and operational review. Unpaid home hospitality is never presented as commercial lodging."
   },
   "howItWorksSection": {
     "title": "How it works",
+    "titleHi": "यह कैसे काम करता है",
     "step1Title": "1. Discover",
+    "step1TitleHi": "१. खोजें",
     "step1Desc": "Browse verified local residents, traditional artists, and cultural sessions across Indian districts.",
     "step2Title": "2. Connect",
+    "step2TitleHi": "२. संवाद करें",
     "step2Desc": "Send a connection request with your proposed date and public meeting place. Contact details are revealed only when both sides confirm.",
     "step3Title": "3. Experience",
+    "step3TitleHi": "३. अनुभव प्राप्त करें",
     "step3Desc": "Meet safely in a designated public area, learn traditions directly from families, and share honest reviews."
   },
   "trustSection": {
     "title": "Trust and community safety",
+    "titleHi": "विश्वास और सुरक्षा",
     "desc": "Every member is reviewed by a person. Initial meetups are held in public places, and emergency helplines are available around the clock.",
     "link": "Read our safety standards"
   },
   "becomeHostSection": {
     "title": "Share your culture with travellers",
+    "titleHi": "यात्रियों के साथ अपनी संस्कृति साझा करें",
     "desc": "If you live in India and enjoy welcoming respectful international visitors for conversation, walks, or art demonstrations, join our local community.",
     "link": "Register as a local host"
   },
