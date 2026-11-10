@@ -90,3 +90,4 @@ This checklist compiles critical legal, regulatory, and tax questions that must 
    - What are the statutory requirements for appointing a resident Grievance Officer in India, and what are the mandatory turnaround timelines for resolving privacy complaints?
 5. Data Breach Notification:
    - What is the mandated CERT-In (6 hours) and Data Protection Board notification procedure in the event of an identified security incident or data breach?
+

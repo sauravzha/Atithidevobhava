@@ -52,3 +52,25 @@ This log records locked decisions, sensible defaults adopted where the specifica
 - Decision: Official Indian hierarchy: Country -> State/UT -> District -> City/Town/Village -> Locality. Data derived strictly from official Local Government Directory (LGD) and Census definitions. Pilot region: Darbhanga and Madhubani (Bihar).
 - Alternatives Considered: Free-form user text strings, Google Places API.
 - Reason: Strict specification requirement. Never invent districts or administrative boundaries. Prevents geographic ambiguity in rural and tier-2/3 regions.
+
+### 9. Installed NPM Packages and Rationale
+In accordance with standing project rules, every installed package requires a documented justification:
+- `next`: Official React framework providing App Router, server actions, streaming, and edge route execution.
+- `react`, `react-dom`: Declarative UI component library (v19).
+- `lucide-react`: Stroke width 1.5 line icons used strictly for semantic clarity.
+- `react-hook-form`: Performant form state engine avoiding unnecessary re-renders in multi-step onboarding.
+- `@hookform/resolvers`: Zod schema integration for React Hook Form.
+- `zod`: TypeScript-first runtime schema validation for forms, route handlers, and server actions.
+- `next-intl`: App Router internationalization for bilingual Hindi/English routing and message formatting.
+- `@radix-ui/react-dialog`: Headless modal primitive providing accessibility focus trapping.
+- `@radix-ui/react-select`: Headless select primitive providing accessible keyboard navigation.
+- `@radix-ui/react-toast`: Headless toast notification primitive for non-intrusive status alerts.
+- `@radix-ui/react-visually-hidden`: Screen reader accessible utility.
+- `@fontsource/newsreader`: Self-hosted Newsreader serif font for editorial headings.
+- `@fontsource/tiro-devanagari-hindi`: Self-hosted Tiro Devanagari Hindi serif font for Hindi headings.
+- `@fontsource/ibm-plex-sans`: Self-hosted IBM Plex Sans for Latin body text and user interface.
+- `@fontsource/ibm-plex-sans-devanagari`: Self-hosted IBM Plex Sans Devanagari for Hindi body text and user interface.
+- `clsx`: Utility for conditional class name merging.
+- `vitest`, `@vitejs/plugin-react`, `jsdom`: Unit and component test runner with DOM simulation.
+- `@testing-library/react`, `@testing-library/jest-dom`: Accessible component testing utilities verifying user-facing roles.
+

@@ -128,3 +128,4 @@ This document establishes the strategic, technical, legal, operational, and safe
 - Mitigation:
   1. Initial pilot concentrated exclusively on Darbhanga and Madhubani (Bihar), with target of 30 to 50 real local profiles and cultural artisans (Mithila painting, Maithili cuisine, village heritage).
   2. Honest empty states that state pilot availability rather than displaying fake inventory or artificial demand.
+

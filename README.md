@@ -89,3 +89,4 @@ All technical, legal, and operational manuals are maintained in the `/docs` dire
    ```
    Open `http://localhost:3000` for English and `http://localhost:3000/hi` for Hindi.
    Visit `http://localhost:3000/dev/type` to test typography and `http://localhost:3000/dev/components` to view the component catalog and contrast table.
+

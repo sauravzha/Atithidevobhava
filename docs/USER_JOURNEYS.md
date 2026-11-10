@@ -108,3 +108,4 @@ This document maps the end-to-end user journeys for each primary actor across th
    - Verifies face match and name alignment. Approves or rejects with written justification.
    - Automated `pg_cron` job permanently deletes raw ID image files within 7 days.
 5. Audit Verification: All administrative decisions, status mutations, and document inspections automatically append immutable entries to `admin_audit_logs`.
+

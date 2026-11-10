@@ -78,3 +78,4 @@ PRODUCTION HOSTING WARNING (put in the README)
 - Check the hosting plan terms before launch. Free tiers can have usage limits, can pause
   inactive projects, may exclude backups, and some plans do not allow commercial use.
   Choose plans that include backups and the data region I need (Mumbai).
+

@@ -443,3 +443,4 @@ Project: Real, Production-Oriented Three-Sided Cultural Hospitality Platform
 4. Administrative Protection:
    - Mandatory AAL2 MFA for all admin accounts.
    - Administrative actions require explicit written justification and record immutable rows in `admin_audit_logs`.
+

@@ -97,3 +97,4 @@ In strict accordance with platform privacy invariants, zero advertising networks
    - In past messages, user display names are scrubbed to "Deleted user".
    - Historical reviews are anonymized (reviewer name replaced with "Former community member").
    - Immutable financial transaction records (`ledger_entries`) and statutory safety incident reports are retained for the legally mandated period (7 years) with personal identifiers severed.
+

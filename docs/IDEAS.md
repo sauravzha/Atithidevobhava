@@ -8,3 +8,4 @@ This document captures enhancement ideas, future phase concepts, and non-essenti
 3. Community audio pronunciation guides for regional language phrases (e.g., Maithili greetings in Darbhanga/Madhubani, Bhojpuri, Malayalam).
 4. Automated PDF generation for guest compliance reporting export for hosts to print physically for local police station records where digital Form C / Form III is submitted manually.
 5. Multi-currency price display conversion estimator (read-only advisory rate) once Phase 2 PAYMENTS_ENABLED is switched on.
+

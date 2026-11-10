@@ -82,3 +82,4 @@ When a traveller or host presses the "I need help" button in the application:
    - Moderators never edit review ratings or opinions simply because a host disagrees with a negative score.
    - If PII or defamatory slurs appear, the moderator redacts the specific offensive text, appending a system note: `[Redacted by moderator for privacy policy violation - Case #XXXX]`.
    - Complete original text is preserved in the secure audit table for legal compliance.
+

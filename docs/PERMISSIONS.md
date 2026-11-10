@@ -72,3 +72,4 @@ Administrative permissions are assigned via `admin_permissions` and require veri
 3. Contact Reveal Invariant: Contact information remains cryptographically encrypted and unqueryable until `can_reveal()` evaluates to `true` via mutual, dual-sided consent.
 4. Document Protection Invariant: Identity verification images are stored in a private bucket with zero public read permissions. Signed URLs expire in 15 minutes, and watermarked views are logged in `admin_audit_logs`.
 5. Audit Log Inviolability: The `admin_audit_logs` table has a database trigger that rejects all `UPDATE` and `DELETE` queries, ensuring an immutable record of all administrative actions.
+

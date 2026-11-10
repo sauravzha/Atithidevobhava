@@ -1,0 +1,229 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Design system CSS custom properties.
+ * Light and dark palettes, focus ring, and typography defaults.
+ * Spec reference: Section 18 of docs/SPEC.md
+ */
+
+@layer base {
+  :root {
+    /* Light palette */
+    --color-ivory: #F7F5F0;
+    --color-white: #FFFFFF;
+    --color-charcoal: #252723;
+    --color-forest: #596B57;
+    --color-forest-hover: #455345;
+    --color-terracotta: #A45E46;
+    --color-terracotta-text: #8A4A35;
+    --color-warm-grey: #E9E5DE;
+    --color-secondary: #66655F;
+    --color-error: #A4332B;
+
+    /* Semantic mappings */
+    --color-page: var(--color-ivory);
+    --color-surface: var(--color-white);
+    --color-text: var(--color-charcoal);
+    --color-rule: var(--color-warm-grey);
+    --color-primary: var(--color-forest);
+    --color-primary-hover: var(--color-forest-hover);
+
+    /* Focus ring */
+    --ring-color: var(--color-forest);
+    --ring-offset-color: var(--color-page);
+  }
+
+  .dark {
+    --color-ivory: #141613;
+    --color-white: #1C1E1A;
+    --color-charcoal: #ECE9E2;
+    --color-forest: #8FA88C;
+    --color-forest-hover: #A9BFA6;
+    --color-terracotta: #D08A6E;
+    --color-terracotta-text: #D08A6E;
+    --color-warm-grey: #2E302B;
+    --color-secondary: #A8A69D;
+    --color-error: #E0817A;
+
+    --color-page: #141613;
+    --color-surface: #1C1E1A;
+    --color-text: #ECE9E2;
+    --color-rule: #2E302B;
+    --color-primary: #8FA88C;
+    --color-primary-hover: #A9BFA6;
+
+    --ring-color: #8FA88C;
+    --ring-offset-color: #141613;
+  }
+
+  /* Base resets and typography */
+
+  html {
+    font-family: "IBM Plex Sans", "IBM Plex Sans Devanagari", system-ui, sans-serif;
+    font-size: 100%;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--color-page);
+    color: var(--color-text);
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  /* Hindi text gets 6% larger body size to match Latin x-heights */
+  [lang="hi"] {
+    font-size: 106.25%;
+    line-height: 1.65;
+  }
+
+  /* Heading font stack */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "Newsreader", "Tiro Devanagari Hindi", Georgia, serif;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
+  /* English headings */
+  :not([lang="hi"]) > h1,
+  :not([lang="hi"]) > h2,
+  :not([lang="hi"]) > h3 {
+    line-height: 1.25;
+  }
+
+  /* Hindi headings */
+  [lang="hi"] h1,
+  [lang="hi"] h2,
+  [lang="hi"] h3 {
+    line-height: 1.4;
+  }
+
+  /* Max prose width prevents excessively long lines */
+  p, li, dd {
+    max-width: 66ch;
+  }
+
+  /* Accessible focus ring: 2px forest green with offset */
+  *:focus-visible {
+    outline: 2px solid var(--ring-color);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+
+  /* Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Skip link for keyboard navigation */
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    z-index: 9999;
+    padding: 12px 24px;
+    background: var(--color-primary);
+    color: var(--color-page);
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 3px;
+  }
+
+  .skip-link:focus {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    width: auto;
+    height: auto;
+  }
+
+  /* Horizontal rule as 1px editorial divider */
+  hr {
+    border: none;
+    border-top: 1px solid var(--color-rule);
+    margin: 0;
+  }
+}
+
+@layer components {
+  /* Editorial grid container */
+  .site-container {
+    width: 100%;
+    max-width: 1120px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  @media (min-width: 768px) {
+    .site-container {
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+  }
+
+  /* 12-column grid */
+  .grid-12 {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 24px;
+  }
+
+  @media (max-width: 767px) {
+    .grid-12 {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+  }
+
+  /* Asymmetric splits from the spec */
+  .col-7 { grid-column: span 7; }
+  .col-5 { grid-column: span 5; }
+  .col-8 { grid-column: span 8; }
+  .col-4 { grid-column: span 4; }
+  .col-6 { grid-column: span 6; }
+  .col-12 { grid-column: span 12; }
+
+  @media (max-width: 767px) {
+    .col-7, .col-5, .col-8, .col-4, .col-6 {
+      grid-column: span 1;
+    }
+  }
+
+  /* Ruled list rows replace cards throughout the editorial design */
+  .ruled-row {
+    padding-top: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--color-rule);
+  }
+
+  .ruled-row:first-child {
+    border-top: 1px solid var(--color-rule);
+  }
+
+  /* Minimum 44px tap target for all interactive elements */
+  .tap-target {
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
