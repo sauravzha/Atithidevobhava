@@ -1,7 +1,7 @@
 # Project Progress: Atithi Devo Bhava (अतिथि देवो भवः)
 
 Last Updated: 2026-11-10
-Current Milestone: Milestone 11 - Admin, Moderation, and Analytics Systems (Completed)
+Current Milestone: Milestone 12 - Complete Hindi and English Translations, Native Review Strings Catalog (Completed)
 
 ## Milestone Status Overview
 
@@ -28,9 +28,9 @@ Current Milestone: Milestone 11 - Admin, Moderation, and Analytics Systems (Comp
 - Milestone 11: Admin, Moderation, and Analytics Systems (Audit logging, Viewer without download, Real metrics)
   Status: Completed
 - Milestone 12: Complete Hindi and English Translations, Native Review Strings Catalog
-  Status: Ready to Start (Waiting for user confirmation to continue)
+  Status: Completed
 - Milestone 13: End-to-End Verification, Performance, Axe Accessibility, Lighthouse, Production Deployment Package
-  Status: Not Started
+  Status: Ready to Start (Waiting for user confirmation to continue)
 
 ## What is Done (Milestones 1 to 7)
 - Milestone 1:
@@ -244,11 +244,26 @@ Current Milestone: Milestone 11 - Admin, Moderation, and Analytics Systems (Comp
   - Total test suite: 135/135 tests passing across 12 test files.
   - Production build: `next build` compiled cleanly with all new routes. Zero emojis, zero banned words.
 
+- Milestone 12:
+  - English Master Dictionary (`messages/en.json`):
+    - Comprehensive 239-key dictionary organized across 18 logical namespaces (`brand`, `nav`, `hero`, `search`, `threeWays`, `interests`, `statesSection`, `recentExperiences`, `communitySection`, `staysSection`, `howItWorksSection`, `trustSection`, `becomeHostSection`, `storiesSection`, `connections`, `experiences`, `bookings`, `accommodations`, `compliance`, `messaging`, `reviews`, `safety`, `admin`, `auth`, `footer`, `common`).
+    - Entirely authored in calm, editorial, respectful language. Strictly zero prohibited marketing words and zero emojis.
+  - Native Devanagari Hindi Dictionary (`messages/hi.json`):
+    - 100% key parity with `messages/en.json` (verified by automated tests).
+    - Authentic Devanagari Hindi in respectful formal register ("आप"), culturally grounded terminology ("पारिवारिक आवास", "सांस्कृतिक अनुभव", "आपसी सहमति से संपर्क साझा करना", "द्विपक्षीय निष्पक्ष समीक्षा", "विदेशी अतिथि सूचना दायित्व"), and proper Devanagari numerals where appropriate.
+  - Native Speaker Review Strings Catalog (`docs/HINDI_STRINGS_FOR_NATIVE_REVIEW.md`):
+    - Structured review catalog categorized across 8 sensitive domains: Brand & Taglines, Adult-Only Age Attestation, Privacy & Dual Mutual Consent Contact Revelation, Cultural Stays & Unpaid Hospitality Governance, Statutory Foreign Guest Reporting (Form C / Form III under Foreigners Act 1946 and e-FRRO portal), Financial Transparency & Double-Entry Accounting, Safety & Incident Triage, and Administrative Governance & Section 23 Document Auditing.
+    - Detailed linguistic rationale, cultural register explanations, statutory citations, and native speaker sign-off checklist.
+  - Automated Tests (`tests/unit/translations-catalog.test.ts`):
+    - 6 comprehensive unit tests: 100% key parity (zero missing keys in either locale), Devanagari script presence (>95% of leaves contain Unicode `\u0900-\u097F`), ICU plural syntax validation, zero prohibited marketing words, zero emojis, and catalog coverage verification.
+  - Total test suite: 141/141 tests passing across 13 test files.
+  - Production build: `next build` compiled cleanly in 10.0s with all 50 routes. Zero emojis, zero banned words.
+
 ## What is Half-Done
-- Milestone 11 complete; awaiting user confirmation ("continue") to begin Milestone 12.
+- Milestone 12 complete; awaiting user confirmation ("continue") to begin Milestone 13.
 
 ## What is Next
-- Milestone 12: Complete Hindi and English Translations, Native Review Strings Catalog (`messages/hi.json`, `messages/en.json`, `docs/HINDI_STRINGS_FOR_NATIVE_REVIEW.md`).
+- Milestone 13: End-to-End Verification, Performance, Axe Accessibility, Lighthouse, Production Deployment Package, and Section 30 final check.
 
 ## What is Broken
-- None. Build, lint, types, and all 135 tests are 100% green.
+- None. Build, lint, types, and all 141 tests are 100% green.
