@@ -1,7 +1,7 @@
 # Project Progress: Atithi Devo Bhava (अतिथि देवो भवः)
 
 Last Updated: 2026-11-10
-Current Milestone: Milestone 5 - Traveller and Local Profiles, Visibility Controls, Verification Flow
+Current Milestone: Milestone 6 - Meet a Local, Connection Management, Database Transition Functions, Contact Exchange Engine
 
 ## Milestone Status Overview
 
@@ -16,9 +16,9 @@ Current Milestone: Milestone 5 - Traveller and Local Profiles, Visibility Contro
 - Milestone 5: Traveller and Local Profiles, Visibility Controls, Verification Flow
   Status: Completed
 - Milestone 6: Meet a Local, Connection Management, Database Transition Functions, Contact Exchange Engine
-  Status: Ready to Start (Waiting for user confirmation to continue)
+  Status: Completed
 - Milestone 7: Experience Marketplace, Provider Dashboard, Admin Approval (Enquiry Mode)
-  Status: Not Started
+  Status: Ready to Start (Waiting for user confirmation to continue)
 - Milestone 8: Messaging (Realtime), Notifications, Reviews (Blind), Safety Tools (Reports, Blocks, Check-ins, Trip Share, Help Page)
   Status: Not Started
 - Milestone 9: Booking and Payment Architecture (Phase 2 behind flags), book_experience() Concurrency Tests
@@ -97,12 +97,31 @@ Current Milestone: Milestone 5 - Traveller and Local Profiles, Visibility Contro
     - Suggested public meeting venues.
   - Vitest test suite (`tests/unit/profile-validation.test.ts`, `tests/unit/profile-sanitizer.test.ts`) bringing test count to 52 passing tests across 6 suites.
   - Zero emojis and zero banned words verified across all source files.
+- Milestone 6:
+  - PostgreSQL state machine migration (`supabase/migrations/20261110000005_connection_transitions.sql`):
+    - Strict transition function `transition_connection()` enforcing allowed transitions: PENDING to ACCEPTED / DECLINED / WITHDRAWN / EXPIRED; ACCEPTED to SCHEDULED / CANCELLED; SCHEDULED to COMPLETED / CANCELLED.
+    - Automatic conversation creation and contact disclosure record initialization upon acceptance.
+    - Mutual consent contact reveal tracking `record_contact_exchange_consent()` with append-only audit logging.
+    - Private decline reason handling: internal reason saved for moderation, but applicant only receives the polite fixed string "unable to meet this request".
+  - Zod validation schemas (`lib/validation/connection.ts`):
+    - Proposed date must be today or future.
+    - Public meeting place name required.
+    - Message strictly bounded between 50 and 600 characters with character counter.
+    - Idempotency key required.
+  - Server actions (`app/actions/connections.ts`):
+    - `createConnectionRequestAction`, `acceptConnectionAction`, `declineConnectionAction`, `withdrawConnectionAction`, `scheduleConnectionAction`, `completeConnectionAction`, `cancelConnectionAction`, and `updateContactExchangeConsentAction`.
+  - UI screens:
+    - Connection proposal screen (`app/[locale]/(public)/connections/new/page.tsx`) with purpose dropdown, proposed dates, public venue rule notice, and 50-600 characters counter.
+    - Connection detail and management view (`app/[locale]/(public)/connections/[id]/page.tsx`) with state machine badges, context-sensitive action buttons, dual mutual consent contact reveal banner, and emergency helpline reminders.
+    - Connection dashboard (`app/[locale]/(public)/connections/page.tsx`) with filter tabs (All, Active, Pending, Past) and status cards.
+  - Vitest test suite (`tests/unit/connection-transitions.test.ts`) covering request validation, state transitions, decline/withdraw behaviors, and dual mutual consent contact reveal, bringing total tests to 58 passing across 7 suites.
+  - Zero emojis and zero banned words verified across all files.
 
 ## What is Half-Done
-- Milestone 5 complete; awaiting user confirmation ("continue") to begin Milestone 6.
+- Milestone 6 complete; awaiting user confirmation ("continue") to begin Milestone 7.
 
 ## What is Next
-- Milestone 6: Meet a Local connection requests, state machine transitions in PostgreSQL, connection management dashboard, and mutual consent contact exchange engine (`can_reveal()`).
+- Milestone 7: Experience Marketplace, Provider Dashboard, Admin Approval (Enquiry-only mode per Phase 1: zero prices displayed, zero payments).
 
 ## What is Broken
-- None. Build, lint, types, and all 52 tests are 100% green.
+- None. Build, lint, types, and all 58 tests are 100% green.
