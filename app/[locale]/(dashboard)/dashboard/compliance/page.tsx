@@ -61,3 +61,4 @@ export default async function HostCompliancePage({ params }: Props) {
     </div>
   );
 }
+

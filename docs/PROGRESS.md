@@ -1,7 +1,7 @@
 # Project Progress: Atithi Devo Bhava (अतिथि देवो भवः)
 
 Last Updated: 2026-11-10
-Current Milestone: Milestone 10 - Accommodation and Compliance Module (Phase 3 behind flags)
+Current Milestone: Milestone 11 - Admin, Moderation, and Analytics Systems (Completed)
 
 ## Milestone Status Overview
 
@@ -26,9 +26,9 @@ Current Milestone: Milestone 10 - Accommodation and Compliance Module (Phase 3 b
 - Milestone 10: Accommodation and Compliance Module (Phase 3 behind flags, Form C / Form III, btree_gist overlap exclusion)
   Status: Completed
 - Milestone 11: Admin, Moderation, and Analytics Systems (Audit logging, Viewer without download, Real metrics)
-  Status: Ready to Start (Waiting for user confirmation to continue)
+  Status: Completed
 - Milestone 12: Complete Hindi and English Translations, Native Review Strings Catalog
-  Status: Not Started
+  Status: Ready to Start (Waiting for user confirmation to continue)
 - Milestone 13: End-to-End Verification, Performance, Axe Accessibility, Lighthouse, Production Deployment Package
   Status: Not Started
 
@@ -216,11 +216,39 @@ Current Milestone: Milestone 10 - Accommodation and Compliance Module (Phase 3 b
   - Total test suite: 123/123 tests passing across 11 test files.
   - Production build: `next build` compiled cleanly with all new routes. Zero emojis, zero banned words.
 
+- Milestone 11:
+  - PostgreSQL Admin, Moderation, and Analytics Migration (`supabase/migrations/20261110000010_admin_moderation_analytics.sql`):
+    - Administrative user management: `admin_suspend_user()` (strictly restricting permanent bans to `super_admin`) and `admin_reactivate_user()`.
+    - Editorial accommodation moderation: `admin_moderate_accommodation()` supporting `approve`, `reject`, `request_changes`, and `suspend` decisions.
+    - Safety incident and conduct triage: `admin_triage_report()` with cascading immediate account suspension for unsafe actors.
+    - Section 23 identity document access governance: `admin_log_id_document_view()` strictly enforcing a written justification (>= 5 chars) before granting document decryption and recording view events to `admin_audit_logs`.
+    - Real-world database telemetry: `get_admin_metrics()` computing real aggregations across active users, listings, pending moderation queues, and double-entry accounting gross and commission revenue.
+  - Validation Schemas (`lib/validation/admin.ts`):
+    - `adminUserActionSchema`: Validates suspend/reactivate inputs and mandatory audit reason.
+    - `adminAccommodationReviewSchema`: Validates 4 moderation decisions and mandatory justification.
+    - `adminReportTriageSchema`: Validates 4 triage outcomes and mandatory resolution notes.
+    - `adminIdViewSchema`: Validates mandatory justification prior to identity record preview.
+    - `adminVerificationReviewSchema`: Validates approve/reject outcomes for identity submissions.
+  - Server Actions (`app/actions/admin.ts`):
+    - `adminSuspendUserAction`, `adminReactivateUserAction`, `adminModerateAccommodationAction`, `adminTriageReportAction`, `adminViewIdDocumentAction`, `adminReviewVerificationAction`, `adminGetMetricsAction`, `adminGetUsersListAction`, `adminGetReportsListAction`, `adminGetAuditLogsAction`. All actions enforce role checks against `admin_permissions` (MFA AAL2 compatible).
+  - Admin Console User Interface (`app/[locale]/(admin)/admin/`):
+    - Admin Layout (`layout.tsx`): Top bar with admin role, MFA AAL2 status indicator, and navigation tabs.
+    - Operational Overview (`page.tsx`): Real ground-truth telemetry (active users by role, verified cultural listings, urgent incident queue, gross booking volume, and 15% platform commission revenue).
+    - User Management (`users/page.tsx` & `users-client.tsx`): Dense account table, role inspector, and suspension/reactivation modals with mandatory audit reasons.
+    - Accommodation Moderation Queue (`accommodations/page.tsx` & `accommodations-client.tsx`): Filterable listing queue, inspection drawer (household composition, quarters configuration, public landmark privacy, house rules), and moderation decision workflows.
+    - Safety Incident Triage Queue (`reports/page.tsx` & `reports-client.tsx`): Urgent incident banners, 20-message tamper-evident transcript snapshot inspector, and resolution actions (investigate, resolve, dismiss, suspend account).
+    - Identity Verification Queue (`verifications/page.tsx` & `verifications-client.tsx`): Two-step audited viewer requiring written justification before decryption, right-click and drag disabled, confidential watermark overlay, and strictly NO download button.
+    - Immutable Audit Log (`audit-logs/page.tsx` & `audit-logs-client.tsx`): Searchable, filterable append-only audit trail displaying all historical administrative actions with recorded justifications.
+  - Automated Tests (`tests/unit/admin-moderation-analytics.test.ts`):
+    - 12 comprehensive unit tests: role boundary enforcement, super_admin exclusive permanent bans, moderator temporary suspensions, non-admin rejection, mandatory 5-character reason validation, safety report triage cascading user suspension, Section 23 identity document view audit logging, and ground-truth telemetry metrics computation.
+  - Total test suite: 135/135 tests passing across 12 test files.
+  - Production build: `next build` compiled cleanly with all new routes. Zero emojis, zero banned words.
+
 ## What is Half-Done
-- Milestone 10 complete; awaiting user confirmation ("continue") to begin Milestone 11.
+- Milestone 11 complete; awaiting user confirmation ("continue") to begin Milestone 12.
 
 ## What is Next
-- Milestone 11: Admin, Moderation, and Analytics Systems (dense table-based admin interface, user management with suspend/reactivate, experience & stay moderation workflows, safety incident triage, ID document viewer without download button with full audit logging, and real metrics overview).
+- Milestone 12: Complete Hindi and English Translations, Native Review Strings Catalog (`messages/hi.json`, `messages/en.json`, `docs/HINDI_STRINGS_FOR_NATIVE_REVIEW.md`).
 
 ## What is Broken
-- None. Build, lint, types, and all 123 tests are 100% green.
+- None. Build, lint, types, and all 135 tests are 100% green.
