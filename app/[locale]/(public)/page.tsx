@@ -6,6 +6,13 @@ import { FadeIn } from "@/components/ui/fade-in";
 import { InitialLoader } from "@/components/ui/initial-loader";
 import { StoryModal } from "@/components/ui/story-modal";
 import {
+  MadhubaniBorder,
+  JharokhaMotif,
+  LotusMotif,
+  DiyaMotif,
+  AripanDivider,
+} from "@/components/ui/cultural-patterns";
+import {
   Users,
   Compass,
   Home,
@@ -14,7 +21,6 @@ import {
   UtensilsCrossed,
   TreePine,
   Landmark,
-  CheckCircle2,
   ArrowRight,
   Lock,
   EyeOff,
@@ -22,6 +28,12 @@ import {
   Calendar,
   Search,
   Languages,
+  MapPin,
+  Star,
+  Music,
+  Heart,
+  Footprints,
+  BookOpen,
 } from "lucide-react";
 
 export default async function HomePage({
@@ -32,47 +44,129 @@ export default async function HomePage({
   const { locale } = await params;
   const isHindi = locale === "hi";
 
-  // 4 Featured Cultural Offerings from the Pilot
+  // 4 Featured Cultural Experiences from North Bihar Pilot
   const featuredOfferings = [
     {
       id: "exp-mithila-art",
-      titleEn: "Mithila Art Workshop",
-      titleHi: "मिथिला चित्रकला कार्यशाला",
-      subtitleEn: "Learn from local artists in their homes.",
-      subtitleHi: "स्थानीय कलाकारों के साथ उनके घरों में चित्रकला सीखें।",
+      titleEn: "Mithila Painting Workshop",
+      titleHi: "पारंपरिक मिथिला चित्रकला कार्यशाला",
+      locationEn: "Jitwarpur, Madhubani",
+      locationHi: "जितवारपुर, मधुबनी",
+      durationEn: "2.5 Hours",
+      durationHi: "२.५ घंटे",
+      categoryEn: "Folk Painting",
+      categoryHi: "लोक चित्रकला",
+      hostEn: "Shanti Devi (State Awardee)",
+      hostHi: "शांति देवी (राज्य पुरस्कार प्राप्त)",
+      rating: "5.0",
+      reviewsCount: 24,
       image: "/images/exp-mithila-art.jpg",
       icon: Palette,
       link: "/experiences/exp-mithila-art",
     },
     {
       id: "exp-maithili-cuisine",
-      titleEn: "Local Cuisine",
-      titleHi: "स्थानीय मैथिली पाक कला",
-      subtitleEn: "Cook and eat with local families.",
-      subtitleHi: "स्थानीय परिवारों के साथ पारंपरिक भोजन बनाएं और स्वाद लें।",
+      titleEn: "Maithili Culinary Heritage",
+      titleHi: "पारंपरिक मैथिली पाक कला व भोजन",
+      locationEn: "Ranti Village, Madhubani",
+      locationHi: "रांटी गांव, मधुबनी",
+      durationEn: "3.0 Hours",
+      durationHi: "३.० घंटे",
+      categoryEn: "Culinary Heritage",
+      categoryHi: "पारंपरिक खान-पान",
+      hostEn: "Sunita Kumari",
+      hostHi: "सुनीता कुमारी",
+      rating: "4.9",
+      reviewsCount: 18,
       image: "/images/exp-cuisine.jpg",
       icon: UtensilsCrossed,
       link: "/experiences/exp-maithili-cuisine",
     },
     {
       id: "exp-darbhanga-heritage",
-      titleEn: "Pond Heritage Walk",
-      titleHi: "ऐतिहासिक तालाब धरोहर पदयात्रा",
-      subtitleEn: "Explore historic tanks and stories.",
-      subtitleHi: "दरभंगा के प्राचीन पोखरों और धरोहर स्थलों का अन्वेषण।",
+      titleEn: "Historic Temple Pond Walk",
+      titleHi: "ऐतिहासिक तालाब व राज धरोहर पदयात्रा",
+      locationEn: "Raj Complex, Darbhanga",
+      locationHi: "राज परिसर, दरभंगा",
+      durationEn: "2.0 Hours",
+      durationHi: "२.० घंटे",
+      categoryEn: "Architectural Heritage",
+      categoryHi: "धरोहर स्थापत्य",
+      hostEn: "Rameshwar Jha",
+      hostHi: "रामेश्वर झा",
+      rating: "4.9",
+      reviewsCount: 22,
       image: "/images/exp-pond.jpg",
       icon: Landmark,
       link: "/experiences/exp-darbhanga-heritage",
     },
     {
-      id: "exp-village-homestay",
-      titleEn: "Village Homestay",
-      titleHi: "ग्रामीण पारिवारिक आवास",
-      subtitleEn: "Stay, learn and live the local way.",
-      subtitleHi: "रहें, सीखें और स्थानीय जीवन का प्रत्यक्ष अनुभव करें।",
-      image: "/images/exp-homestay.jpg",
-      icon: Home,
-      link: "/explore/stays",
+      id: "exp-makhana-culture",
+      titleEn: "Sacred Wetland & Makhana Harvest",
+      titleHi: "मखाना जल कृषि एवं तालाब संस्कृति",
+      locationEn: "Keoti, Darbhanga",
+      locationHi: "केवटी, दरभंगा",
+      durationEn: "3.5 Hours",
+      durationHi: "३.५ घंटे",
+      categoryEn: "Rural Agriculture",
+      categoryHi: "ग्रामीण जल कृषि",
+      hostEn: "Local Farmer Collective",
+      hostHi: "स्थानीय कृषक समुदाय",
+      rating: "4.8",
+      reviewsCount: 15,
+      image: "/images/exp-makhana.jpg",
+      icon: TreePine,
+      link: "/experiences/exp-makhana-culture",
+    },
+  ];
+
+  // 12 Cultural Heritage Categories
+  const culturalCategories = [
+    { titleEn: "Mithila Painting", titleHi: "मिथिला चित्रकला", icon: Palette, slug: "mithila-painting" },
+    { titleEn: "Culinary Traditions", titleHi: "पारंपरिक खान-पान", icon: UtensilsCrossed, slug: "culinary-traditions" },
+    { titleEn: "Folk Music & Poetry", titleHi: "लोक संगीत व पदावली", icon: Music, slug: "folk-music-poetry" },
+    { titleEn: "Palaces & Temples", titleHi: "राज प्रासाद व मंदिर", icon: Landmark, slug: "palaces-temples" },
+    { titleEn: "Handloom & Weaving", titleHi: "हथकरघा एवं बुनाई", icon: Sparkles, slug: "handloom-weaving" },
+    { titleEn: "Sikki Grass Craft", titleHi: "सिक्की घास शिल्प", icon: TreePine, slug: "sikki-grass-craft" },
+    { titleEn: "Sacred Aripan Art", titleHi: "पवित्र अरिपन रेखांकन", icon: LotusMotif, slug: "sacred-aripan" },
+    { titleEn: "Rural Farming Life", titleHi: "ग्रामीण जीवन व कृषि", icon: Home, slug: "rural-farming" },
+    { titleEn: "Ayurveda & Flora", titleHi: "पारंपरिक जड़ी-बूटी", icon: Heart, slug: "ayurveda-flora" },
+    { titleEn: "Maithili Oral Lore", titleHi: "मैथिली भाषा व कथाएं", icon: BookOpen, slug: "maithili-oral-lore" },
+    { titleEn: "Ponds & Ghats", titleHi: "पवित्र पोखर व घाट", icon: Footprints, slug: "ponds-ghats" },
+    { titleEn: "Fairs & Melas", titleHi: "क्षेत्रीय मेले व उत्सव", icon: Compass, slug: "fairs-melas" },
+  ];
+
+  // Verified Local Residents Spotlight
+  const localHosts = [
+    {
+      id: "shanti-devi",
+      nameEn: "Shanti Devi",
+      nameHi: "शांति देवी",
+      roleEn: "Master Folk Painter • State Awardee",
+      roleHi: "वरिष्ठ मिथिला चित्रकार • राज्य पुरस्कार प्राप्त",
+      locationEn: "Jitwarpur, Madhubani",
+      locationHi: "जितवारपुर, मधुबनी",
+      languagesEn: "Maithili, Hindi",
+      languagesHi: "मैथिली, हिन्दी",
+      meetingEn: "Jitwarpur Village Artists Centre",
+      meetingHi: "जितवारपुर ग्राम कलाकार केंद्र",
+      image: "/images/host-shanti-devi.jpg",
+      experienceYears: "28+",
+    },
+    {
+      id: "rameshwar-jha",
+      nameEn: "Rameshwar Jha",
+      nameHi: "रामेश्वर झा",
+      roleEn: "Cultural Historian & Raj Heritage Guide",
+      roleHi: "संस्कृति इतिहासकार एवं राज धरोहर मार्गदर्शक",
+      locationEn: "Darbhanga City",
+      locationHi: "दरभंगा नगर",
+      languagesEn: "Maithili, Hindi, English",
+      languagesHi: "मैथिली, हिन्दी, अंग्रेज़ी",
+      meetingEn: "Darbhanga Tower Public Square",
+      meetingHi: "दरभंगा टावर सार्वजनिक चौक",
+      image: "/images/host-rameshwar-jha.jpg",
+      experienceYears: "16+",
     },
   ];
 
@@ -83,79 +177,136 @@ export default async function HomePage({
 
       <div className="site-container py-6 sm:py-10 space-y-16 sm:space-y-24">
         {/* ==================================================================== */}
-        {/* SECTION 1: HERO SECTION                                             */}
+        {/* SECTION 1: HERO SECTION WITH INDIAN CULTURAL HARMONY                */}
         {/* ==================================================================== */}
         <section className="relative pt-2 sm:pt-6 pb-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             {/* Left Content (7 Cols) */}
-            <FadeIn direction="up" delayMs={100} className="lg:col-span-7 space-y-6">
+            <FadeIn direction="up" delayMs={100} once={false} className="lg:col-span-7 space-y-6">
               {/* Pilot Eyebrow Badge */}
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-surface border border-rule/80 rounded-full text-xs font-medium text-secondary shadow-2xs">
-                <CheckCircle2 className="w-4 h-4 text-forest shrink-0" strokeWidth={2} />
+                <LotusMotif className="w-4 h-4 text-terracotta shrink-0" />
                 <span>
                   {isHindi
-                    ? "सत्यापित सांस्कृतिक आतिथ्य मंच · उत्तरी बिहार पायलट"
-                    : "Verified Cultural Hospitality Platform • North Bihar Pilot"}
+                    ? "सत्यापित सांस्कृतिक आतिथ्य मंच · उत्तरी बिहार पायलट (मिथिला)"
+                    : "Verified Cultural Hospitality Platform • North Bihar Pilot (Mithila)"}
                 </span>
               </div>
 
-              {/* Bilingual Headline */}
-              <div className="space-y-2">
+              {/* Bilingual Headline & Sanskrit Invocation */}
+              <div className="space-y-3">
+                <div className="inline-flex items-center gap-2 text-xs font-serif tracking-widest text-terracotta uppercase">
+                  <DiyaMotif className="w-3.5 h-3.5 text-terracotta" />
+                  <span>{isHindi ? "अतिथि सत्कार परंपरा" : "Sacred Indian Hospitality Tradition"}</span>
+                </div>
                 <h1
                   lang="hi"
                   className="font-heading text-3xl sm:text-5xl lg:text-[3.25rem] font-medium text-text leading-[1.25] tracking-tight"
                 >
                   भारत को लोगों के साथ महसूस कीजिए ।
                 </h1>
-                <p className="font-heading text-xl sm:text-2xl lg:text-3xl text-secondary font-normal">
-                  Experience India through its people.
+                <p className="font-heading text-lg sm:text-2xl text-secondary font-normal">
+                  Experience India through its people, families and living cultures.
+                </p>
+                <p className="text-xs sm:text-sm font-serif italic text-forest">
+                  {isHindi
+                    ? "अतिथि देवो भवः — अतिथि साक्षात ईश्वर का स्वरूप हैं।"
+                    : "Atithi Devo Bhava — The Guest is Equivalent to the Divine."}
                 </p>
               </div>
 
               {/* Lead Paragraph */}
               <p className="font-body text-sm sm:text-base text-secondary leading-relaxed max-w-xl">
                 {isHindi
-                  ? "स्थानीय परिवारों के साथ रहें, पारंपरिक कला सत्रों में भाग लें, जीवित धरोहर को समझें और भारत की सच्ची आतिथ्य परंपरा का अनुभव करें।"
-                  : "Stay with local families, participate in traditional craft sessions, explore living heritage, and discover the real India — warm, respectful, and full of stories."}
+                  ? "स्थानीय परिवारों के साथ बैठें, पारंपरिक मिथिला चित्रकला सीखें, ऐतिहासिक पोखरों का इतिहास जानें और भारत की पवित्र आतिथ्य परंपरा को आदरपूर्वक समझें।"
+                  : "Sit with local families, learn ancient folk painting in village courtyards, walk centuries-old temple ponds, and share in India's respectful hospitality traditions."}
               </p>
 
               {/* Action Buttons */}
               <div className="flex flex-wrap items-center gap-4 pt-2">
                 <Link
                   href="/explore/experiences"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-[#283827] hover:bg-[#1e2b1d] text-white rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-[#283827] hover:bg-[#1e2b1d] text-white rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5"
                 >
                   <Compass className="w-4 h-4" strokeWidth={2} />
                   <span>{isHindi ? "अनुभव खोजें" : "Explore Experiences"}</span>
                 </Link>
 
-                <StoryModal buttonText={isHindi ? "कहानी देखें" : "Watch Story"} />
+                <StoryModal buttonText={isHindi ? "संस्कृति देखें" : "Watch Story"} />
+
+                <Link
+                  href="/explore/people"
+                  className="inline-flex items-center justify-center gap-2 px-5 py-3.5 border border-terracotta/80 text-terracotta hover:bg-terracotta/10 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-300"
+                >
+                  <Users className="w-4 h-4" strokeWidth={1.75} />
+                  <span>{isHindi ? "नागरिकों से मिलें" : "Meet a Local"}</span>
+                </Link>
+              </div>
+
+              {/* Trust & Scale Strip */}
+              <div className="pt-4 border-t border-rule/70 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                <div>
+                  <span className="block font-heading text-base font-semibold text-text">45+</span>
+                  <span className="text-secondary text-[11px]">
+                    {isHindi ? "सत्यापित मेज़बान" : "Verified Hosts"}
+                  </span>
+                </div>
+                <div>
+                  <span className="block font-heading text-base font-semibold text-text">12</span>
+                  <span className="text-secondary text-[11px]">
+                    {isHindi ? "सांस्कृतिक विधाएं" : "Heritage Domains"}
+                  </span>
+                </div>
+                <div>
+                  <span className="block font-heading text-base font-semibold text-forest">100%</span>
+                  <span className="text-secondary text-[11px]">
+                    {isHindi ? "व्यक्तिगत सत्यापन" : "ID Checked"}
+                  </span>
+                </div>
+                <div>
+                  <span className="block font-heading text-base font-semibold text-terracotta">2</span>
+                  <span className="text-secondary text-[11px]">
+                    {isHindi ? "पायलट ज़िले (मिथिला)" : "Pilot Districts"}
+                  </span>
+                </div>
               </div>
             </FadeIn>
 
-            {/* Right Hero Image (5 Cols) */}
-            <FadeIn direction="up" delayMs={250} className="lg:col-span-5">
-              <div className="relative w-full h-[280px] sm:h-[360px] lg:h-[400px] rounded-2xl overflow-hidden shadow-lg border border-rule/70 group bg-surface">
+            {/* Right Hero Image (5 Cols) with Authentic Master Artisan */}
+            <FadeIn direction="up" delayMs={250} once={false} className="lg:col-span-5">
+              <div className="relative w-full h-[320px] sm:h-[400px] lg:h-[450px] rounded-2xl overflow-hidden shadow-lg border-2 border-rule/80 group bg-surface">
                 <Image
                   src="/images/hero-artisan.jpg"
-                  alt="Mithila artisan creating traditional folk painting in her courtyard"
+                  alt="Mithila master artisan hand painting traditional folk art mural in a village courtyard"
                   fill
                   priority
                   className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
                 />
-                {/* Subtle soft lighting overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
+                {/* Traditional lighting overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
+
+                {/* Floating Top Rating Badge */}
+                <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-xs px-3 py-1.5 rounded-full border border-white/20 text-white text-xs flex items-center gap-1.5 shadow-sm">
+                  <Star className="w-3.5 h-3.5 fill-[#E4B07A] text-[#E4B07A]" />
+                  <span className="font-semibold">5.0</span>
+                  <span className="text-white/75 text-[11px]">(24 meetups)</span>
+                </div>
 
                 {/* Cultural caption badge */}
-                <div className="absolute bottom-4 left-4 right-4 text-white">
-                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-black/50 backdrop-blur-xs rounded-full text-[11px] font-medium mb-1">
-                    <Palette className="w-3.5 h-3.5 text-terracotta" strokeWidth={2} />
-                    <span>Jitwarpur, Madhubani</span>
+                <div className="absolute bottom-4 left-4 right-4 text-white space-y-1">
+                  <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-black/60 backdrop-blur-xs rounded-full text-[11px] font-medium border border-white/20">
+                    <LotusMotif className="w-3.5 h-3.5 text-terracotta" />
+                    <span>Jitwarpur, Madhubani • Mithilanchal</span>
                   </div>
-                  <p className="text-xs text-white/90 font-medium">
+                  <h3 className="font-heading text-base font-medium text-white drop-shadow-xs">
                     {isHindi
-                      ? "पारंपरिक मिथिला चित्रकला का प्रत्यक्ष सृजन"
-                      : "Master artisan demonstrating living folk motifs"}
+                      ? "शांति देवी — वरिष्ठ लोक चित्रकार एवं मेज़बान"
+                      : "Master Artisan Shanti Devi — Living Folk Traditions"}
+                  </h3>
+                  <p className="text-xs text-white/80 leading-snug">
+                    {isHindi
+                      ? "आंगन में प्राकृतिक रंगों से पारंपरिक अरिपन और कोहबर भित्तिचित्रों का सृजन।"
+                      : "Demonstrating handmade bamboo brush painting with natural mineral pigments."}
                   </p>
                 </div>
               </div>
@@ -163,74 +314,96 @@ export default async function HomePage({
           </div>
         </section>
 
+        {/* Traditional Aripan Geometric Divider */}
+        <AripanDivider />
+
         {/* ==================================================================== */}
-        {/* SECTION 2: 4-PILLAR VALUE PROPOSITION STRIP                         */}
+        {/* SECTION 2: 4 PILLARS OF SACRED INDIAN HOSPITALITY                    */}
         {/* ==================================================================== */}
-        <FadeIn direction="up" delayMs={100}>
-          <div className="border-y border-rule/80 py-6 sm:py-8 bg-surface/50 rounded-sm">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
-              {/* 1. Stay with Locals */}
-              <div className="flex items-start gap-3.5">
-                <div className="w-10 h-10 rounded-full bg-warm/50 border border-rule flex items-center justify-center shrink-0 text-terracotta">
-                  <Home className="w-5 h-5" strokeWidth={1.75} />
-                </div>
-                <div>
-                  <h2 className="font-heading text-sm font-medium text-text">
-                    {isHindi ? "स्थानीय लोगों के साथ रहें" : "Stay with Locals"}
-                  </h2>
-                  <p className="text-xs text-secondary mt-0.5">
-                    {isHindi ? "सच्चे आतिथ्य का अनुभव" : "Experience real hospitality"}
-                  </p>
-                </div>
-              </div>
+        <section className="space-y-4">
+          <FadeIn direction="up" delayMs={100} once={false} className="text-center max-w-xl mx-auto space-y-1">
+            <span className="text-xs font-semibold text-terracotta uppercase tracking-widest block">
+              {isHindi ? "— भारतीय आतिथ्य के चार स्तम्भ —" : "— FOUR PILLARS OF INDIAN HOSPITALITY —"}
+            </span>
+            <h2 className="font-heading text-xl sm:text-2xl font-medium text-text">
+              {isHindi ? "संस्कृति, सम्मान और मानवीय संबंध" : "Culture, Respect & Human Connection"}
+            </h2>
+          </FadeIn>
 
-              {/* 2. Learn & Create */}
-              <div className="flex items-start gap-3.5">
-                <div className="w-10 h-10 rounded-full bg-warm/50 border border-rule flex items-center justify-center shrink-0 text-forest">
-                  <Palette className="w-5 h-5" strokeWidth={1.75} />
+          <FadeIn direction="up" delayMs={150} once={false}>
+            <div className="border border-rule/90 py-6 sm:py-8 px-6 bg-surface/70 rounded-lg shadow-2xs">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {/* 1. Stay with Locals */}
+                <div className="flex items-start gap-3.5 p-3 rounded-md hover:bg-warm/40 transition-colors">
+                  <div className="w-10 h-10 rounded-full bg-warm border border-rule flex items-center justify-center shrink-0 text-terracotta">
+                    <Home className="w-5 h-5" strokeWidth={1.75} />
+                  </div>
+                  <div>
+                    <h3 className="font-heading text-sm font-medium text-text">
+                      {isHindi ? "अतिथि सत्कार" : "Family Hospitality"}
+                    </h3>
+                    <p className="text-xs text-secondary mt-1 leading-relaxed">
+                      {isHindi
+                        ? "पारंपरिक घरों में रहें और वास्तविक पारिवारिक स्नेह का अनुभव करें।"
+                        : "Experience real warmth in village and heritage homes with home-cooked meals."}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="font-heading text-sm font-medium text-text">
-                    {isHindi ? "सीखें और बनाएं" : "Learn & Create"}
-                  </h2>
-                  <p className="text-xs text-secondary mt-0.5">
-                    {isHindi ? "हाथों से शिल्प सत्र" : "Hands-on craft sessions"}
-                  </p>
-                </div>
-              </div>
 
-              {/* 3. Live the Culture */}
-              <div className="flex items-start gap-3.5">
-                <div className="w-10 h-10 rounded-full bg-warm/50 border border-rule flex items-center justify-center shrink-0 text-terracotta">
-                  <Sparkles className="w-5 h-5" strokeWidth={1.75} />
+                {/* 2. Learn & Create */}
+                <div className="flex items-start gap-3.5 p-3 rounded-md hover:bg-warm/40 transition-colors">
+                  <div className="w-10 h-10 rounded-full bg-warm border border-rule flex items-center justify-center shrink-0 text-forest">
+                    <Palette className="w-5 h-5" strokeWidth={1.75} />
+                  </div>
+                  <div>
+                    <h3 className="font-heading text-sm font-medium text-text">
+                      {isHindi ? "पारंपरिक शिल्प" : "Hands-on Crafts"}
+                    </h3>
+                    <p className="text-xs text-secondary mt-1 leading-relaxed">
+                      {isHindi
+                        ? "कलाकारों के साथ बैठें और प्राकृतिक रंगों से चित्रकला सीखें।"
+                        : "Sit with master painters, potters and weavers in their courtyards."}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="font-heading text-sm font-medium text-text">
-                    {isHindi ? "संस्कृति को जिएं" : "Live the Culture"}
-                  </h2>
-                  <p className="text-xs text-secondary mt-0.5">
-                    {isHindi ? "उत्सव, खान-पान और परंपराएं" : "Festivals, food & traditions"}
-                  </p>
-                </div>
-              </div>
 
-              {/* 4. Support Communities */}
-              <div className="flex items-start gap-3.5">
-                <div className="w-10 h-10 rounded-full bg-warm/50 border border-rule flex items-center justify-center shrink-0 text-forest">
-                  <TreePine className="w-5 h-5" strokeWidth={1.75} />
+                {/* 3. Live the Culture */}
+                <div className="flex items-start gap-3.5 p-3 rounded-md hover:bg-warm/40 transition-colors">
+                  <div className="w-10 h-10 rounded-full bg-warm border border-rule flex items-center justify-center shrink-0 text-terracotta">
+                    <DiyaMotif className="w-5 h-5 text-terracotta" />
+                  </div>
+                  <div>
+                    <h3 className="font-heading text-sm font-medium text-text">
+                      {isHindi ? "जीवित परंपराएं" : "Living Traditions"}
+                    </h3>
+                    <p className="text-xs text-secondary mt-1 leading-relaxed">
+                      {isHindi
+                        ? "मंदिर तालाब, संध्या आरती, लोक संगीत और स्थानीय उत्सव।"
+                        : "Temple ponds, evening folk music, and seasonal cultural celebrations."}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="font-heading text-sm font-medium text-text">
-                    {isHindi ? "समुदाय को सहयोग दें" : "Support Communities"}
-                  </h2>
-                  <p className="text-xs text-secondary mt-0.5">
-                    {isHindi ? "सीधा आर्थिक लाभ" : "Travel that gives back"}
-                  </p>
+
+                {/* 4. Support Communities */}
+                <div className="flex items-start gap-3.5 p-3 rounded-md hover:bg-warm/40 transition-colors">
+                  <div className="w-10 h-10 rounded-full bg-warm border border-rule flex items-center justify-center shrink-0 text-forest">
+                    <TreePine className="w-5 h-5" strokeWidth={1.75} />
+                  </div>
+                  <div>
+                    <h3 className="font-heading text-sm font-medium text-text">
+                      {isHindi ? "सामुदायिक सशक्तिकरण" : "Community Support"}
+                    </h3>
+                    <p className="text-xs text-secondary mt-1 leading-relaxed">
+                      {isHindi
+                        ? "आपकी यात्रा से स्थानीय ग्रामीण परिवारों को सीधा संबल मिलता है।"
+                        : "Every visit provides direct, dignified livelihood to local families."}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </FadeIn>
+          </FadeIn>
+        </section>
 
         {/* ==================================================================== */}
         {/* SECTION 3: UNIFIED SEARCH & ACTIVE PILOT REGION (2 COLUMNS)          */}
@@ -238,12 +411,12 @@ export default async function HomePage({
         <section className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
             {/* Left: Search Component (7 cols) */}
-            <FadeIn direction="up" delayMs={100} className="lg:col-span-7">
+            <FadeIn direction="up" delayMs={100} once={false} className="lg:col-span-7">
               <UnifiedSearch />
             </FadeIn>
 
             {/* Right: Active Pilot Region Card (5 cols) */}
-            <FadeIn direction="up" delayMs={200} className="lg:col-span-5">
+            <FadeIn direction="up" delayMs={200} once={false} className="lg:col-span-5">
               <div className="border border-rule/90 rounded-md p-6 bg-surface shadow-xs relative overflow-hidden space-y-4">
                 {/* Header row with Title + Palace Sketch */}
                 <div className="flex items-start justify-between gap-4">
@@ -251,8 +424,9 @@ export default async function HomePage({
                     <span className="text-[11px] font-semibold text-terracotta uppercase tracking-wider block mb-1">
                       {isHindi ? "सक्रिय पायलट क्षेत्र" : "ACTIVE PILOT REGION"}
                     </span>
-                    <h2 className="font-heading text-xl font-medium text-text leading-tight">
-                      {isHindi ? "दरभंगा एवं मधुबनी (बिहार)" : "Darbhanga & Madhubani (Bihar)"}
+                    <h2 className="font-heading text-xl font-medium text-text leading-tight flex items-center gap-1.5">
+                      <JharokhaMotif className="w-5 h-5 text-terracotta shrink-0" />
+                      <span>{isHindi ? "दरभंगा एवं मधुबनी (बिहार)" : "Darbhanga & Madhubani (Bihar)"}</span>
                     </h2>
                     <p className="text-xs text-secondary mt-0.5 font-heading">
                       North Gangetic Cultural Belt • Mithilanchal
@@ -277,6 +451,19 @@ export default async function HomePage({
                     : "Our community operations begin in the Mithila cultural belt of Northern Bihar. Experience centuries-old folk painting, traditional cuisine, and family hospitality directly with verified residents."}
                 </p>
 
+                {/* Cultural Highlights Tags */}
+                <div className="flex flex-wrap gap-1.5 pt-1 text-[11px]">
+                  <span className="px-2 py-0.5 bg-warm/60 border border-rule/80 rounded-full text-secondary">
+                    Jitwarpur & Ranti Painting
+                  </span>
+                  <span className="px-2 py-0.5 bg-warm/60 border border-rule/80 rounded-full text-secondary">
+                    Raj Darbhanga Architecture
+                  </span>
+                  <span className="px-2 py-0.5 bg-warm/60 border border-rule/80 rounded-full text-secondary">
+                    Makhana & Pond Ecosystems
+                  </span>
+                </div>
+
                 {/* Metrics Rows */}
                 <div className="space-y-2 border-t border-rule/70 pt-3 text-xs">
                   <div className="flex items-center justify-between text-secondary">
@@ -284,7 +471,7 @@ export default async function HomePage({
                       <ShieldCheck className="w-3.5 h-3.5 text-forest" strokeWidth={1.75} />
                       <span>{isHindi ? "सत्यापित स्थानीय मेज़बान:" : "Verified Local Hosts:"}</span>
                     </span>
-                    <span className="font-mono text-text font-medium">30 - 50 Hosts</span>
+                    <span className="font-mono text-text font-medium">45+ Hosts</span>
                   </div>
 
                   <div className="flex items-center justify-between text-secondary">
@@ -324,13 +511,16 @@ export default async function HomePage({
           </div>
         </section>
 
+        {/* Traditional Aripan Geometric Divider */}
+        <AripanDivider />
+
         {/* ==================================================================== */}
-        {/* SECTION 4: EXPLORE OUR OFFERINGS (4 CARDS GRID)                     */}
+        {/* SECTION 4: FEATURED CULTURAL OFFERINGS (4 RICH HIGH-RES CARDS)       */}
         {/* ==================================================================== */}
         <section className="space-y-8">
-          <FadeIn direction="up" className="text-center max-w-2xl mx-auto space-y-2">
+          <FadeIn direction="up" once={false} className="text-center max-w-2xl mx-auto space-y-2">
             <span className="text-xs font-semibold text-terracotta uppercase tracking-widest block">
-              {isHindi ? "— हमारे सांस्कृतिक अनुभव —" : "— EXPLORE OUR OFFERINGS —"}
+              {isHindi ? "— हमारे सांस्कृतिक अनुभव —" : "— FEATURED CULTURAL EXPERIENCES —"}
             </span>
             <h2 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-medium text-text">
               {isHindi ? "उत्तरी बिहार में पारंपरिक सांस्कृतिक अनुभव" : "Living Traditions & Cultural Experiences in North Bihar"}
@@ -338,7 +528,7 @@ export default async function HomePage({
             <p className="text-xs sm:text-sm text-secondary leading-relaxed">
               {isHindi
                 ? "मिथिला कला से लेकर ग्रामीण जीवन तक, ऐसे अनुभवों से जुड़ें जो आपको लोगों, संस्कृति और दैनिक परंपराओं से जोड़ते हैं।"
-                : "From Mithila art to village life, discover experiences that connect you with people, culture, and everyday traditions."}
+                : "From ancient Mithila painting to wetland pond harvests, connect directly with verified local residents."}
             </p>
           </FadeIn>
 
@@ -350,10 +540,11 @@ export default async function HomePage({
                   key={item.id}
                   direction="up"
                   delayMs={index * 120}
+                  once={false}
                   className="group bg-surface border border-rule/80 rounded-xl overflow-hidden shadow-2xs hover:shadow-md hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between"
                 >
                   <div>
-                    {/* Card Photo */}
+                    {/* Card Photo with Category Pill & Rating */}
                     <div className="relative aspect-[16/10] w-full overflow-hidden bg-warm-grey">
                       <Image
                         src={item.image}
@@ -361,24 +552,62 @@ export default async function HomePage({
                         fill
                         className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                       />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+
+                      {/* Category Pill Top Left */}
+                      <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-xs text-white text-[11px] font-medium px-2.5 py-1 rounded-full border border-white/20">
+                        {isHindi ? item.categoryHi : item.categoryEn}
+                      </div>
+
+                      {/* Rating Top Right */}
+                      <div className="absolute top-3 right-3 bg-black/60 backdrop-blur-xs text-white text-[11px] font-medium px-2 py-0.5 rounded-full border border-white/20 flex items-center gap-1">
+                        <Star className="w-3 h-3 fill-[#E4B07A] text-[#E4B07A]" />
+                        <span>{item.rating}</span>
+                      </div>
+
+                      {/* Location Chip Bottom Left */}
+                      <div className="absolute bottom-2 left-3 text-white text-xs flex items-center gap-1 font-medium drop-shadow-xs">
+                        <MapPin className="w-3.5 h-3.5 text-terracotta shrink-0" />
+                        <span>{isHindi ? item.locationHi : item.locationEn}</span>
+                      </div>
                     </div>
 
                     {/* Card Content */}
-                    <div className="p-4 space-y-1.5">
-                      <div className="flex items-center gap-2">
-                        <IconComp className="w-4 h-4 text-terracotta shrink-0" strokeWidth={1.75} />
-                        <h3 className="font-heading text-sm font-semibold text-text group-hover:text-primary transition-colors">
+                    <div className="p-4 space-y-2">
+                      <div className="flex items-start gap-2">
+                        <IconComp className="w-4 h-4 text-terracotta shrink-0 mt-0.5" strokeWidth={1.75} />
+                        <h3 className="font-heading text-sm font-semibold text-text group-hover:text-primary transition-colors leading-snug">
                           {isHindi ? item.titleHi : item.titleEn}
                         </h3>
                       </div>
-                      <p className="text-xs text-secondary leading-relaxed pl-6">
-                        {isHindi ? item.subtitleHi : item.subtitleEn}
-                      </p>
+
+                      {/* Host & Duration Line */}
+                      <div className="text-xs text-secondary space-y-1 border-t border-rule/60 pt-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[11px] text-secondary">
+                            {isHindi ? "मेज़बान:" : "Host:"}
+                          </span>
+                          <span className="font-medium text-text text-[11px]">
+                            {isHindi ? item.hostHi : item.hostEn}
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-[11px] text-secondary">
+                            {isHindi ? "अवधि:" : "Duration:"}
+                          </span>
+                          <span className="font-medium text-text text-[11px]">
+                            {isHindi ? item.durationHi : item.durationEn}
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
                   {/* Card Bottom Action */}
-                  <div className="p-4 pt-0 flex justify-end">
+                  <div className="p-4 pt-0 flex items-center justify-between border-t border-rule/50 mt-1">
+                    <span className="text-[11px] font-medium text-forest">
+                      {isHindi ? "पायलट पूछताछ उपलब्ध" : "Pilot Enquiry Open"}
+                    </span>
                     <Link
                       href={item.link}
                       className="w-8 h-8 rounded-full border border-rule group-hover:border-primary group-hover:bg-primary group-hover:text-white flex items-center justify-center text-secondary transition-all duration-200"
@@ -393,11 +622,150 @@ export default async function HomePage({
           </div>
         </section>
 
+        {/* Traditional Madhubani Folk Pattern Divider */}
+        <MadhubaniBorder />
+
         {/* ==================================================================== */}
-        {/* SECTION 5: HOW IT WORKS (3 EASY STEPS WITH VILLAGE ETCHING)         */}
+        {/* SECTION 5: SPOTLIGHT ON VERIFIED LOCAL RESIDENTS                     */}
+        {/* ==================================================================== */}
+        <section className="space-y-8">
+          <FadeIn direction="up" once={false} className="text-center max-w-2xl mx-auto space-y-2">
+            <span className="text-xs font-semibold text-forest uppercase tracking-widest block">
+              {isHindi ? "— सत्यापित स्थानीय नागरिक —" : "— MEET VERIFIED LOCAL PEOPLE —"}
+            </span>
+            <h2 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-medium text-text">
+              {isHindi ? "उत्तरी बिहार के स्थानीय निवासियों से मिलें" : "Connect with Local Residents in North Bihar"}
+            </h2>
+            <p className="text-xs sm:text-sm text-secondary leading-relaxed">
+              {isHindi
+                ? "चाय पर बात करें, मोहल्ले में टहलें और स्थानीय परिवारों के जीवन को प्रत्यक्ष रूप से जानें।"
+                : "Meet local scholars, artists, and families for tea and walks at designated public meeting venues."}
+            </p>
+          </FadeIn>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {localHosts.map((host, idx) => (
+              <FadeIn
+                key={host.id}
+                direction="up"
+                delayMs={idx * 150}
+                once={false}
+                className="bg-surface border border-rule/80 rounded-xl p-5 shadow-2xs hover:shadow-md transition-all flex flex-col sm:flex-row gap-5 items-center sm:items-start"
+              >
+                {/* Host Portrait */}
+                <div className="relative w-28 h-28 rounded-full overflow-hidden shrink-0 border-2 border-terracotta/40 shadow-xs bg-warm">
+                  <Image
+                    src={host.image}
+                    alt={host.nameEn}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+
+                {/* Host Details */}
+                <div className="space-y-2 flex-1 text-center sm:text-left">
+                  <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                    <h3 className="font-heading text-lg font-medium text-text">
+                      {isHindi ? host.nameHi : host.nameEn}
+                    </h3>
+                    <span className="inline-flex items-center gap-1 text-[11px] font-medium text-forest bg-forest/10 px-2 py-0.5 rounded-full">
+                      <ShieldCheck className="w-3 h-3" />
+                      {isHindi ? "सत्यापित" : "Verified"}
+                    </span>
+                  </div>
+
+                  <p className="text-xs font-medium text-terracotta">
+                    {isHindi ? host.roleHi : host.roleEn}
+                  </p>
+
+                  <div className="text-xs text-secondary space-y-1 pt-1">
+                    <div className="flex items-center justify-center sm:justify-start gap-1.5">
+                      <MapPin className="w-3.5 h-3.5 text-secondary shrink-0" />
+                      <span>{isHindi ? host.locationHi : host.locationEn}</span>
+                    </div>
+                    <div className="flex items-center justify-center sm:justify-start gap-1.5">
+                      <Languages className="w-3.5 h-3.5 text-secondary shrink-0" />
+                      <span>{isHindi ? host.languagesHi : host.languagesEn}</span>
+                    </div>
+                    <div className="flex items-center justify-center sm:justify-start gap-1.5 text-text/80 font-medium">
+                      <Compass className="w-3.5 h-3.5 text-terracotta shrink-0" />
+                      <span>{isHindi ? host.meetingHi : host.meetingEn}</span>
+                    </div>
+                  </div>
+
+                  <div className="pt-2">
+                    <Link
+                      href={`/connections/new?target=${host.id}`}
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline"
+                    >
+                      <span>{isHindi ? "मुलाक़ात का प्रस्ताव भेजें →" : "Request Meetup →"}</span>
+                    </Link>
+                  </div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+
+          <div className="text-center pt-2">
+            <Link
+              href="/explore/people"
+              className="inline-flex items-center gap-2 text-xs font-semibold text-secondary hover:text-text uppercase tracking-wider"
+            >
+              <span>{isHindi ? "सभी स्थानीय नागरिक देखें →" : "Browse All Verified Locals →"}</span>
+            </Link>
+          </div>
+        </section>
+
+        {/* Traditional Aripan Geometric Divider */}
+        <AripanDivider />
+
+        {/* ==================================================================== */}
+        {/* SECTION 6: 12 CULTURAL HERITAGE DOMAINS OF INDIA                     */}
+        {/* ==================================================================== */}
+        <section className="space-y-6">
+          <FadeIn direction="up" once={false} className="text-center max-w-2xl mx-auto space-y-2">
+            <span className="text-xs font-semibold text-terracotta uppercase tracking-widest block">
+              {isHindi ? "— सांस्कृतिक श्रेणियां —" : "— 12 CULTURAL HERITAGE DOMAINS —"}
+            </span>
+            <h2 className="font-heading text-2xl sm:text-3xl font-medium text-text">
+              {isHindi ? "मिथिला एवं भारत की सांस्कृतिक विधाएं" : "Explore Traditions Across 12 Cultural Facets"}
+            </h2>
+            <p className="text-xs sm:text-sm text-secondary leading-relaxed">
+              {isHindi
+                ? "हमारी श्रेणियां भारत के जीवित सांस्कृतिक रूपों को सम्मान और प्रमाणिकता के साथ प्रस्तुत करती हैं।"
+                : "Discover authentic aspects of Indian heritage categorized across 12 official domains."}
+            </p>
+          </FadeIn>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+            {culturalCategories.map((cat, idx) => {
+              const CatIcon = cat.icon;
+              return (
+                <FadeIn key={cat.slug} direction="up" delayMs={idx * 40} once={false}>
+                  <Link
+                    href={`/categories/${cat.slug}`}
+                    className="p-3.5 bg-surface border border-rule/80 hover:border-terracotta/80 rounded-lg flex flex-col items-center text-center space-y-2 shadow-2xs hover:shadow-xs transition-all duration-200 group"
+                  >
+                    <div className="w-9 h-9 rounded-full bg-warm/60 group-hover:bg-terracotta/10 flex items-center justify-center text-terracotta transition-colors">
+                      <CatIcon className="w-4 h-4" strokeWidth={1.75} />
+                    </div>
+                    <div>
+                      <h3 className="font-heading text-xs font-medium text-text group-hover:text-primary transition-colors leading-tight">
+                        {isHindi ? cat.titleHi : cat.titleEn}
+                      </h3>
+                    </div>
+                  </Link>
+                </FadeIn>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* ==================================================================== */}
+        {/* SECTION 7: HOW IT WORKS (3 EASY STEPS WITH VILLAGE ETCHING)         */}
         {/* ==================================================================== */}
         <section className="space-y-8 pt-4 pb-4">
-          <FadeIn direction="up" className="text-center max-w-2xl mx-auto space-y-2">
+          <FadeIn direction="up" once={false} className="text-center max-w-2xl mx-auto space-y-2">
             <span className="text-xs font-semibold text-terracotta uppercase tracking-widest block">
               {isHindi ? "— यह कैसे काम करता है —" : "— HOW IT WORKS —"}
             </span>
@@ -414,7 +782,7 @@ export default async function HomePage({
           <div className="relative pt-6 pb-8">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
               {/* Step 1 */}
-              <FadeIn direction="up" delayMs={100} className="text-center space-y-3 px-4">
+              <FadeIn direction="up" delayMs={100} once={false} className="text-center space-y-3 px-4">
                 <div className="w-16 h-16 rounded-full bg-warm/80 border-2 border-rule mx-auto flex items-center justify-center text-text shadow-xs">
                   <Search className="w-6 h-6 text-terracotta" strokeWidth={1.75} />
                 </div>
@@ -429,7 +797,7 @@ export default async function HomePage({
               </FadeIn>
 
               {/* Step 2 */}
-              <FadeIn direction="up" delayMs={200} className="text-center space-y-3 px-4">
+              <FadeIn direction="up" delayMs={200} once={false} className="text-center space-y-3 px-4">
                 <div className="w-16 h-16 rounded-full bg-warm/80 border-2 border-rule mx-auto flex items-center justify-center text-text shadow-xs">
                   <Calendar className="w-6 h-6 text-forest" strokeWidth={1.75} />
                 </div>
@@ -444,7 +812,7 @@ export default async function HomePage({
               </FadeIn>
 
               {/* Step 3 */}
-              <FadeIn direction="up" delayMs={300} className="text-center space-y-3 px-4">
+              <FadeIn direction="up" delayMs={300} once={false} className="text-center space-y-3 px-4">
                 <div className="w-16 h-16 rounded-full bg-warm/80 border-2 border-rule mx-auto flex items-center justify-center text-text shadow-xs">
                   <Users className="w-6 h-6 text-terracotta" strokeWidth={1.75} />
                 </div>
@@ -453,7 +821,7 @@ export default async function HomePage({
                 </h3>
                 <p className="text-xs text-secondary leading-relaxed max-w-xs mx-auto">
                   {isHindi
-                    ? "स्थानीय परिवारों के साथ रहें, सीधे सीखें और परंपरा का हिस्सा बनें।"
+                    ? "स्थानीय परिवारों के साथ रहें, सीधे सीखें और परस्पर आदर का भाव साझा करें।"
                     : "Stay with local families, learn traditions directly, and share mutual respect."}
                 </p>
               </FadeIn>
@@ -472,9 +840,9 @@ export default async function HomePage({
         </section>
 
         {/* ==================================================================== */}
-        {/* SECTION 6: TRUST, SAFETY & PRIVACY STANDARDS                        */}
+        {/* SECTION 8: TRUST, SAFETY & PRIVACY STANDARDS                        */}
         {/* ==================================================================== */}
-        <FadeIn direction="up" className="border-t border-rule/80 pt-12 space-y-6">
+        <FadeIn direction="up" once={false} className="border-t border-rule/80 pt-12 space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 border-b border-rule pb-4">
             <div>
               <span className="text-xs font-semibold text-forest uppercase tracking-wider block mb-1">
@@ -548,12 +916,12 @@ export default async function HomePage({
         </FadeIn>
 
         {/* ==================================================================== */}
-        {/* SECTION 7: BOTTOM CALL-TO-ACTION BANNER                             */}
+        {/* SECTION 9: BOTTOM CALL-TO-ACTION BANNER                             */}
         {/* ==================================================================== */}
-        <FadeIn direction="up">
+        <FadeIn direction="up" once={false}>
           <div className="relative rounded-xl overflow-hidden shadow-md bg-[#253624] text-white">
             {/* Background Image with Dark Landscape */}
-            <div className="absolute inset-0 opacity-25">
+            <div className="absolute inset-0 opacity-30">
               <Image
                 src="/images/mithila-landscape-banner.jpg"
                 alt="Mithila rural landscape"

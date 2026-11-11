@@ -112,3 +112,4 @@ export function StoryModal({ buttonText, className }: StoryModalProps) {
     </>
   );
 }
+
