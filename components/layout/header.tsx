@@ -63,7 +63,7 @@ export function Header() {
               className="tap-target flex flex-col items-start text-left group"
             >
               <span lang="hi" className="text-xs font-medium text-text group-hover:text-primary transition-colors duration-[120ms]">
-                भारत खोजें
+                भारत को जानें
               </span>
               <span className="text-xs text-secondary group-hover:text-primary transition-colors duration-[120ms]">
                 Discover India
@@ -87,7 +87,7 @@ export function Header() {
               className="tap-target flex flex-col items-start text-left group"
             >
               <span lang="hi" className="text-xs font-medium text-text group-hover:text-primary transition-colors duration-[120ms]">
-                सांस्कृतिक अनुभव
+                अनुभव
               </span>
               <span className="text-xs text-secondary group-hover:text-primary transition-colors duration-[120ms]">
                 Experiences
@@ -99,7 +99,7 @@ export function Header() {
               className="tap-target flex flex-col items-start text-left group"
             >
               <span lang="hi" className="text-xs font-medium text-text group-hover:text-primary transition-colors duration-[120ms]">
-                प्रवास
+                कहाँ ठहरें
               </span>
               <span className="text-xs text-secondary group-hover:text-primary transition-colors duration-[120ms]">
                 Stay
@@ -173,9 +173,9 @@ export function Header() {
             {/* Become a Host Button */}
             <Link
               href="/become-a-host"
-              className="tap-target px-3.5 py-2 border border-primary text-primary hover:bg-primary hover:text-white rounded-sm text-xs font-medium transition-colors duration-[120ms]"
+              className="tap-target px-4 py-2 bg-primary text-white hover:bg-primary-hover rounded-md text-xs font-semibold tracking-wide transition-all duration-[120ms] shadow-xs hover:shadow-sm"
             >
-              {locale === "hi" ? "मेज़बान बनें" : "Become a host"}
+              {locale === "hi" ? "मेज़बान बनें" : "Become a Host"}
             </Link>
           </div>
 
