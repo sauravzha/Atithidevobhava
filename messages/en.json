@@ -298,6 +298,11 @@
     "loginSubtitle": "Access your community connections, bookings, and cultural itineraries.",
     "adultDeclaration": "I confirm that I am 18 years of age or older and agree to abide by the Community Guidelines."
   },
+  "Auth": {
+    "loginTitle": "Sign in to Atithi Devo Bhava",
+    "loginSubtitle": "Access your community connections, bookings, and cultural itineraries.",
+    "adultDeclaration": "I confirm that I am 18 years of age or older and agree to abide by the Community Guidelines."
+  },
   "footer": {
     "about": "About",
     "contact": "Contact",

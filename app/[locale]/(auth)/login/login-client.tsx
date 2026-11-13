@@ -23,7 +23,7 @@ import { LotusMotif } from "@/components/ui/cultural-patterns";
 type AuthMethod = "email" | "google" | "otp";
 
 export function LoginClient() {
-  const t = useTranslations("Auth");
+  const t = useTranslations("auth");
   const locale = useLocale();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -282,37 +282,39 @@ export function LoginClient() {
         </div>
 
         <h1 className="font-heading text-2xl sm:text-3xl font-medium text-text">
-          {t("loginTitle")}
+          {isHindi ? "अतिथि देवो भवः में प्रवेश करें" : t("loginTitle")}
         </h1>
         <p className="text-xs sm:text-sm text-secondary max-w-md mx-auto leading-relaxed">
-          {t("loginSubtitle")}
+          {isHindi
+            ? "अपने समुदाय, सांस्कृतिक अनुभवों और यात्राओं तक पहुंचें।"
+            : t("loginSubtitle")}
         </p>
       </div>
 
       {/* Main Authentication Card */}
       <div className="journal-paper border border-rule rounded-sm p-6 sm:p-10 shadow-card space-y-6">
         {/* Method Switcher Tabs */}
-        <div className="grid grid-cols-3 gap-1 p-1 bg-warm/50 border border-rule rounded-xs text-[11px] font-mono uppercase tracking-wider">
+        <div className="grid grid-cols-3 gap-1.5 p-1 bg-warm/60 border border-rule/80 rounded-sm text-xs font-medium font-body shadow-2xs">
           <button
             type="button"
             onClick={() => setActiveMethod("email")}
-            className={`py-2 px-2 rounded-xs transition-all duration-150 flex items-center justify-center gap-1 tactile-button ${
+            className={`py-2 px-3 rounded-xs transition-all duration-150 flex items-center justify-center gap-1.5 tactile-button ${
               activeMethod === "email"
                 ? "bg-primary text-white shadow-xs font-semibold"
-                : "text-secondary hover:text-text"
+                : "text-secondary hover:text-text hover:bg-warm/40"
             }`}
           >
             <Mail className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">{isHindi ? "ईमेल" : "Email"}</span>
+            <span>{isHindi ? "ईमेल" : "Email"}</span>
           </button>
 
           <button
             type="button"
             onClick={() => setActiveMethod("google")}
-            className={`py-2 px-2 rounded-xs transition-all duration-150 flex items-center justify-center gap-1 tactile-button ${
+            className={`py-2 px-3 rounded-xs transition-all duration-150 flex items-center justify-center gap-1.5 tactile-button ${
               activeMethod === "google"
                 ? "bg-primary text-white shadow-xs font-semibold"
-                : "text-secondary hover:text-text"
+                : "text-secondary hover:text-text hover:bg-warm/40"
             }`}
           >
             <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
@@ -333,20 +335,20 @@ export function LoginClient() {
                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
               />
             </svg>
-            <span className="truncate">Google</span>
+            <span>Google</span>
           </button>
 
           <button
             type="button"
             onClick={() => setActiveMethod("otp")}
-            className={`py-2 px-2 rounded-xs transition-all duration-150 flex items-center justify-center gap-1 tactile-button ${
+            className={`py-2 px-3 rounded-xs transition-all duration-150 flex items-center justify-center gap-1.5 tactile-button ${
               activeMethod === "otp"
                 ? "bg-primary text-white shadow-xs font-semibold"
-                : "text-secondary hover:text-text"
+                : "text-secondary hover:text-text hover:bg-warm/40"
             }`}
           >
             <Phone className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">OTP</span>
+            <span>{isHindi ? "ओटीपी" : "OTP"}</span>
           </button>
         </div>
 

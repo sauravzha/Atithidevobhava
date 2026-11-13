@@ -57,7 +57,7 @@ export function formatAuthError(errorCode?: string): string {
     case "auth/popup-blocked":
       return "Pop-up was blocked by your browser. Please allow popups for localhost.";
     case "auth/unauthorized-domain":
-      return "This domain is not authorized for OAuth in Firebase Console.";
+      return "This domain is not yet authorized in Firebase Console (Firebase > Auth > Settings > Authorized domains). Please add this domain, or sign in with Email / OTP.";
     default:
       return "Authentication failed. Please check your credentials and try again.";
   }
