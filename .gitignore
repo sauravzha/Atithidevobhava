@@ -46,9 +46,11 @@ supabase/.temp/
 Thumbs.db
 Desktop.ini
 
-# IDE files
+# IDE and agent files
 .idea/
 .vscode/
 *.swp
 *.swo
+.agents/
+skills-lock.json
 

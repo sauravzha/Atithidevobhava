@@ -88,20 +88,20 @@ export default function NewConnectionPage({ searchParams }: NewConnectionPagePro
   return (
     <div className="site-container py-12 max-w-2xl mx-auto">
       {/* Breadcrumb */}
-      <nav className="text-xs text-secondary mb-4" aria-label="Breadcrumb">
+      <nav className="text-xs font-mono tracking-wider uppercase text-secondary mb-6" aria-label="Breadcrumb">
         <ol className="flex items-center gap-2">
           <li>
             <Link href="/" className="hover:text-primary transition-colors">
-              {isHindi ? "होम" : "Home"}
+              {isHindi ? "मुखपृष्ठ" : "Dispatch"}
             </Link>
           </li>
-          <li aria-hidden="true">/</li>
+          <li aria-hidden="true" className="text-rule">/</li>
           <li>
             <Link href="/explore/people" className="hover:text-primary transition-colors">
               {isHindi ? "स्थानीय नागरिक" : "Meet a Local"}
             </Link>
           </li>
-          <li aria-hidden="true">/</li>
+          <li aria-hidden="true" className="text-rule">/</li>
           <li className="text-text font-medium" aria-current="page">
             {isHindi ? "मुलाकात का अनुरोध" : "New Request"}
           </li>
@@ -110,16 +110,16 @@ export default function NewConnectionPage({ searchParams }: NewConnectionPagePro
 
       {/* Header */}
       <header className="border-b border-rule pb-6 mb-8">
-        <span className="text-xs font-semibold tracking-wider uppercase text-primary block mb-1">
+        <span className="text-xs font-mono font-semibold tracking-wider uppercase text-terracotta block mb-1">
           {isHindi ? "माध्यम 1: स्थानीय नागरिक से मिलें" : "Product A: Meet a Local"}
         </span>
         <Bi
           hindi="मुलाकात का प्रस्ताव भेजें"
           english="Propose a Public Meetup"
           as="h1"
-          className="mb-2"
+          className="text-2xl sm:text-3xl font-heading font-medium text-text mb-2"
         />
-        <p className="text-xs text-secondary">
+        <p className="text-xs text-secondary font-heading">
           {isHindi
             ? "यह एक निशुल्क, गैर-व्यावसायिक सांस्कृतिक संवाद है। कोई भुगतान या पर्यटन शुल्क नहीं है।"
             : "This is a free, non-commercial cultural connection. No booking fee or commercial tour charge applies."}
@@ -130,10 +130,10 @@ export default function NewConnectionPage({ searchParams }: NewConnectionPagePro
       <div className="mb-6">
         <Notice variant="default">
           <div className="space-y-1 py-0.5 text-xs">
-            <strong className="text-text block">
+            <strong className="text-text block font-heading">
               {isHindi ? "अनिवार्य सार्वजनिक स्थल नियम" : "Public Venue Requirement"}
             </strong>
-            <p className="text-secondary leading-relaxed">
+            <p className="text-secondary leading-relaxed font-heading">
               {isHindi
                 ? "सभी प्रारंभिक बैठकें खुले और जाने-पहचाने सार्वजनिक स्थानों (जैसे कैफ़े, मुख्य चौराहा, पुस्तकालय परिसर) पर आयोजित की जानी चाहिए। किसी के निजी घर पर मिलना निषिद्ध है।"
                 : "Initial encounters must always be conducted in open, visible public areas (campus tea stall, central square, library). Private residences are strictly prohibited for first meetings."}
@@ -151,17 +151,17 @@ export default function NewConnectionPage({ searchParams }: NewConnectionPagePro
       )}
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="journal-paper p-6 sm:p-8 border border-rule rounded-sm shadow-xs space-y-6">
         {/* Purpose */}
         <div>
-          <label htmlFor="purpose" className="block text-xs font-medium text-text mb-1">
+          <label htmlFor="purpose" className="block text-xs font-mono uppercase tracking-wider text-text mb-1.5 font-medium">
             {isHindi ? "मुलाकात का उद्देश्य *" : "Purpose of Meetup *"}
           </label>
           <select
             id="purpose"
             value={purpose}
             onChange={(e) => setPurpose(e.target.value as ConnectionPurpose)}
-            className="w-full px-3 py-2 border border-rule rounded-sm text-sm bg-page focus:outline-none focus:border-primary"
+            className="w-full px-3 py-2 border border-rule rounded-xs text-xs font-mono bg-paper text-text focus:outline-hidden focus:border-forest"
           >
             <option value="tea_or_coffee">
               {isHindi ? "चाय या कॉफ़ी पर अनौपचारिक बातचीत" : "Tea or coffee conversation"}
@@ -186,7 +186,7 @@ export default function NewConnectionPage({ searchParams }: NewConnectionPagePro
 
         {/* Proposed Dates */}
         <div>
-          <label htmlFor="dates" className="block text-xs font-medium text-text mb-1">
+          <label htmlFor="dates" className="block text-xs font-mono uppercase tracking-wider text-text mb-1.5 font-medium">
             {isHindi ? "प्रस्तावित तिथियां और समय *" : "Proposed Dates & Timing *"}
           </label>
           <input
@@ -196,13 +196,13 @@ export default function NewConnectionPage({ searchParams }: NewConnectionPagePro
             onChange={(e) => setProposedDates(e.target.value)}
             required
             placeholder="e.g. Next Saturday morning, or flexible weekday after 4 PM"
-            className="w-full px-3 py-2 border border-rule rounded-sm text-sm bg-page focus:outline-none focus:border-primary"
+            className="w-full px-3 py-2 border border-rule rounded-xs text-xs font-mono bg-paper text-text focus:outline-hidden focus:border-forest"
           />
         </div>
 
         {/* Suggested Public Venue */}
         <div>
-          <label htmlFor="venue" className="block text-xs font-medium text-text mb-1">
+          <label htmlFor="venue" className="block text-xs font-mono uppercase tracking-wider text-text mb-1.5 font-medium">
             {isHindi ? "सुझावित सार्वजनिक मिलन स्थल *" : "Suggested Public Meeting Venue *"}
           </label>
           <input
@@ -212,9 +212,9 @@ export default function NewConnectionPage({ searchParams }: NewConnectionPagePro
             onChange={(e) => setSuggestedPublicPlace(e.target.value)}
             required
             placeholder="e.g. Town Hall library square, or Central Clock Tower tea café"
-            className="w-full px-3 py-2 border border-rule rounded-sm text-sm bg-page focus:outline-none focus:border-primary"
+            className="w-full px-3 py-2 border border-rule rounded-xs text-xs font-mono bg-paper text-text focus:outline-hidden focus:border-forest"
           />
-          <p className="text-[11px] text-secondary mt-1">
+          <p className="text-[11px] text-secondary mt-1 font-heading">
             {isHindi
               ? "यह एक ऐसा खुला सार्वजनिक स्थान होना चाहिए जहाँ दोनों पक्ष सहजता से मिल सकें।"
               : "Must be a recognized, well-lit public area with open access."}
@@ -223,8 +223,8 @@ export default function NewConnectionPage({ searchParams }: NewConnectionPagePro
 
         {/* Personal Message with Counter (50 to 600 characters) */}
         <div>
-          <div className="flex justify-between items-baseline mb-1">
-            <label htmlFor="message" className="block text-xs font-medium text-text">
+          <div className="flex justify-between items-baseline mb-1.5">
+            <label htmlFor="message" className="block text-xs font-mono uppercase tracking-wider text-text font-medium">
               {isHindi ? "परिचयात्मक संदेश (50 - 600 अक्षर) *" : "Introductory Message (50 to 600 chars) *"}
             </label>
             <span
@@ -248,7 +248,7 @@ export default function NewConnectionPage({ searchParams }: NewConnectionPagePro
                 ? "नमस्ते! अपने बारे में बताएं, आप इस शहर में क्यों आ रहे हैं और आप स्थानीय निवासी से क्या सीखना या साझा करना चाहते हैं (कम से कम 50 अक्षर)..."
                 : "Introduce yourself politely: explain why you are visiting this region and what cultural interests or conversations you hope to share (minimum 50 characters)..."
             }
-            className="w-full px-3 py-2 border border-rule rounded-sm text-sm bg-page focus:outline-none focus:border-primary"
+            className="w-full px-3 py-2 border border-rule rounded-xs text-xs font-heading bg-paper text-text focus:outline-hidden focus:border-forest"
           />
         </div>
 
@@ -256,14 +256,14 @@ export default function NewConnectionPage({ searchParams }: NewConnectionPagePro
         <div className="pt-4 border-t border-rule flex items-center justify-between">
           <Link
             href="/explore/people"
-            className="text-xs text-secondary hover:text-text"
+            className="text-xs font-mono uppercase tracking-wider text-secondary hover:text-text"
           >
-            ← {isHindi ? "रद्द करें" : "Cancel"}
+            &larr; {isHindi ? "रद्द करें" : "Cancel"}
           </Link>
           <button
             type="submit"
             disabled={isSubmitting}
-            className="tap-target px-6 py-2.5 bg-primary text-white hover:bg-primary-hover rounded-sm text-xs font-semibold uppercase tracking-wider transition-colors disabled:opacity-50"
+            className="px-6 py-2.5 bg-primary text-white hover:bg-primary-hover rounded-xs text-xs font-mono uppercase tracking-wider transition-all disabled:opacity-50 tactile-button shadow-xs"
           >
             {isSubmitting
               ? isHindi ? "भेजा जा रहा है..." : "Sending..."

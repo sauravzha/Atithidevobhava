@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getAuthenticatedUser } from "@/lib/auth/server-user";
 import {
   LayoutDashboard,
   Users,
@@ -23,22 +23,28 @@ export default async function AdminLayout({ children, params }: Props) {
   const { locale } = await params;
   const isHindi = locale === "hi";
 
-  const supabase = await createServerSupabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
 
   // If not authenticated or in dev mode without auth, verify role
   const adminClient = createAdminClient();
-  const { data: perm } = user
-    ? await adminClient
+  let currentRole = "moderator";
+
+  if (user?.role === "admin") {
+    currentRole = "super_admin";
+  } else if (user?.id) {
+    try {
+      const { data: perm } = await adminClient
         .from("admin_permissions")
         .select("admin_role")
         .eq("user_id", user.id)
-        .single()
-    : { data: null };
-
-  const currentRole = perm?.admin_role || "moderator";
+        .single();
+      if (perm?.admin_role) {
+        currentRole = perm.admin_role;
+      }
+    } catch {
+      // Dev mode fallback
+    }
+  }
 
   const navItems = [
     { href: `/${locale}/admin`, label: isHindi ? "सिंहावलोकन" : "Overview", icon: LayoutDashboard },

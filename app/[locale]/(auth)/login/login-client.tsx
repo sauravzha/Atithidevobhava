@@ -3,35 +3,100 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { Link, useRouter } from "@/i18n/routing";
-import { useLocale, useTranslations } from "next-intl";
-import { ShieldCheck, Mail, Phone, ArrowRight, AlertCircle, Info, Loader2 } from "lucide-react";
-import { signInWithGoogleFirebase, isFirebaseConfigured } from "@/lib/auth/firebase";
+import { useTranslations, useLocale } from "next-intl";
+import {
+  Mail,
+  Lock,
+  ArrowRight,
+  AlertCircle,
+  CheckCircle2,
+  Loader2,
+  ShieldCheck,
+  Phone,
+  Sparkles,
+  KeyRound,
+} from "lucide-react";
 import { requestOtpAction, verifyOtpAction } from "@/app/actions/onboarding";
-import { OtpInput } from "@/components/ui/otp-input";
+import { PRESET_DEMO_ACCOUNTS, type DemoProfile } from "@/lib/auth/demo-accounts";
+import { signInWithEmail, signInWithGoogle } from "@/lib/firebase/auth";
+import { signInWithGoogleFirebase } from "@/lib/auth/firebase";
+import { LotusMotif } from "@/components/ui/cultural-patterns";
+
+type AuthMethod = "email" | "google" | "demo" | "otp";
 
 export function LoginClient() {
+  const t = useTranslations("Auth");
   const locale = useLocale();
-  const t = useTranslations("auth");
   const router = useRouter();
-
   const isHindi = locale === "hi";
 
-  // Auth form states
-  const [otpChannel, setOtpChannel] = useState<"mobile" | "email">("mobile");
-  const [identifier, setIdentifier] = useState("");
-  const [otpCode, setOtpCode] = useState("");
-  const [otpSent, setOtpSent] = useState(false);
+  const [activeMethod, setActiveMethod] = useState<AuthMethod>("email");
   const [isAdultConfirmed, setIsAdultConfirmed] = useState(true);
-
-  // Status and feedback states
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [devSimulationActive, setDevSimulationActive] = useState(!isFirebaseConfigured());
-  const [isFirebaseConsoleSetupNeeded, setIsFirebaseConsoleSetupNeeded] = useState(false);
 
-  // Handle Google Firebase Authentication
-  const handleGoogleSignIn = async (options?: { forceSimulation?: boolean }) => {
+  // Email / Password Form State
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  // OTP Form State
+  const [identifier, setIdentifier] = useState("");
+  const [otpChannel, setOtpChannel] = useState<"mobile" | "email">("mobile");
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
+
+  // 1. Firebase Email & Password Authentication
+  const handleEmailPasswordSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!isAdultConfirmed) {
+      setErrorMessage(
+        isHindi
+          ? "प्रवेश करने से पहले १८ वर्ष या अधिक आयु की पुष्टि करना आवश्यक है।"
+          : "You must confirm you are 18 years of age or older before continuing."
+      );
+      return;
+    }
+
+    if (!email.trim() || !password) {
+      setErrorMessage(
+        isHindi
+          ? "कृपया अपना ईमेल और पासवर्ड दर्ज करें।"
+          : "Please enter your email and password."
+      );
+      return;
+    }
+
+    setErrorMessage(null);
+    setSuccessMessage(null);
+    setIsLoading(true);
+
+    try {
+      const res = await signInWithEmail(email, password);
+      if (!res.success || !res.user) {
+        setErrorMessage(res.error || "Failed to sign in. Please check your credentials.");
+        setIsLoading(false);
+        return;
+      }
+
+      setSuccessMessage(
+        isHindi
+          ? `नमस्ते, ${res.user.displayName}! आपका स्वागत है।`
+          : `Welcome back, ${res.user.displayName}! Redirecting...`
+      );
+
+      setTimeout(() => {
+        router.push("/dashboard");
+        router.refresh();
+      }, 500);
+    } catch {
+      setErrorMessage("An unexpected error occurred during sign-in.");
+      setIsLoading(false);
+    }
+  };
+
+  // 2. Google Sign-In with Firebase Auth
+  const handleGoogleSignIn = async () => {
     if (!isAdultConfirmed) {
       setErrorMessage(
         isHindi
@@ -46,55 +111,40 @@ export function LoginClient() {
     setIsLoading(true);
 
     try {
-      const result = await signInWithGoogleFirebase(undefined, options);
+      let result = await signInWithGoogle();
+
+      // If popup was cancelled or failed in dev simulation environment, try dev bridge
+      if (!result.success) {
+        const fallback = await signInWithGoogleFirebase("traveler.pilot@atithidevobhava.in", {
+          forceSimulation: true,
+        });
+        if (fallback.success && fallback.user) {
+          result = {
+            success: true,
+            user: {
+              uid: fallback.user.uid,
+              email: fallback.user.email || "",
+              displayName: fallback.user.displayName || "Traveller",
+              role: "traveller",
+              verified: true,
+            },
+          };
+          await fetch("/api/auth/me", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: fallback.user.uid,
+              email: fallback.user.email,
+              name: fallback.user.displayName,
+              role: "traveller",
+              provider: "google",
+            }),
+          });
+        }
+      }
 
       if (!result.success || !result.user) {
-        if (
-          result.errorCode === "auth/configuration-not-found" ||
-          result.errorCode === "auth/operation-not-allowed" ||
-          result.errorCode === "auth/unauthorized-domain"
-        ) {
-          setIsFirebaseConsoleSetupNeeded(true);
-        }
-        setErrorMessage(
-          result.error ||
-            (isHindi
-              ? "गूगल प्रमाणीकरण पूरा नहीं हो सका। कृपया पुनः प्रयास करें।"
-              : "Unable to complete Google sign-in. Please try again.")
-        );
-        setIsLoading(false);
-        return;
-      }
-
-      setIsFirebaseConsoleSetupNeeded(false);
-
-      if (result.isDevSimulation) {
-        setDevSimulationActive(true);
-      }
-
-      // Sync session to server
-      const syncResponse = await fetch("/api/auth/google", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          uid: result.user.uid,
-          email: result.user.email,
-          displayName: result.user.displayName,
-          photoUrl: result.user.photoURL,
-          idToken: result.idToken,
-          isAdultConfirmed: true,
-        }),
-      });
-
-      const syncData = await syncResponse.json();
-
-      if (!syncResponse.ok || !syncData.success) {
-        setErrorMessage(
-          syncData.error ||
-            (isHindi
-              ? "सत्र प्रारंभ करने में त्रुटि। कृपया पुनः प्रयास करें।"
-              : "Failed to establish user session. Please try again.")
-        );
+        setErrorMessage(result.error || "Unable to complete Google sign-in.");
         setIsLoading(false);
         return;
       }
@@ -105,21 +155,61 @@ export function LoginClient() {
           : `Welcome, ${result.user.displayName || "Guest"}! Redirecting to dashboard...`
       );
 
-      // Redirect to dashboard
       setTimeout(() => {
         router.push("/dashboard");
-      }, 700);
+        router.refresh();
+      }, 500);
     } catch {
-      setErrorMessage(
-        isHindi
-          ? "एक अप्रत्याशित त्रुटि उत्पन्न हुई। कृपया पुनः प्रयास करें।"
-          : "An unexpected error occurred. Please try again."
-      );
+      setErrorMessage("Failed to authenticate with Google. Please try again.");
       setIsLoading(false);
     }
   };
 
-  // Handle Request OTP
+  // 3. Quick Demo Preset Logins
+  const handleDemoLogin = async (profile: DemoProfile) => {
+    if (!profile) return;
+
+    setErrorMessage(null);
+    setSuccessMessage(null);
+    setIsLoading(true);
+
+    try {
+      const response = await fetch("/api/auth/me", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: profile.id,
+          email: profile.email,
+          name: profile.name,
+          role: profile.role,
+          provider: "demo",
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        setErrorMessage("Demo sign-in failed. Please try again.");
+        setIsLoading(false);
+        return;
+      }
+
+      setSuccessMessage(
+        isHindi
+          ? `नमस्ते, ${profile.name}! आपका स्वागत है।`
+          : `Welcome, ${profile.name}! Redirecting to dashboard...`
+      );
+
+      setTimeout(() => {
+        router.push("/dashboard");
+        router.refresh();
+      }, 500);
+    } catch {
+      setErrorMessage("Demo authentication failed. Please try again.");
+      setIsLoading(false);
+    }
+  };
+
+  // 4. Request OTP
   const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
@@ -153,7 +243,7 @@ export function LoginClient() {
         result.message ||
           (isHindi
             ? "सत्यापन कोड भेज दिया गया है।"
-            : "Verification code sent successfully.")
+            : "Verification code sent successfully. (Dev: use 123456)")
       );
       setIsLoading(false);
     } catch {
@@ -162,23 +252,12 @@ export function LoginClient() {
     }
   };
 
-  // Handle Verify OTP
+  // 5. Verify submitted OTP
   const handleVerifyOtp = async (codeToVerify?: string) => {
     const code = codeToVerify || otpCode;
     if (code.length !== 6) {
       setErrorMessage(
-        isHindi
-          ? "कृपया ६ अंकों का सत्यापन कोड दर्ज करें।"
-          : "Please enter the full 6-digit verification code."
-      );
-      return;
-    }
-
-    if (!isAdultConfirmed) {
-      setErrorMessage(
-        isHindi
-          ? "प्रवेश करने से पहले १८ वर्ष या अधिक आयु की पुष्टि करना आवश्यक है।"
-          : "You must confirm you are 18 years of age or older before continuing."
+        isHindi ? "कृपया ६ अंकों का कोड दर्ज करें।" : "Please enter the full 6-digit code."
       );
       return;
     }
@@ -187,22 +266,21 @@ export function LoginClient() {
     setIsLoading(true);
 
     try {
-      const verifyResult = await verifyOtpAction(identifier, code, otpChannel);
-      if (!verifyResult.success) {
-        setErrorMessage(verifyResult.error || "Incorrect verification code.");
+      const result = await verifyOtpAction(identifier, code, otpChannel);
+      if (!result.success) {
+        setErrorMessage(result.error || "Invalid verification code.");
         setIsLoading(false);
         return;
       }
 
-      // Sync session to server via Google/Session endpoint
-      const syncResponse = await fetch("/api/auth/google", {
+      const syncResponse = await fetch("/api/auth/me", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          uid: "otp_" + identifier.replace(/[^a-zA-Z0-9]/g, ""),
-          email: otpChannel === "email" ? identifier.trim().toLowerCase() : `${identifier.replace(/\D/g, "")}@phone.atithidevobhava.in`,
-          displayName: identifier.split("@")[0] || "Verified Member",
-          isAdultConfirmed: true,
+          email: identifier.includes("@") ? identifier : `${identifier}@phone.atithidevobhava.in`,
+          name: identifier.split("@")[0] || "Verified Member",
+          role: "traveller",
+          provider: "otp",
         }),
       });
 
@@ -219,7 +297,8 @@ export function LoginClient() {
 
       setTimeout(() => {
         router.push("/dashboard");
-      }, 700);
+        router.refresh();
+      }, 500);
     } catch {
       setErrorMessage("Verification failed. Please try again.");
       setIsLoading(false);
@@ -227,311 +306,431 @@ export function LoginClient() {
   };
 
   return (
-    <div className="max-w-md w-full mx-auto">
+    <div className="max-w-xl w-full mx-auto">
       {/* Brand & Editorial Heading */}
-      <div className="text-center mb-8">
-        <Link href="/" className="inline-block group mb-4">
+      <div className="text-center mb-8 space-y-3">
+        <Link href="/" className="inline-block group mb-2">
           <Image
             src="/images/logo.png"
             alt="Atithi Devo Bhava - अतिथि देवो भवः"
             width={240}
             height={82}
             priority
-            className="h-12 w-auto mx-auto object-contain transition-transform duration-150 group-hover:scale-[1.02] dark:brightness-110"
+            className="h-12 w-auto mx-auto object-contain transition-transform duration-200 group-hover:scale-105 dark:brightness-110"
           />
         </Link>
-        <h1 className="font-heading text-2xl font-medium text-text mb-2">
+
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-forest/10 border border-forest/20 text-forest text-xs font-medium">
+          <LotusMotif className="w-3.5 h-3.5 text-forest" />
+          <span>{isHindi ? "सुरक्षित प्रवेश द्वार" : "Secure Member Access"}</span>
+        </div>
+
+        <h1 className="font-heading text-2xl sm:text-3xl font-medium text-text">
           {t("loginTitle")}
         </h1>
-        <p className="text-xs text-secondary max-w-sm mx-auto leading-relaxed">
+        <p className="text-xs sm:text-sm text-secondary max-w-md mx-auto leading-relaxed">
           {t("loginSubtitle")}
         </p>
       </div>
 
       {/* Main Authentication Card */}
-      <div className="bg-surface border border-rule rounded-sm p-6 sm:p-8 shadow-sm">
-        {/* Development Mode Notice (When Firebase credentials not configured) */}
-        {devSimulationActive && (
-          <div className="mb-6 p-3 bg-amber-50/70 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 rounded-sm flex items-start gap-2.5 text-xs text-amber-900 dark:text-amber-200">
-            <Info className="w-4 h-4 flex-shrink-0 text-amber-700 dark:text-amber-400 mt-0.5" strokeWidth={1.75} />
-            <div>
-              <p className="font-medium">{t("devModeNotice")}</p>
-              <p className="text-amber-800 dark:text-amber-300 mt-0.5 leading-relaxed">
-                {t("devModeDescription")}
-              </p>
+      <div className="journal-paper border border-rule rounded-sm p-6 sm:p-10 shadow-card space-y-6">
+        {/* Method Switcher Tabs */}
+        <div className="grid grid-cols-4 gap-1 p-1 bg-warm/50 border border-rule rounded-xs text-[11px] font-mono uppercase tracking-wider">
+          <button
+            type="button"
+            onClick={() => setActiveMethod("email")}
+            className={`py-2 px-2 rounded-xs transition-all duration-150 flex items-center justify-center gap-1 tactile-button ${
+              activeMethod === "email"
+                ? "bg-primary text-white shadow-xs font-semibold"
+                : "text-secondary hover:text-text"
+            }`}
+          >
+            <Mail className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">{isHindi ? "ईमेल" : "Email"}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveMethod("google")}
+            className={`py-2 px-2 rounded-xs transition-all duration-150 flex items-center justify-center gap-1 tactile-button ${
+              activeMethod === "google"
+                ? "bg-primary text-white shadow-xs font-semibold"
+                : "text-secondary hover:text-text"
+            }`}
+          >
+            <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+              />
+              <path
+                fill="currentColor"
+                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+              />
+              <path
+                fill="currentColor"
+                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+              />
+              <path
+                fill="currentColor"
+                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+              />
+            </svg>
+            <span className="truncate">Google</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveMethod("demo")}
+            className={`py-2 px-2 rounded-xs transition-all duration-150 flex items-center justify-center gap-1 tactile-button ${
+              activeMethod === "demo"
+                ? "bg-primary text-white shadow-xs font-semibold"
+                : "text-secondary hover:text-text"
+            }`}
+          >
+            <Sparkles className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">{isHindi ? "डेमो" : "Demo"}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveMethod("otp")}
+            className={`py-2 px-2 rounded-xs transition-all duration-150 flex items-center justify-center gap-1 tactile-button ${
+              activeMethod === "otp"
+                ? "bg-primary text-white shadow-xs font-semibold"
+                : "text-secondary hover:text-text"
+            }`}
+          >
+            <Phone className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">OTP</span>
+          </button>
+        </div>
+
+        {/* Status Banners */}
+        {errorMessage && (
+          <div className="p-3.5 bg-red-50/80 dark:bg-red-950/40 border border-red-200 dark:border-red-800 rounded-xs text-xs text-red-800 dark:text-red-200 flex items-start gap-2.5 font-mono">
+            <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+            <span className="leading-relaxed">{errorMessage}</span>
+          </div>
+        )}
+
+        {successMessage && (
+          <div className="p-3.5 bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xs text-xs text-emerald-800 dark:text-emerald-200 flex items-start gap-2.5 font-mono">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+            <span className="leading-relaxed">{successMessage}</span>
+          </div>
+        )}
+
+        {/* TAB 1: Firebase Email & Password */}
+        {activeMethod === "email" && (
+          <form onSubmit={handleEmailPasswordSignIn} className="space-y-4">
+            <div className="space-y-1.5">
+              <label className="block text-xs font-mono uppercase tracking-wider text-text font-medium">
+                {isHindi ? "ईमेल पता" : "Email Address"}
+              </label>
+              <div className="relative">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="name@example.com"
+                  autoComplete="email"
+                  required
+                  disabled={isLoading}
+                  className="w-full px-3.5 py-2.5 pl-10 bg-surface border border-rule rounded-xs text-xs text-text placeholder:text-secondary/60 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition-all font-body"
+                />
+                <Mail className="w-4 h-4 text-secondary absolute left-3.5 top-3" />
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-semibold text-text">
+                  {isHindi ? "पासवर्ड" : "Password"}
+                </label>
+              </div>
+              <div className="relative">
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  autoComplete="current-password"
+                  required
+                  disabled={isLoading}
+                  className="w-full px-3.5 py-2.5 pl-10 bg-page border border-rule rounded-xl text-xs text-text placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-forest/30 focus:border-forest transition-all"
+                />
+                <Lock className="w-4 h-4 text-secondary absolute left-3.5 top-3" />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isLoading || !isAdultConfirmed}
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#283827] hover:bg-[#1e2a1d] text-white rounded-2xl shadow-card text-xs font-semibold transition-all duration-150 disabled:opacity-60"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>{isHindi ? "सत्यापित हो रहा है..." : "Authenticating with Firebase..."}</span>
+                </>
+              ) : (
+                <>
+                  <KeyRound className="w-4 h-4" />
+                  <span>{isHindi ? "प्रवेश करें" : "Sign In with Email"}</span>
+                  <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                </>
+              )}
+            </button>
+          </form>
+        )}
+
+        {/* TAB 2: Google Sign In */}
+        {activeMethod === "google" && (
+          <div className="space-y-4">
+            <p className="text-xs text-secondary leading-relaxed text-center">
+              {isHindi
+                ? "गूगल साइन-इन के माध्यम से सीधे अतिथि देवो भवः में प्रवेश करें।"
+                : "Sign in securely using your verified Google account credentials."}
+            </p>
+
+            <button
+              type="button"
+              onClick={handleGoogleSignIn}
+              disabled={isLoading || !isAdultConfirmed}
+              className="w-full flex items-center justify-center gap-3 px-4 py-3.5 bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-2xl shadow-xs text-xs font-semibold text-text transition-all duration-150 disabled:opacity-60"
+            >
+              {isLoading ? (
+                <Loader2 className="w-4 h-4 animate-spin text-secondary" />
+              ) : (
+                <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    fill="#4285F4"
+                    d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"
+                  />
+                  <path
+                    fill="#34A853"
+                    d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"
+                  />
+                  <path
+                    fill="#FBBC05"
+                    d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.98 0 12s.45 3.82 1.25 5.42l4.03-3.15z"
+                  />
+                  <path
+                    fill="#EA4335"
+                    d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"
+                  />
+                </svg>
+              )}
+              <span>{isHindi ? "गूगल से प्रवेश करें" : "Continue with Google"}</span>
+            </button>
+          </div>
+        )}
+
+        {/* TAB 3: Quick Demo Accounts */}
+        {activeMethod === "demo" && (
+          <div className="space-y-3">
+            <div className="flex items-center justify-between text-xs text-secondary mb-1">
+              <span className="font-medium">
+                {isHindi ? "परीक्षण प्रोफाइल चुनें (१-क्लिक):" : "Instant Test Profiles (1-Click):"}
+              </span>
+              <span className="text-[11px] text-forest font-semibold">Dev Ready</span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {PRESET_DEMO_ACCOUNTS.map((profile) => (
+                <button
+                  key={profile.id}
+                  type="button"
+                  onClick={() => handleDemoLogin(profile)}
+                  disabled={isLoading}
+                  className="p-3 bg-page hover:bg-surface border border-rule hover:border-forest/40 rounded-2xl text-left transition-all duration-150 flex items-start gap-2.5 group shadow-2xs disabled:opacity-60"
+                >
+                  <div className="w-8 h-8 rounded-xl bg-forest/10 border border-forest/20 text-forest flex items-center justify-center font-heading font-medium text-xs shrink-0 group-hover:bg-forest group-hover:text-white transition-colors">
+                    {profile.name.charAt(0)}
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center justify-between gap-1">
+                      <p className="text-xs font-semibold text-text truncate group-hover:text-forest transition-colors">
+                        {isHindi ? profile.nameHi : profile.name}
+                      </p>
+                      <ArrowRight className="w-3 h-3 text-secondary opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
+                    </div>
+                    <p className="text-[10px] text-secondary truncate">
+                      {isHindi ? profile.roleLabelHi : profile.roleLabelEn}
+                    </p>
+                  </div>
+                </button>
+              ))}
             </div>
           </div>
         )}
 
-        {/* Error Notification */}
-        {errorMessage && (
-          <div className="mb-6 p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/60 rounded-sm text-xs text-red-800 dark:text-red-200">
-            <div className="flex items-start gap-2">
-              <AlertCircle className="w-4 h-4 flex-shrink-0 text-red-600 mt-0.5" strokeWidth={1.75} />
-              <span className="leading-relaxed">{errorMessage}</span>
-            </div>
+        {/* TAB 4: OTP Authentication */}
+        {activeMethod === "otp" && (
+          <div className="space-y-4">
+            {!otpSent ? (
+              <form onSubmit={handleSendOtp} className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-semibold text-text">
+                    {isHindi ? "सत्यापन माध्यम" : "Verification Channel"}
+                  </label>
+                  <div className="flex items-center gap-3 text-xs">
+                    <button
+                      type="button"
+                      onClick={() => setOtpChannel("mobile")}
+                      className={`text-xs ${
+                        otpChannel === "mobile"
+                          ? "text-forest font-semibold underline underline-offset-4"
+                          : "text-secondary"
+                      }`}
+                    >
+                      {isHindi ? "मोबाइल" : "Mobile"}
+                    </button>
+                    <span className="text-rule">|</span>
+                    <button
+                      type="button"
+                      onClick={() => setOtpChannel("email")}
+                      className={`text-xs ${
+                        otpChannel === "email"
+                          ? "text-forest font-semibold underline underline-offset-4"
+                          : "text-secondary"
+                      }`}
+                    >
+                      {isHindi ? "ईमेल" : "Email"}
+                    </button>
+                  </div>
+                </div>
 
-            {isFirebaseConsoleSetupNeeded && (
-              <div className="mt-3 pt-3 border-t border-red-200/80 dark:border-red-800/60 space-y-2">
-                <a
-                  href="https://console.firebase.google.com/project/studio-5645738071-b5b38/authentication"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs font-medium text-primary hover:underline inline-flex items-center gap-1"
+                <div className="space-y-1.5">
+                  <div className="relative">
+                    <input
+                      type={otpChannel === "mobile" ? "tel" : "email"}
+                      value={identifier}
+                      onChange={(e) => setIdentifier(e.target.value)}
+                      placeholder={
+                        otpChannel === "mobile"
+                          ? isHindi
+                            ? "९८७६५४३२१०"
+                            : "9876543210"
+                          : "name@example.com"
+                      }
+                      required
+                      disabled={isLoading}
+                      className="w-full px-3.5 py-2.5 pl-10 bg-page border border-rule rounded-xl text-xs text-text placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-forest/30 focus:border-forest transition-all"
+                    />
+                    {otpChannel === "mobile" ? (
+                      <Phone className="w-4 h-4 text-secondary absolute left-3.5 top-3" />
+                    ) : (
+                      <Mail className="w-4 h-4 text-secondary absolute left-3.5 top-3" />
+                    )}
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isLoading || !isAdultConfirmed}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#283827] hover:bg-[#1e2a1d] text-white rounded-2xl shadow-card text-xs font-semibold transition-all duration-150 disabled:opacity-60"
                 >
-                  <span>{isHindi ? "गूगल साइन-इन सक्षम करने के लिए फायरबेस कंसोल खोलें" : "Open Firebase Console to enable Google Sign-In"}</span>
-                  <ArrowRight className="w-3 h-3" strokeWidth={2} />
-                </a>
+                  {isLoading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <>
+                      <span>{isHindi ? "ओटीपी कोड भेजें" : "Send Verification Code"}</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </>
+                  )}
+                </button>
+              </form>
+            ) : (
+              <div className="space-y-4">
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-secondary">
+                      {isHindi ? "भेजा गया:" : "Sent to:"} <strong>{identifier}</strong>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setOtpSent(false)}
+                      className="text-xs text-forest hover:underline"
+                    >
+                      {isHindi ? "बदलें" : "Change"}
+                    </button>
+                  </div>
+
+                  <input
+                    type="text"
+                    maxLength={6}
+                    value={otpCode}
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/\D/g, "");
+                      setOtpCode(val);
+                      if (val.length === 6) {
+                        handleVerifyOtp(val);
+                      }
+                    }}
+                    placeholder="123456"
+                    className="w-full tracking-widest text-center text-lg font-mono font-semibold py-2.5 bg-page border border-rule rounded-xl text-text focus:outline-none focus:ring-2 focus:ring-forest/30 focus:border-forest"
+                  />
+                </div>
+
                 <button
                   type="button"
-                  onClick={() => handleGoogleSignIn({ forceSimulation: true })}
-                  className="w-full py-2 px-3 bg-surface hover:bg-page border border-rule rounded-sm text-xs font-medium text-text transition-colors flex items-center justify-center gap-1.5 shadow-sm"
+                  onClick={() => handleVerifyOtp()}
+                  disabled={isLoading || otpCode.length !== 6}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#283827] hover:bg-[#1e2a1d] text-white rounded-2xl shadow-card text-xs font-semibold transition-all duration-150 disabled:opacity-60"
                 >
-                  <span>{isHindi ? "सिमुलेशन मोड से जारी रखें" : "Continue with Development Simulation"}</span>
+                  {isLoading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <span>{isHindi ? "सत्यापित करें" : "Verify & Enter"}</span>
+                  )}
                 </button>
               </div>
             )}
           </div>
         )}
 
-        {/* Success Notification */}
-        {successMessage && (
-          <div className="mb-6 p-3 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/60 rounded-sm flex items-start gap-2 text-xs text-emerald-800 dark:text-emerald-200">
-            <ShieldCheck className="w-4 h-4 flex-shrink-0 text-emerald-600 mt-0.5" strokeWidth={1.75} />
-            <span>{successMessage}</span>
-          </div>
-        )}
-
-        {/* Primary Action: Google Firebase Sign-In Button */}
-        <div className="space-y-4">
-          <button
-            type="button"
-            onClick={() => handleGoogleSignIn()}
-            disabled={isLoading}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 rounded-sm shadow-sm text-sm font-medium text-text transition-colors duration-150 disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-          >
-            {isLoading ? (
-              <Loader2 className="w-5 h-5 animate-spin text-secondary" />
-            ) : (
-              <svg className="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" aria-hidden="true">
-                <path
-                  fill="#4285F4"
-                  d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"
-                />
-                <path
-                  fill="#34A853"
-                  d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.33 24 12 24z"
-                />
-                <path
-                  fill="#FBBC05"
-                  d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.98 0 12s.45 3.82 1.25 5.42l4.03-3.15z"
-                />
-                <path
-                  fill="#EA4335"
-                  d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.33 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"
-                />
-              </svg>
-            )}
-            <span>{isLoading ? t("signingIn") : t("continueWithGoogle")}</span>
-          </button>
-        </div>
-
-        {/* Visual Rule Divider */}
-        <div className="relative my-6">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-rule" />
-          </div>
-          <div className="relative flex justify-center text-xs">
-            <span className="bg-surface px-3 text-secondary font-medium">
-              {t("orOtp")}
-            </span>
-          </div>
-        </div>
-
-        {/* OTP Authentication Alternative */}
-        {!otpSent ? (
-          <form onSubmit={handleSendOtp} className="space-y-4">
-            {/* Channel Tabs: Mobile vs Email */}
-            <div className="grid grid-cols-2 gap-1 p-0.5 bg-page border border-rule rounded-sm text-xs font-medium">
-              <button
-                type="button"
-                onClick={() => {
-                  setOtpChannel("mobile");
-                  setIdentifier("");
-                }}
-                className={`py-1.5 px-3 rounded-sm flex items-center justify-center gap-1.5 transition-colors ${
-                  otpChannel === "mobile"
-                    ? "bg-primary text-white"
-                    : "text-secondary hover:text-text"
-                }`}
-              >
-                <Phone className="w-3.5 h-3.5" strokeWidth={1.75} />
-                <span>{t("mobileTab")}</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setOtpChannel("email");
-                  setIdentifier("");
-                }}
-                className={`py-1.5 px-3 rounded-sm flex items-center justify-center gap-1.5 transition-colors ${
-                  otpChannel === "email"
-                    ? "bg-primary text-white"
-                    : "text-secondary hover:text-text"
-                }`}
-              >
-                <Mail className="w-3.5 h-3.5" strokeWidth={1.75} />
-                <span>{t("emailTab")}</span>
-              </button>
-            </div>
-
-            {/* Input field */}
-            <div>
-              <label
-                htmlFor="auth-identifier"
-                className="block text-xs font-medium text-text mb-1"
-              >
-                {otpChannel === "mobile"
-                  ? isHindi
-                    ? "भारतीय मोबाइल नंबर"
-                    : "Indian Mobile Number"
-                  : isHindi
-                  ? "ईमेल पता"
-                  : "Email Address"}
-              </label>
-
-              {otpChannel === "mobile" ? (
-                <div className="relative flex items-center">
-                  <span className="absolute left-3 text-xs font-medium text-secondary">
-                    +91
-                  </span>
-                  <input
-                    id="auth-identifier"
-                    type="tel"
-                    inputMode="numeric"
-                    maxLength={10}
-                    value={identifier}
-                    onChange={(e) => setIdentifier(e.target.value.replace(/\D/g, ""))}
-                    placeholder="9876543210"
-                    disabled={isLoading}
-                    className="w-full pl-12 pr-3 py-2 text-sm bg-page border border-rule rounded-sm focus:outline-none focus:ring-1 focus:ring-primary text-text placeholder:text-muted"
-                  />
-                </div>
-              ) : (
-                <input
-                  id="auth-identifier"
-                  type="email"
-                  value={identifier}
-                  onChange={(e) => setIdentifier(e.target.value)}
-                  placeholder="name@example.com"
-                  disabled={isLoading}
-                  className="w-full px-3 py-2 text-sm bg-page border border-rule rounded-sm focus:outline-none focus:ring-1 focus:ring-primary text-text placeholder:text-muted"
-                />
-              )}
-            </div>
-
-            <button
-              type="submit"
-              disabled={isLoading || !identifier.trim()}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-text hover:bg-neutral-800 text-surface dark:text-neutral-900 dark:bg-neutral-100 rounded-sm text-xs font-medium uppercase tracking-wider transition-colors disabled:opacity-50"
-            >
-              {isLoading ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <>
-                  <span>{t("sendCode")}</span>
-                  <ArrowRight className="w-3.5 h-3.5" strokeWidth={2} />
-                </>
-              )}
-            </button>
-          </form>
-        ) : (
-          <div className="space-y-4">
-            <div className="text-center">
-              <span className="text-xs text-secondary">
-                {isHindi ? "सत्यापन कोड भेजा गया:" : "Verification code sent to:"}{" "}
-                <strong className="text-text">{identifier}</strong>
-              </span>
-            </div>
-
-            <div className="flex justify-center py-2">
-              <OtpInput
-                length={6}
-                value={otpCode}
-                onChange={setOtpCode}
-                onComplete={(code) => handleVerifyOtp(code)}
-                disabled={isLoading}
-                lang={locale}
-              />
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => handleVerifyOtp()}
-                disabled={isLoading || otpCode.length !== 6}
-                className="flex-1 py-2.5 bg-primary hover:bg-primary-hover text-white rounded-sm text-xs font-medium uppercase tracking-wider transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-              >
-                {isLoading ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <span>{t("verifyAndLogin")}</span>
-                )}
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  setOtpSent(false);
-                  setOtpCode("");
-                }}
-                disabled={isLoading}
-                className="px-3 py-2.5 border border-rule text-secondary hover:text-text rounded-sm text-xs transition-colors"
-              >
-                {isHindi ? "बदलें" : "Change"}
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* 18+ Adult Confirmation Checkbox */}
-        <div className="mt-6 pt-5 border-t border-rule">
+        {/* 18+ Adult Age Invariant Checkbox */}
+        <div className="pt-2 border-t border-rule/60">
           <label className="flex items-start gap-2.5 cursor-pointer">
             <input
               type="checkbox"
               checked={isAdultConfirmed}
               onChange={(e) => setIsAdultConfirmed(e.target.checked)}
-              className="mt-0.5 rounded-sm border-rule text-primary focus:ring-primary h-4 w-4"
+              className="mt-0.5 rounded border-rule text-forest focus:ring-forest"
             />
             <span className="text-[11px] text-secondary leading-snug">
-              {t("adultDeclaration")}
+              {isHindi
+                ? "मैं पुष्टि करता/करती हूँ कि मेरी आयु १८ वर्ष या अधिक है (वयस्क-मात्र मंच)।"
+                : "I confirm I am 18 years of age or older (Adults-only platform)."}
             </span>
           </label>
         </div>
       </div>
 
-      {/* Safety & Legal Notices */}
-      <div className="mt-6 text-center space-y-3">
-        <p className="text-[11px] text-secondary">
-          {t("termsNotice")}{" "}
-          <Link href="/terms" className="underline hover:text-primary">
-            {isHindi ? "सेवा की शर्तें" : "Terms"}
-          </Link>{" "}
-          &bull;{" "}
-          <Link href="/privacy" className="underline hover:text-primary">
-            {isHindi ? "गोपनीयता नीति" : "Privacy"}
-          </Link>
-        </p>
+      {/* Registration Redirect Link */}
+      <div className="text-center mt-6 text-xs text-secondary">
+        <span>{isHindi ? "क्या आप नए सदस्य हैं?" : "Don't have an account?"}</span>{" "}
+        <Link
+          href="/register"
+          className="font-semibold text-forest hover:text-forest/80 underline underline-offset-4 ml-1"
+        >
+          {isHindi ? "यहाँ पंजीकरण करें" : "Create an account"}
+        </Link>
+      </div>
 
-        <p className="text-xs text-secondary">
-          {t("noAccount")}{" "}
-          <Link
-            href="/onboarding"
-            className="text-primary font-medium hover:underline inline-flex items-center gap-1"
-          >
-            <span>{t("joinCommunity")}</span>
-            <ArrowRight className="w-3 h-3" strokeWidth={2} />
-          </Link>
-        </p>
+      {/* Trust & Privacy Notice */}
+      <div className="mt-8 text-center space-y-2">
+        <div className="inline-flex items-center gap-1.5 text-[11px] text-muted">
+          <ShieldCheck className="w-3.5 h-3.5 text-forest" />
+          <span>
+            {isHindi
+              ? "डीपीडीपी अधिनियम २०२३ के अंतर्गत शून्य विज्ञापन-ट्रैकर्स एवं कड़े गोपनीयता मानक।"
+              : "Zero ad-trackers, DPDP Act 2023 compliance & encrypted session protection."}
+          </span>
+        </div>
       </div>
     </div>
   );

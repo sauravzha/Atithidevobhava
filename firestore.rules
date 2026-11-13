@@ -1,0 +1,199 @@
+rules_version = '2';
+
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// Collection: users/{userId}
+// Document ID: Firebase Auth UID
+// Fields:
+//   - uid: string (required, immutable) - Firebase UID
+//   - email: string (required) - Email address
+//   - displayName: string (required, 1-100 chars) - User's display name
+//   - photoURL: string (optional) - Avatar URL
+//   - role: string (required, 'traveller' | 'local' | 'artisan' | 'admin') - User role
+//   - verified: bool (required) - Verification status
+//   - phone: string (optional) - Masked / formatted phone number
+//   - district: string (optional) - District centroid
+//   - state: string (optional) - State
+//   - createdAt: timestamp (required, immutable) - Creation time
+//   - updatedAt: timestamp (required) - Last update time
+//
+// Collection: experiences/{experienceId}
+// Document ID: Auto-generated
+// Fields:
+//   - id: string (required) - Experience ID
+//   - title: string (required, 5-200 chars) - Title
+//   - description: string (required, 10-5000 chars) - Description
+//   - hostId: string (required, immutable) - Host UID
+//   - hostName: string (required, 1-100 chars) - Host Name
+//   - category: string (required) - Cultural category
+//   - price: number (required, non-negative) - Cost in INR
+//   - durationMinutes: number (required, positive) - Duration
+//   - status: string (required, 'draft' | 'pending_approval' | 'published' | 'paused') - Status
+//   - location: map (required) - District & state info
+//   - createdAt: timestamp (required, immutable) - Creation timestamp
+//   - updatedAt: timestamp (required) - Update timestamp
+//
+// Collection: bookings/{bookingId}
+// Document ID: Auto-generated
+// Fields:
+//   - id: string (required) - Booking ID
+//   - experienceId: string (required, immutable) - Experience ID
+//   - hostId: string (required, immutable) - Host UID
+//   - travellerId: string (required, immutable) - Traveller UID
+//   - status: string (required, 'pending' | 'confirmed' | 'completed' | 'cancelled') - Status
+//   - date: string (required) - Scheduled date
+//   - guestsCount: number (required, positive) - Number of guests
+//   - totalAmount: number (required, non-negative) - Amount in INR
+//   - createdAt: timestamp (required, immutable) - Creation timestamp
+//
+// Collection: connections/{connectionId}
+// Document ID: Auto-generated
+// Fields:
+//   - id: string (required) - Connection ID
+//   - initiatorId: string (required, immutable) - Initiator UID
+//   - recipientId: string (required, immutable) - Recipient UID
+//   - status: string (required, 'pending' | 'accepted' | 'declined') - Status
+//   - createdAt: timestamp (required, immutable) - Creation timestamp
+//
+// Collection: safety_checkins/{checkinId}
+// Document ID: Auto-generated
+// Fields:
+//   - userId: string (required, immutable) - User UID
+//   - status: string (required, 'active' | 'safe' | 'alert') - Safety status
+//   - timestamp: timestamp (required) - Check-in time
+//
+// ===============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isDocHost() {
+      return isAuthenticated() && request.auth.uid == resource.data.hostId;
+    }
+
+    function isBookingParticipant() {
+      return isAuthenticated() && (
+        request.auth.uid == resource.data.travellerId ||
+        request.auth.uid == resource.data.hostId
+      );
+    }
+
+    function isConnectionParticipant() {
+      return isAuthenticated() && (
+        request.auth.uid == resource.data.initiatorId ||
+        request.auth.uid == resource.data.recipientId
+      );
+    }
+
+    // Role verification (never allow self-escalation to admin)
+    function isValidRole(role) {
+      return role in ['traveller', 'local', 'artisan', 'admin'];
+    }
+
+    // ===============================================================
+    // Users Collection Rules
+    // ===============================================================
+    match /users/{userId} {
+      // Authenticated users can read their own profile; others only if viewing member
+      allow read: if isAuthenticated();
+
+      // Only owner can create their profile (default non-admin role)
+      allow create: if isOwner(userId) &&
+        request.resource.data.uid == userId &&
+        isValidRole(request.resource.data.role) &&
+        (request.resource.data.role != 'admin');
+
+      // Only owner can update profile, and role cannot be self-escalated to admin
+      allow update: if isOwner(userId) &&
+        request.resource.data.uid == resource.data.uid &&
+        (
+          request.resource.data.role == resource.data.role ||
+          (resource.data.role == 'admin')
+        );
+
+      allow delete: if false; // User accounts must be soft-deleted or through admin API
+    }
+
+    // ===============================================================
+    // Cultural Experiences Marketplace
+    // ===============================================================
+    match /experiences/{experienceId} {
+      // Published experiences are publicly viewable
+      allow read: if resource.data.status == 'published' ||
+                     (isAuthenticated() && (request.auth.uid == resource.data.hostId));
+
+      // Authenticated users can author an experience where hostId matches their UID
+      allow create: if isAuthenticated() &&
+        request.resource.data.hostId == request.auth.uid;
+
+      // Only host can update their experience; hostId cannot be changed
+      allow update: if isDocHost() &&
+        request.resource.data.hostId == resource.data.hostId;
+
+      allow delete: if isDocHost();
+    }
+
+    // ===============================================================
+    // Bookings Collection Rules
+    // ===============================================================
+    match /bookings/{bookingId} {
+      allow read: if isBookingParticipant();
+
+      // Only authenticated traveller can create booking for themselves
+      allow create: if isAuthenticated() &&
+        request.resource.data.travellerId == request.auth.uid;
+
+      // Only participants (host or traveller) can update booking status
+      allow update: if isBookingParticipant() &&
+        request.resource.data.travellerId == resource.data.travellerId &&
+        request.resource.data.hostId == resource.data.hostId;
+
+      allow delete: if false;
+    }
+
+    // ===============================================================
+    // Connections ("Meet a Local") Rules
+    // ===============================================================
+    match /connections/{connectionId} {
+      allow read: if isConnectionParticipant();
+
+      allow create: if isAuthenticated() &&
+        request.resource.data.initiatorId == request.auth.uid;
+
+      allow update: if isConnectionParticipant() &&
+        request.resource.data.initiatorId == resource.data.initiatorId &&
+        request.resource.data.recipientId == resource.data.recipientId;
+
+      allow delete: if isConnectionParticipant();
+    }
+
+    // ===============================================================
+    // Safety & Check-ins
+    // ===============================================================
+    match /safety_checkins/{checkinId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && request.resource.data.userId == request.auth.uid;
+      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow delete: if false;
+    }
+
+    // Default deny all other paths
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

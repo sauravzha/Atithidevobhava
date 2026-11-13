@@ -14,6 +14,11 @@ import {
   type Auth,
   type UserCredential,
 } from "firebase/auth";
+import { getFirestore, type Firestore } from "firebase/firestore";
+import { syncUserProfile, getUserProfile } from "@/lib/firebase/firestore";
+
+export { syncUserProfile, getUserProfile };
+export { signInWithEmail, signUpWithEmail, signOutUser } from "@/lib/firebase/auth";
 
 export interface FirebaseClientConfig {
   apiKey?: string;
@@ -104,6 +109,17 @@ export function getFirebaseAuth(): Auth | null {
     return null;
   }
   return getAuth(app);
+}
+
+/**
+ * Get the Cloud Firestore database instance.
+ */
+export function getFirebaseDb(): Firestore | null {
+  const app = getFirebaseApp();
+  if (!app) {
+    return null;
+  }
+  return getFirestore(app);
 }
 
 /**

@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getHostComplianceRecordsAction } from "@/app/actions/accommodation";
+import { getAuthenticatedUser } from "@/lib/auth/server-user";
 import { HostComplianceClient } from "./compliance-client";
 
 interface Props {
@@ -14,13 +14,10 @@ export default async function HostCompliancePage({ params }: Props) {
   const { locale } = await params;
   const isHindi = locale === "hi";
 
-  const supabase = await createServerSupabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
 
   if (!user) {
-    redirect(`/${locale}/onboarding`);
+    redirect(`/${locale}/login`);
   }
 
   const result = await getHostComplianceRecordsAction();

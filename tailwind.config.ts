@@ -9,20 +9,32 @@ const config: Config = {
   ],
   darkMode: "class",
   theme: {
-    /* Override default max-width to editorial grid width */
-    maxWidth: {
-      none: "none",
-      full: "100%",
-      site: "1120px",
-    },
-    /* Override default border radius to 3px editorial flat */
-    borderRadius: {
-      none: "0",
-      sm: "3px",
-      DEFAULT: "3px",
-      lg: "3px",
-    },
     extend: {
+      maxWidth: {
+        site: "1280px",
+        container: "1360px",
+        prose: "66ch",
+      },
+      borderRadius: {
+        none: "0",
+        xs: "2px",
+        sm: "4px",
+        DEFAULT: "6px",
+        md: "8px",
+        lg: "12px",
+        xl: "16px",
+        "2xl": "20px",
+        "3xl": "24px",
+        full: "9999px",
+      },
+      boxShadow: {
+        "2xs": "0 1px 2px 0 rgba(0, 0, 0, 0.04)",
+        xs: "0 1px 3px 0 rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.04)",
+        card: "0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03)",
+        "card-hover": "0 12px 32px -4px rgba(0, 0, 0, 0.1), 0 4px 12px -2px rgba(0, 0, 0, 0.05)",
+        glow: "0 0 25px -4px rgba(89, 107, 87, 0.25)",
+        "glow-terracotta": "0 0 25px -4px rgba(164, 94, 70, 0.25)",
+      },
       colors: {
         /* Light palette */
         ivory: "var(--color-ivory)",
@@ -80,9 +92,6 @@ const config: Config = {
         "12": "48px",
         "18": "72px",
         "24": "96px",
-      },
-      maxWidth: {
-        prose: "66ch",
       },
       ringWidth: {
         focus: "2px",

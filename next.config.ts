@@ -8,6 +8,13 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/webp"],
   },
+  serverExternalPackages: [
+    "@formatjs/intl-localematcher",
+    "@formatjs/fast-memoize",
+    "@formatjs/icu-messageformat-parser",
+    "@formatjs/icu-skeleton-parser",
+    "@formatjs/ecma402-abstract",
+  ],
 };
 
 export default withNextIntl(nextConfig);

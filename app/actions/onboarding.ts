@@ -74,8 +74,12 @@ export async function requestOtpAction(
       isDevFallback: result.isDevFallback,
       message:
         type === "email"
-          ? "Verification code sent to your email address."
-          : "Verification code sent to your mobile number.",
+          ? (result.isDevFallback
+              ? "Verification code sent! (Dev test code: 123456)"
+              : "Verification code sent to your email address.")
+          : (result.isDevFallback
+              ? "Verification code sent! (Dev test code: 123456)"
+              : "Verification code sent to your mobile number."),
     };
   } catch (err) {
     return {

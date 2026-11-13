@@ -10,16 +10,24 @@
 
 @layer base {
   :root {
-    /* Light palette */
-    --color-ivory: #F7F5F0;
+    /* Indian Heritage Editorial Palette */
+    --color-ivory: #FAF7F2;
+    --color-cream: #F3EFE6;
+    --color-paper: #EDE6D8;
     --color-white: #FFFFFF;
-    --color-charcoal: #252723;
-    --color-forest: #596B57;
-    --color-forest-hover: #455345;
-    --color-terracotta: #A45E46;
-    --color-terracotta-text: #8A4A35;
-    --color-warm-grey: #E9E5DE;
-    --color-secondary: #66655F;
+    --color-charcoal: #1C1E1B;
+    --color-forest: #234033;
+    --color-forest-hover: #1A3026;
+    --color-forest-light: #2F5242;
+    --color-terracotta: #C85A32;
+    --color-terracotta-hover: #A74422;
+    --color-terracotta-text: #8A3519;
+    --color-indigo: #2C3E55;
+    --color-indigo-dark: #1E2B3C;
+    --color-gold: #D4AF37;
+    --color-gold-muted: #B89324;
+    --color-warm-grey: #E5DFD5;
+    --color-secondary: #5C5B56;
     --color-error: #A4332B;
 
     /* Semantic mappings */
@@ -36,26 +44,34 @@
   }
 
   .dark {
-    --color-ivory: #141613;
+    --color-ivory: #131512;
+    --color-cream: #1B1D19;
+    --color-paper: #222520;
     --color-white: #1C1E1A;
-    --color-charcoal: #ECE9E2;
-    --color-forest: #8FA88C;
-    --color-forest-hover: #A9BFA6;
-    --color-terracotta: #D08A6E;
-    --color-terracotta-text: #D08A6E;
-    --color-warm-grey: #2E302B;
-    --color-secondary: #A8A69D;
+    --color-charcoal: #EDEAE3;
+    --color-forest: #7E9D7C;
+    --color-forest-hover: #9BB898;
+    --color-forest-light: #5A7458;
+    --color-terracotta: #D87B57;
+    --color-terracotta-hover: #E49373;
+    --color-terracotta-text: #E49373;
+    --color-indigo: #4A6382;
+    --color-indigo-dark: #2F4054;
+    --color-gold: #E5C358;
+    --color-gold-muted: #D4AF37;
+    --color-warm-grey: #2B2E28;
+    --color-secondary: #A3A198;
     --color-error: #E0817A;
 
-    --color-page: #141613;
-    --color-surface: #1C1E1A;
-    --color-text: #ECE9E2;
-    --color-rule: #2E302B;
-    --color-primary: #8FA88C;
-    --color-primary-hover: #A9BFA6;
+    --color-page: #131512;
+    --color-surface: #1B1D19;
+    --color-text: #EDEAE3;
+    --color-rule: #2B2E28;
+    --color-primary: #7E9D7C;
+    --color-primary-hover: #9BB898;
 
-    --ring-color: #8FA88C;
-    --ring-offset-color: #141613;
+    --ring-color: #7E9D7C;
+    --ring-offset-color: #131512;
   }
 
   /* Base resets and typography */
@@ -164,11 +180,202 @@
   /* Editorial grid container */
   .site-container {
     width: 100%;
-    max-width: 1120px;
+    max-width: 1280px;
     margin-left: auto;
     margin-right: auto;
     padding-left: 16px;
     padding-right: 16px;
+  }
+
+  /* Advanced Aesthetic Glassmorphism and Elevated Cards */
+  .glass-card {
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(233, 229, 222, 0.8);
+  }
+
+  .dark .glass-card {
+    background-color: rgba(28, 30, 26, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(46, 48, 43, 0.8);
+  }
+
+  /* ==========================================================================
+     ADVANCED INTELLIGENT MORPHISM DESIGN SYSTEM
+     1. Skeuomorphism: Authentic tactile journal & postcard details
+     2. Neumorphism: Soft inset/raised interactive controls
+     3. Glassmorphism: Translucent organic glass surfaces
+     4. Claymorphism: Soft dimensional pills & onboarding accents
+     5. Liquid Glass: Fluid specular refractions & depth
+     6. AI Morphism: Warm atmospheric heritage illumination
+     ========================================================================== */
+
+  /* A. SKEUOMORPHISM — Journal paper & physical postal elements */
+  .journal-paper {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-rule);
+    box-shadow: 0 1px 3px rgba(28, 30, 27, 0.04), 0 4px 12px -2px rgba(28, 30, 27, 0.03);
+  }
+
+  .postcard-paper {
+    background-color: #FAF7F0;
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 8px 24px -4px rgba(200, 90, 50, 0.06);
+  }
+
+  .dark .postcard-paper {
+    background-color: #1A1D19;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  }
+
+  .heritage-stamp {
+    position: relative;
+    border: 1px dashed var(--color-terracotta);
+    background: rgba(200, 90, 50, 0.04);
+  }
+
+  .heritage-seal {
+    border: 1.5px solid var(--color-terracotta);
+    box-shadow: inset 0 0 0 2px rgba(200, 90, 50, 0.15), 0 2px 6px rgba(200, 90, 50, 0.12);
+  }
+
+  .heritage-deckle {
+    border-bottom: 1px solid var(--color-rule);
+    background-image: radial-gradient(circle, var(--color-rule) 1px, transparent 1px);
+    background-size: 8px 8px;
+  }
+
+  /* B. NEUMORPHISM — Tactile soft UI segmented controls & toggles */
+  .neumorph-inset {
+    background-color: var(--color-page);
+    border: 1px solid var(--color-rule);
+    box-shadow: inset 1px 1.5px 3px rgba(0, 0, 0, 0.07), inset -1px -1.5px 3px rgba(255, 255, 255, 0.85);
+  }
+
+  .dark .neumorph-inset {
+    box-shadow: inset 1px 1.5px 3px rgba(0, 0, 0, 0.45), inset -1px -1.5px 3px rgba(255, 255, 255, 0.04);
+  }
+
+  .neumorph-raised {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-rule);
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.04), -2px -2px 6px rgba(255, 255, 255, 0.9);
+  }
+
+  .dark .neumorph-raised {
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4), -2px -2px 8px rgba(255, 255, 255, 0.03);
+  }
+
+  /* C. GLASSMORPHISM — Refined transparent layers */
+  .organic-glass {
+    background: rgba(250, 247, 242, 0.84);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(229, 223, 213, 0.85);
+    box-shadow: 0 4px 20px -2px rgba(35, 64, 51, 0.05);
+  }
+
+  .dark .organic-glass {
+    background: rgba(27, 29, 25, 0.86);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(43, 46, 40, 0.85);
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.35);
+  }
+
+  /* D. CLAYMORPHISM — Soft dimensional elements & pills */
+  .clay-pill {
+    background: var(--color-surface);
+    border: 1px solid var(--color-rule);
+    border-radius: 9999px;
+    box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.9), 0 3px 8px rgba(35, 64, 51, 0.08);
+  }
+
+  .dark .clay-pill {
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.12), 0 3px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .clay-badge {
+    background: rgba(35, 64, 51, 0.08);
+    border: 1px solid rgba(35, 64, 51, 0.2);
+    border-radius: 9999px;
+    box-shadow: inset 0 1.5px 2px rgba(255, 255, 255, 0.6), 0 2px 6px rgba(35, 64, 51, 0.08);
+  }
+
+  /* E. LIQUID GLASS — Fluid specular refraction & dynamic highlights */
+  .liquid-glass {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.55) 0%, rgba(243, 239, 230, 0.25) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 8px 32px 0 rgba(197, 155, 39, 0.09), inset 0 1px 1px 0 rgba(255, 255, 255, 0.8);
+  }
+
+  .dark .liquid-glass {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(35, 64, 51, 0.15) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45), inset 0 1px 1px 0 rgba(255, 255, 255, 0.18);
+  }
+
+  /* F. AI MORPHISM — Atmospheric illumination & warm ambient heritage glow */
+  .ambient-glow-terracotta {
+    position: relative;
+  }
+  .ambient-glow-terracotta::before {
+    content: "";
+    position: absolute;
+    inset: -12px;
+    background: radial-gradient(circle, rgba(200, 90, 50, 0.12) 0%, transparent 70%);
+    z-index: -1;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  .ambient-glow-forest {
+    position: relative;
+  }
+  .ambient-glow-forest::before {
+    content: "";
+    position: absolute;
+    inset: -12px;
+    background: radial-gradient(circle, rgba(35, 64, 51, 0.12) 0%, transparent 70%);
+    z-index: -1;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  .tactile-button {
+    transition: transform 150ms ease, box-shadow 150ms ease;
+  }
+
+  .tactile-button:active {
+    transform: translateY(1px) scale(0.99);
+  }
+
+  .card-interactive {
+    transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1), border-color 200ms ease;
+  }
+
+  .card-interactive:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -4px rgba(0, 0, 0, 0.08), 0 4px 10px -2px rgba(0, 0, 0, 0.04);
+  }
+
+  .hero-mesh {
+    background-image: 
+      radial-gradient(at 15% 15%, rgba(164, 94, 70, 0.07) 0px, transparent 50%),
+      radial-gradient(at 85% 85%, rgba(89, 107, 87, 0.08) 0px, transparent 50%);
+  }
+
+  .dark .hero-mesh {
+    background-image: 
+      radial-gradient(at 15% 15%, rgba(208, 138, 110, 0.08) 0px, transparent 50%),
+      radial-gradient(at 85% 85%, rgba(143, 168, 140, 0.08) 0px, transparent 50%);
   }
 
   @media (min-width: 768px) {

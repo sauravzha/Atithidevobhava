@@ -1,8 +1,8 @@
 "use server";
 
-import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getFeatureFlag } from "@/lib/supabase/flags";
+import { getAuthenticatedUser } from "@/lib/auth/server-user";
 import {
   createAccommodationListingSchema,
   stayBookingRequestSchema,
@@ -36,10 +36,7 @@ export async function createAccommodationListingAction(
     };
   }
 
-  const supabase = await createServerSupabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
 
   if (!user) {
     return { success: false, error: "Authentication required to create a listing" };
@@ -103,10 +100,7 @@ export async function createAccommodationListingAction(
 export async function submitAccommodationForReviewAction(
   listingId: string
 ): Promise<AccommodationActionResult<{ submitted: boolean }>> {
-  const supabase = await createServerSupabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
 
   if (!user) {
     return { success: false, error: "Authentication required" };
@@ -192,10 +186,7 @@ export async function submitStayBookingRequestAction(
     };
   }
 
-  const supabase = await createServerSupabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
 
   if (!user) {
     return { success: false, error: "Authentication required to request a stay" };
@@ -252,10 +243,7 @@ export async function submitStayBookingRequestAction(
 export async function confirmStayBookingAction(
   requestId: string
 ): Promise<AccommodationActionResult<{ confirmed: boolean }>> {
-  const supabase = await createServerSupabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
 
   if (!user) {
     return { success: false, error: "Authentication required" };
@@ -303,10 +291,7 @@ export async function saveHostComplianceChecklistAction(
     };
   }
 
-  const supabase = await createServerSupabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
 
   if (!user) {
     return { success: false, error: "Authentication required" };
@@ -364,10 +349,7 @@ export async function recordGuestComplianceEntryAction(
     };
   }
 
-  const supabase = await createServerSupabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
 
   if (!user) {
     return { success: false, error: "Authentication required" };
@@ -414,10 +396,7 @@ export async function recordGuestComplianceEntryAction(
  * Fetches host compliance overview and guest registry.
  */
 export async function getHostComplianceRecordsAction() {
-  const supabase = await createServerSupabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
 
   if (!user) {
     return { success: false, error: "Authentication required" };

@@ -15,9 +15,9 @@ export interface AuthUserSession {
   email: string;
   displayName: string;
   photoUrl?: string | null;
-  role: "traveller" | "local_member" | "experience_provider" | "accommodation_host";
+  role: "traveller" | "local_member" | "experience_provider" | "accommodation_host" | "admin" | "local" | "artisan";
   isAdult: boolean;
-  provider: "google" | "otp";
+  provider: "google" | "otp" | "demo" | "credentials" | "firebase";
   createdAt: string;
 }
 

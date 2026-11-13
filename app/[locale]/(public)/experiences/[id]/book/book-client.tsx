@@ -145,7 +145,12 @@ export function BookExperienceClient({
       }
 
       // Check if dev simulation order
-      const order = orderResult as { orderId: string; amountPaise: number; isDevSimulation?: boolean };
+      const order = orderResult as {
+        orderId: string;
+        amountPaise: number;
+        isDevSimulation?: boolean;
+        checkoutPayload?: Record<string, unknown>;
+      };
       if (order.isDevSimulation) {
         setSimulatedOrder({
           bookingId,
@@ -153,8 +158,68 @@ export function BookExperienceClient({
           amountPaise: order.amountPaise,
         });
       } else {
-        // In real Razorpay mode, open Razorpay checkout modal
-        router.push(`/bookings/${bookingId}`);
+        // Live/Test Razorpay Checkout integration
+        const loadRazorpayScript = (): Promise<boolean> => {
+          return new Promise((resolve) => {
+            if ((window as unknown as { Razorpay?: unknown }).Razorpay) {
+              resolve(true);
+              return;
+            }
+            const script = document.createElement("script");
+            script.src = "https://checkout.razorpay.com/v1/checkout.js";
+            script.async = true;
+            script.onload = () => resolve(true);
+            script.onerror = () => resolve(false);
+            document.body.appendChild(script);
+          });
+        };
+
+        const isLoaded = await loadRazorpayScript();
+        if (!isLoaded || !order.checkoutPayload) {
+          router.push(`/bookings/${bookingId}`);
+          return;
+        }
+
+        const options = {
+          ...order.checkoutPayload,
+          theme: { color: "#C85A32" }, // Terracotta brand color
+          handler: async (response: {
+            razorpay_payment_id: string;
+            razorpay_order_id: string;
+            razorpay_signature: string;
+          }) => {
+            try {
+              setIsConfirmingPayment(true);
+              const confirmRes = await confirmPaymentAction({
+                bookingId,
+                orderId: response.razorpay_order_id,
+                paymentId: response.razorpay_payment_id,
+                signature: response.razorpay_signature,
+              });
+
+              if (!confirmRes.success) {
+                setErrorMessage(confirmRes.error || "Payment verification failed.");
+                setIsConfirmingPayment(false);
+                return;
+              }
+
+              router.push(`/bookings/${bookingId}`);
+            } catch (err: unknown) {
+              setErrorMessage(err instanceof Error ? err.message : "Payment confirmation failed");
+              setIsConfirmingPayment(false);
+            }
+          },
+          modal: {
+            ondismiss: () => {
+              router.push(`/bookings/${bookingId}`);
+            },
+          },
+        };
+
+        const razorpayInstance = new (
+          window as unknown as { Razorpay: new (opts: unknown) => { open: () => void } }
+        ).Razorpay(options);
+        razorpayInstance.open();
       }
     } catch (err: unknown) {
       setErrorMessage(err instanceof Error ? err.message : "Booking request error");
@@ -271,9 +336,9 @@ export function BookExperienceClient({
                 return (
                   <label
                     key={s.id}
-                    className={`block p-4 border rounded-sm transition-all cursor-pointer ${
+                    className={`block p-4 border rounded-sm transition-all cursor-pointer journal-paper ${
                       isSelected
-                        ? "border-forest bg-warm shadow-xs"
+                        ? "border-forest bg-warm shadow-xs ring-1 ring-forest/30"
                         : isFull
                         ? "border-rule opacity-50 cursor-not-allowed bg-paper"
                         : "border-rule hover:border-forest/50 bg-paper"
@@ -338,7 +403,7 @@ export function BookExperienceClient({
                 type="button"
                 onClick={() => handleCountChange(participantCount - 1)}
                 disabled={participantCount <= experience.min_participants}
-                className="w-8 h-8 flex items-center justify-center border border-rule rounded-sm text-xs font-semibold disabled:opacity-40 hover:bg-warm"
+                className="w-8 h-8 flex items-center justify-center border border-rule rounded-xs text-xs font-semibold disabled:opacity-40 hover:bg-warm tactile-button"
               >
                 -
               </button>
@@ -352,7 +417,7 @@ export function BookExperienceClient({
                   participantCount >= experience.max_participants ||
                   participantCount >= availableSlots
                 }
-                className="w-8 h-8 flex items-center justify-center border border-rule rounded-sm text-xs font-semibold disabled:opacity-40 hover:bg-warm"
+                className="w-8 h-8 flex items-center justify-center border border-rule rounded-xs text-xs font-semibold disabled:opacity-40 hover:bg-warm tactile-button"
               >
                 +
               </button>
@@ -377,7 +442,7 @@ export function BookExperienceClient({
                   placeholder={isHindi ? `प्रतिभागी ${idx + 1} का नाम` : `Participant ${idx + 1} full name`}
                   value={name}
                   onChange={(e) => handleNameChange(idx, e.target.value)}
-                  className="flex-1 px-3 py-2 text-xs border border-rule rounded-sm bg-paper text-text focus:outline-none focus:border-forest"
+                  className="flex-1 px-3 py-2 text-xs border border-rule rounded-xs bg-paper text-text focus:outline-none focus:border-forest"
                 />
               </div>
             ))}
@@ -386,7 +451,7 @@ export function BookExperienceClient({
 
         {/* Step 3: Meeting Landmark & Safety Confirmation */}
         <section className="space-y-3 border-t border-rule pt-6">
-          <div className="p-4 bg-warm border border-rule rounded-sm space-y-2">
+          <div className="p-4 bg-warm border border-rule rounded-sm journal-paper space-y-2">
             <div className="flex items-center gap-2 text-xs font-semibold text-text uppercase tracking-wider">
               <MapPin size={14} strokeWidth={1.5} className="text-terracotta" />
               <span>{isHindi ? "सार्वजनिक मिलन स्थल" : "Public Meeting Landmark"}</span>
@@ -407,7 +472,7 @@ export function BookExperienceClient({
           </h2>
 
           {pricesVisible ? (
-            <div className="p-4 border border-rule rounded-sm space-y-3 bg-paper">
+            <div className="p-5 border border-rule rounded-sm space-y-3 postcard-paper">
               <div className="flex justify-between text-xs text-secondary">
                 <span>
                   {isHindi ? "प्रति व्यक्ति मूल्य" : "Rate per participant"} (x {participantCount}):
@@ -424,7 +489,7 @@ export function BookExperienceClient({
               </div>
             </div>
           ) : (
-            <div className="p-4 bg-warm border border-rule rounded-sm text-xs text-secondary">
+            <div className="p-4 bg-warm border border-rule rounded-sm text-xs text-secondary journal-paper">
               <p>
                 {isHindi
                   ? "मूल्य प्रदर्शन चरण 2 में सक्रिय होगा। वर्तमान में यह सेवा पूछताछ आधारित है।"
@@ -437,6 +502,7 @@ export function BookExperienceClient({
             <Button
               type="submit"
               variant="primary"
+              className="tactile-button rounded-xs"
               disabled={isSubmitting || availableSlots < participantCount || schedules.length === 0}
             >
               {isSubmitting
@@ -460,9 +526,9 @@ export function BookExperienceClient({
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-text/50 p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-charcoal/60 backdrop-blur-xs p-4"
         >
-          <div className="bg-paper border border-rule max-w-md w-full p-6 rounded-sm shadow-xl space-y-4">
+          <div className="journal-paper border border-rule max-w-md w-full p-6 rounded-sm shadow-xl space-y-4">
             <div className="flex items-center gap-2 border-b border-rule pb-3">
               <ShieldCheck size={20} strokeWidth={1.5} className="text-forest" />
               <div>

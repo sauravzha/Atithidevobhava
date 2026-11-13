@@ -38,14 +38,14 @@ export default function ConnectionsDashboardPage() {
   return (
     <div className="site-container py-12 max-w-3xl mx-auto space-y-8">
       {/* Breadcrumb */}
-      <nav className="text-xs text-secondary mb-2" aria-label="Breadcrumb">
+      <nav className="text-xs font-mono tracking-wider uppercase text-secondary mb-2" aria-label="Breadcrumb">
         <ol className="flex items-center gap-2">
           <li>
             <Link href="/" className="hover:text-primary transition-colors">
-              {isHindi ? "होम" : "Home"}
+              {isHindi ? "मुखपृष्ठ" : "Dispatch"}
             </Link>
           </li>
-          <li aria-hidden="true">/</li>
+          <li aria-hidden="true" className="text-rule">/</li>
           <li className="text-text font-medium" aria-current="page">
             {isHindi ? "मुलाकातें" : "Connections"}
           </li>
@@ -55,16 +55,16 @@ export default function ConnectionsDashboardPage() {
       {/* Header */}
       <header className="border-b border-rule pb-6 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <span className="text-xs font-semibold uppercase tracking-wider text-primary block mb-1">
+          <span className="text-xs font-mono font-semibold uppercase tracking-wider text-terracotta block mb-1">
             {isHindi ? "माध्यम 1 डैशबोर्ड" : "Product A Dashboard"}
           </span>
           <Bi
             hindi="आपकी मुलाकातें और संवाद"
             english="Your Connections & Meetups"
             as="h1"
-            className="mb-2"
+            className="text-2xl sm:text-3xl font-heading font-medium text-text mb-2"
           />
-          <p className="text-xs text-secondary">
+          <p className="text-xs text-secondary font-heading">
             {isHindi
               ? "स्थानीय निवासियों के साथ निर्धारित एवं लंबित मुलाकातों का प्रबंधन करें।"
               : "Manage incoming and outgoing Meet a Local requests, schedules, and contact exchanges."}
@@ -73,21 +73,21 @@ export default function ConnectionsDashboardPage() {
 
         <Link
           href="/explore/people"
-          className="tap-target px-4 py-2 bg-primary text-white hover:bg-primary-hover rounded-sm text-xs font-medium self-start sm:self-auto transition-colors"
+          className="px-4 py-2 bg-primary text-white hover:bg-primary-hover rounded-xs text-xs font-mono uppercase tracking-wider self-start sm:self-auto transition-all shadow-xs tactile-button"
         >
           {isHindi ? "नए स्थानीय लोग खोजें" : "Find Locals"}
         </Link>
       </header>
 
       {/* Filters */}
-      <div className="flex gap-2 text-xs border-b border-rule pb-3">
+      <div className="neumorph-inset p-1 rounded-sm border border-rule/80 inline-flex flex-wrap gap-1 text-xs">
         <button
           type="button"
           onClick={() => setFilter("all")}
-          className={`px-3 py-1.5 rounded-sm border ${
+          className={`px-3 py-1.5 rounded-xs font-mono uppercase tracking-wider text-[11px] transition-all ${
             filter === "all"
-              ? "bg-primary text-white border-primary"
-              : "border-rule text-secondary hover:text-text"
+              ? "bg-text text-page font-medium shadow-xs"
+              : "text-secondary hover:text-text"
           }`}
         >
           {isHindi ? "सभी मुलाकातें" : "All Requests"} ({connections.length})
@@ -95,10 +95,10 @@ export default function ConnectionsDashboardPage() {
         <button
           type="button"
           onClick={() => setFilter("active")}
-          className={`px-3 py-1.5 rounded-sm border ${
+          className={`px-3 py-1.5 rounded-xs font-mono uppercase tracking-wider text-[11px] transition-all ${
             filter === "active"
-              ? "bg-primary text-white border-primary"
-              : "border-rule text-secondary hover:text-text"
+              ? "bg-text text-page font-medium shadow-xs"
+              : "text-secondary hover:text-text"
           }`}
         >
           {isHindi ? "सक्रिय (Active)" : "Active / Scheduled"}
@@ -106,10 +106,10 @@ export default function ConnectionsDashboardPage() {
         <button
           type="button"
           onClick={() => setFilter("pending")}
-          className={`px-3 py-1.5 rounded-sm border ${
+          className={`px-3 py-1.5 rounded-xs font-mono uppercase tracking-wider text-[11px] transition-all ${
             filter === "pending"
-              ? "bg-primary text-white border-primary"
-              : "border-rule text-secondary hover:text-text"
+              ? "bg-text text-page font-medium shadow-xs"
+              : "text-secondary hover:text-text"
           }`}
         >
           {isHindi ? "लंबित (Pending)" : "Pending"}
@@ -117,10 +117,10 @@ export default function ConnectionsDashboardPage() {
         <button
           type="button"
           onClick={() => setFilter("past")}
-          className={`px-3 py-1.5 rounded-sm border ${
+          className={`px-3 py-1.5 rounded-xs font-mono uppercase tracking-wider text-[11px] transition-all ${
             filter === "past"
-              ? "bg-primary text-white border-primary"
-              : "border-rule text-secondary hover:text-text"
+              ? "bg-text text-page font-medium shadow-xs"
+              : "text-secondary hover:text-text"
           }`}
         >
           {isHindi ? "पूर्ववत (Past)" : "Past / Closed"}
@@ -129,17 +129,17 @@ export default function ConnectionsDashboardPage() {
 
       {/* List */}
       {isLoading ? (
-        <div className="py-8 text-xs text-secondary">
+        <div className="py-8 text-xs font-mono text-secondary">
           {isHindi ? "लोड हो रहा है..." : "Loading connections..."}
         </div>
       ) : filtered.length > 0 ? (
-        <div className="divide-y divide-rule border-t border-b border-rule">
+        <div className="space-y-3">
           {filtered.map((conn) => (
             <article
               key={conn.id}
-              className="py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-warm/10 transition-colors px-2"
+              className="journal-paper p-5 border border-rule rounded-sm shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-forest/50 transition-all"
             >
-              <div className="space-y-1">
+              <div className="space-y-1.5">
                 <div className="flex items-center gap-2">
                   <span className="font-heading text-base font-medium text-text">
                     {conn.travellerName} & {conn.localMemberName}
@@ -147,12 +147,12 @@ export default function ConnectionsDashboardPage() {
                   <StatusLabel status={conn.status.toLowerCase() as any} />
                 </div>
 
-                <p className="text-xs text-secondary">
+                <p className="text-xs text-secondary font-mono">
                   <span className="capitalize">{conn.purpose.replace(/_/g, " ")}</span> •{" "}
                   {conn.suggestedPublicPlace}
                 </p>
 
-                <p className="text-xs text-secondary/80">
+                <p className="text-xs text-secondary/80 font-mono">
                   {isHindi ? "प्रस्तावित: " : "Proposed: "}
                   {conn.proposedDates}
                 </p>
@@ -161,7 +161,7 @@ export default function ConnectionsDashboardPage() {
               <div className="flex items-center gap-3 shrink-0">
                 <Link
                   href={`/connections/${conn.id}`}
-                  className="tap-target px-4 py-2 border border-primary text-primary hover:bg-warm rounded-sm text-xs font-medium transition-colors"
+                  className="px-4 py-2 border border-rule hover:border-forest text-text hover:text-forest bg-surface rounded-xs text-xs font-mono uppercase tracking-wider transition-all tactile-button shadow-xs"
                 >
                   {isHindi ? "विवरण देखें" : "View Details"}
                 </Link>

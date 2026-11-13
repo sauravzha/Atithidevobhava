@@ -73,20 +73,20 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
   return (
     <div className="site-container py-12 max-w-3xl">
       {/* Breadcrumb */}
-      <nav className="text-xs text-secondary mb-4" aria-label="Breadcrumb">
+      <nav className="text-xs font-mono tracking-wider uppercase text-secondary mb-6" aria-label="Breadcrumb">
         <ol className="flex items-center gap-2">
           <li>
             <Link href="/" className="hover:text-primary transition-colors">
-              {isHindi ? "होम" : "Home"}
+              {isHindi ? "मुखपृष्ठ" : "Dispatch"}
             </Link>
           </li>
-          <li aria-hidden="true">/</li>
+          <li aria-hidden="true" className="text-rule">/</li>
           <li>
             <Link href="/explore/people" className="hover:text-primary transition-colors">
               {isHindi ? "स्थानीय नागरिक" : "Meet a Local"}
             </Link>
           </li>
-          <li aria-hidden="true">/</li>
+          <li aria-hidden="true" className="text-rule">/</li>
           <li className="text-text font-medium" aria-current="page">
             {isHindi ? local.displayNameHi : local.displayName}
           </li>
@@ -94,11 +94,11 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
       </nav>
 
       {/* Profile Header */}
-      <header className="border-b border-rule pb-8 mb-8">
+      <header className="journal-paper p-6 sm:p-7 border border-rule rounded-sm shadow-xs mb-8">
         <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6">
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold tracking-wider uppercase text-secondary">
+              <span className="text-xs font-semibold tracking-wider uppercase text-terracotta font-mono">
                 {isHindi ? "स्थानीय निवासी प्रोफ़ाइल" : "Local Resident Profile"}
               </span>
               <span className="text-xs text-secondary">•</span>
@@ -111,10 +111,10 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
               hindi={local.displayNameHi}
               english={local.displayName}
               as="h1"
-              className="mb-1"
+              className="text-2xl sm:text-3xl font-heading font-medium text-text mb-1"
             />
 
-            <p className="text-xs text-secondary">
+            <p className="text-xs text-secondary font-mono">
               {isHindi ? local.localityHi : local.locality} •{" "}
               {isHindi ? local.districtNameHi : local.districtName}
             </p>
@@ -122,19 +122,19 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
             {/* Verification Badges */}
             <div className="pt-2 flex flex-wrap gap-2 items-center">
               {sanitized.verification.mobileVerified && (
-                <span className="text-[11px] px-2 py-0.5 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-sm font-medium flex items-center gap-1">
+                <span className="text-[11px] px-2 py-0.5 bg-forest/10 text-forest border border-forest/30 rounded-xs font-mono font-medium flex items-center gap-1">
                   <Check size={12} strokeWidth={1.5} className="shrink-0" aria-hidden="true" />
                   {isHindi ? "मोबाइल सत्यापित (SMS OTP)" : "Mobile Verified (SMS OTP)"}
                 </span>
               )}
               {sanitized.verification.emailVerified && (
-                <span className="text-[11px] px-2 py-0.5 bg-warm text-secondary border border-rule rounded-sm font-medium flex items-center gap-1">
+                <span className="text-[11px] px-2 py-0.5 bg-warm text-secondary border border-rule rounded-xs font-mono font-medium flex items-center gap-1">
                   <Check size={12} strokeWidth={1.5} className="shrink-0" aria-hidden="true" />
                   {isHindi ? "ईमेल सत्यापित" : "Email Verified"}
                 </span>
               )}
               {sanitized.verification.communityVouched && (
-                <span className="text-[11px] px-2 py-0.5 bg-warm text-secondary border border-rule rounded-sm font-medium flex items-center gap-1">
+                <span className="text-[11px] px-2 py-0.5 bg-warm text-secondary border border-rule rounded-xs font-mono font-medium flex items-center gap-1">
                   <Check size={12} strokeWidth={1.5} className="shrink-0" aria-hidden="true" />
                   {isHindi ? "समुदाय द्वारा सत्यापित" : "Community Vouched"}
                 </span>
@@ -145,12 +145,12 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
           <div className="flex flex-col gap-2 shrink-0">
             <Link
               href={`/messages/new?recipientId=${local.id}`}
-              className="tap-target px-5 py-2.5 bg-primary text-white hover:bg-primary-hover rounded-sm text-xs font-medium text-center transition-colors shadow-xs"
+              className="px-5 py-2.5 bg-primary text-white hover:bg-primary-hover rounded-xs text-xs font-mono uppercase tracking-wider text-center transition-all shadow-xs tactile-button"
             >
               {isHindi ? "मुलाकात का अनुरोध भेजें" : "Request Meetup"}
             </Link>
-            <span className="text-[11px] text-secondary text-center">
-              {isHindi ? "निशुल्क सामुदायिक संवाद" : "Free community exchange"}
+            <span className="text-[11px] font-mono text-secondary text-center">
+              {isHindi ? "निःशुल्क सामुदायिक संवाद" : "Free community exchange"}
             </span>
           </div>
         </div>
@@ -199,15 +199,15 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
 
           {/* Languages & Cultural Interests */}
           <section className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
-            <div className="p-4 border border-rule rounded-sm bg-page space-y-2">
+            <div className="p-5 border border-rule rounded-sm journal-paper space-y-3 shadow-xs">
               <h3 className="font-heading text-sm font-medium text-text">
                 {isHindi ? "बोली जाने वाली भाषाएं" : "Spoken Languages"}
               </h3>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-2">
                 {sanitized.languages.map((lang) => (
                   <span
                     key={lang}
-                    className="text-xs px-2.5 py-1 border border-rule rounded-sm bg-warm/30 text-text"
+                    className="clay-pill text-xs font-mono px-3 py-1 text-text"
                   >
                     {lang}
                   </span>
@@ -215,15 +215,15 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
               </div>
             </div>
 
-            <div className="p-4 border border-rule rounded-sm bg-page space-y-2">
+            <div className="p-5 border border-rule rounded-sm journal-paper space-y-3 shadow-xs">
               <h3 className="font-heading text-sm font-medium text-text">
                 {isHindi ? "रुचियां और सांस्कृतिक ज्ञान" : "Interests & Traditions"}
               </h3>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap gap-2">
                 {sanitized.interests.map((interest) => (
                   <span
                     key={interest}
-                    className="text-xs px-2.5 py-1 border border-rule rounded-sm bg-warm/30 text-text"
+                    className="clay-pill text-xs font-mono px-3 py-1 text-text"
                   >
                     {interest}
                   </span>
@@ -233,14 +233,14 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
           </section>
 
           {/* Public Meeting Point Protocol */}
-          <section className="p-5 border border-rule rounded-sm bg-warm/20 space-y-2">
-            <span className="text-xs font-semibold uppercase tracking-wider text-primary block">
+          <section className="p-6 border border-rule rounded-sm postcard-paper space-y-2.5 shadow-xs">
+            <span className="text-xs font-semibold uppercase tracking-wider text-primary font-mono block">
               {isHindi ? "सुझावित सार्वजनिक मिलन स्थल" : "Suggested Public Meeting Venue"}
             </span>
-            <p className="text-sm text-text font-medium">
+            <p className="text-sm text-text font-medium font-heading">
               {sanitized.preferredPublicMeetingSpots}
             </p>
-            <p className="text-xs text-secondary leading-relaxed">
+            <p className="text-xs text-secondary leading-relaxed font-heading">
               {isHindi
                 ? "सुरक्षा नियम: दोनों पक्षों की सुविधा के लिए सभी प्रारंभिक मुलाकातें अनुशंसित सार्वजनिक स्थानों पर आयोजित की जाती हैं। निजी घर का पता कभी भी सार्वजनिक नहीं किया जाता।"
                 : "Safety standard: Initial meetings always take place in recommended, open public venues. Exact residential addresses are never made public."}

@@ -75,44 +75,44 @@ export default async function AdminOverviewPage({ params }: Props) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Link
           href={`/${locale}/admin/reports`}
-          className="p-4 border border-rule rounded-sm bg-paper hover:border-terracotta transition-all flex items-center justify-between"
+          className="p-5 border border-rule/80 rounded-sm postcard-paper hover:border-terracotta transition-all flex items-center justify-between group shadow-xs"
         >
-          <div className="space-y-1">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-terracotta flex items-center gap-1.5">
+          <div className="space-y-1.5">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-terracotta flex items-center gap-1.5 font-mono">
               <ShieldAlert size={14} strokeWidth={1.5} />
               {isHindi ? "सुरक्षा एवं घटना कतार" : "Safety Incident Triage Queue"}
             </span>
             <div className="flex items-baseline gap-2">
-              <span className="font-mono text-2xl font-semibold text-text">
+              <span className="font-mono text-3xl font-semibold text-text">
                 {metrics.pending_reports}
               </span>
-              <span className="text-xs text-secondary">
+              <span className="text-xs text-secondary font-mono">
                 {isHindi ? "लंबित रिपोर्टें" : "unresolved reports"}
               </span>
             </div>
           </div>
-          <ArrowRight size={16} strokeWidth={1.5} className="text-secondary" />
+          <ArrowRight size={16} strokeWidth={1.5} className="text-secondary group-hover:text-terracotta transition-colors" />
         </Link>
 
         <Link
           href={`/${locale}/admin/verifications`}
-          className="p-4 border border-rule rounded-sm bg-paper hover:border-forest transition-all flex items-center justify-between"
+          className="p-5 border border-rule/80 rounded-sm postcard-paper hover:border-forest transition-all flex items-center justify-between group shadow-xs"
         >
-          <div className="space-y-1">
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-forest flex items-center gap-1.5">
+          <div className="space-y-1.5">
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-forest flex items-center gap-1.5 font-mono">
               <Users size={14} strokeWidth={1.5} />
               {isHindi ? "पहचान सत्यापन कतार" : "Identity Verification Queue"}
             </span>
             <div className="flex items-baseline gap-2">
-              <span className="font-mono text-2xl font-semibold text-text">
+              <span className="font-mono text-3xl font-semibold text-text">
                 {metrics.pending_verifications}
               </span>
-              <span className="text-xs text-secondary">
+              <span className="text-xs text-secondary font-mono">
                 {isHindi ? "लंबित दस्तावेज़" : "pending reviews"}
               </span>
             </div>
           </div>
-          <ArrowRight size={16} strokeWidth={1.5} className="text-secondary" />
+          <ArrowRight size={16} strokeWidth={1.5} className="text-secondary group-hover:text-forest transition-colors" />
         </Link>
       </div>
 
@@ -123,42 +123,42 @@ export default async function AdminOverviewPage({ params }: Props) {
         </h2>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
-          <div className="p-4 border border-rule rounded-sm bg-paper space-y-1">
-            <span className="text-secondary uppercase tracking-wider text-[11px]">
+          <div className="p-5 border border-rule rounded-sm journal-paper space-y-1.5 shadow-xs">
+            <span className="text-secondary uppercase tracking-wider text-[11px] font-mono block">
               {isHindi ? "कुल उपयोगकर्ता" : "Total Registered Users"}
             </span>
-            <p className="font-mono text-xl font-medium text-text">{metrics.total_users}</p>
-            <p className="text-[11px] text-secondary">
+            <p className="font-mono text-2xl font-semibold text-text">{metrics.total_users}</p>
+            <p className="text-[11px] text-secondary font-mono">
               {metrics.users_by_role.travellers} travellers • {metrics.users_by_role.local_members} locals
             </p>
           </div>
 
-          <div className="p-4 border border-rule rounded-sm bg-paper space-y-1">
-            <span className="text-secondary uppercase tracking-wider text-[11px]">
+          <div className="p-5 border border-rule rounded-sm journal-paper space-y-1.5 shadow-xs">
+            <span className="text-secondary uppercase tracking-wider text-[11px] font-mono block">
               {isHindi ? "सक्रिय सांस्कृतिक अनुभव" : "Published Experiences"}
             </span>
-            <p className="font-mono text-xl font-medium text-forest">{metrics.active_experiences}</p>
-            <p className="text-[11px] text-secondary">
+            <p className="font-mono text-2xl font-semibold text-forest">{metrics.active_experiences}</p>
+            <p className="text-[11px] text-secondary font-mono">
               by {metrics.users_by_role.experience_providers} providers
             </p>
           </div>
 
-          <div className="p-4 border border-rule rounded-sm bg-paper space-y-1">
-            <span className="text-secondary uppercase tracking-wider text-[11px]">
+          <div className="p-5 border border-rule rounded-sm journal-paper space-y-1.5 shadow-xs">
+            <span className="text-secondary uppercase tracking-wider text-[11px] font-mono block">
               {isHindi ? "सक्रिय पारिवारिक आवास" : "Approved Stay Listings"}
             </span>
-            <p className="font-mono text-xl font-medium text-forest">{metrics.active_stays}</p>
-            <p className="text-[11px] text-secondary">
+            <p className="font-mono text-2xl font-semibold text-forest">{metrics.active_stays}</p>
+            <p className="text-[11px] text-secondary font-mono">
               by {metrics.users_by_role.accommodation_hosts} hosts
             </p>
           </div>
 
-          <div className="p-4 border border-rule rounded-sm bg-paper space-y-1">
-            <span className="text-secondary uppercase tracking-wider text-[11px]">
+          <div className="p-5 border border-rule rounded-sm journal-paper space-y-1.5 shadow-xs">
+            <span className="text-secondary uppercase tracking-wider text-[11px] font-mono block">
               {isHindi ? "आरक्षण एवं बुकिंग" : "Bookings Created"}
             </span>
-            <p className="font-mono text-xl font-medium text-text">{metrics.bookings.total}</p>
-            <p className="text-[11px] text-forest">
+            <p className="font-mono text-2xl font-semibold text-text">{metrics.bookings.total}</p>
+            <p className="text-[11px] text-forest font-mono">
               {metrics.bookings.confirmed} confirmed
             </p>
           </div>
@@ -173,24 +173,24 @@ export default async function AdminOverviewPage({ params }: Props) {
         </h2>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-          <div className="p-5 border border-rule rounded-sm bg-warm space-y-1">
-            <span className="text-secondary uppercase tracking-wider text-[11px] flex items-center gap-1">
+          <div className="p-6 border border-rule rounded-sm postcard-paper space-y-2 shadow-xs">
+            <span className="text-secondary uppercase tracking-wider text-[11px] flex items-center gap-1.5 font-mono">
               <TrendingUp size={13} strokeWidth={1.5} className="text-forest" />
               {isHindi ? "सकल बुकिंग मूल्य (INR)" : "Gross Booking Volume (Captured)"}
             </span>
-            <p className="font-mono text-2xl font-semibold text-text">INR {grossInr}</p>
-            <p className="text-[11px] text-secondary">
+            <p className="font-mono text-3xl font-semibold text-text">INR {grossInr}</p>
+            <p className="text-[11px] text-secondary font-mono">
               Derived from payments table status = &apos;captured&apos;
             </p>
           </div>
 
-          <div className="p-5 border border-rule rounded-sm bg-warm space-y-1">
-            <span className="text-secondary uppercase tracking-wider text-[11px] flex items-center gap-1">
+          <div className="p-6 border border-rule rounded-sm postcard-paper space-y-2 shadow-xs">
+            <span className="text-secondary uppercase tracking-wider text-[11px] flex items-center gap-1.5 font-mono">
               <TrendingUp size={13} strokeWidth={1.5} className="text-forest" />
               {isHindi ? "मंच सेवा योगदान (15% कमीशन राजस्व)" : "Platform Commission Revenue (15% Ledger)"}
             </span>
-            <p className="font-mono text-2xl font-semibold text-forest">INR {commissionInr}</p>
-            <p className="text-[11px] text-secondary">
+            <p className="font-mono text-3xl font-semibold text-forest">INR {commissionInr}</p>
+            <p className="text-[11px] text-secondary font-mono">
               Derived from double-entry ledger_entries account = &apos;platform_commission&apos;
             </p>
           </div>

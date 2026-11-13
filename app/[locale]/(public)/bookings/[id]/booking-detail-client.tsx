@@ -147,16 +147,16 @@ export function BookingDetailClient({ booking, isHindi }: Props) {
   return (
     <div className="space-y-8">
       {/* Navigation */}
-      <nav className="text-xs text-secondary flex items-center justify-between border-b border-rule pb-4">
+      <nav className="text-xs font-mono tracking-wider uppercase text-secondary flex items-center justify-between border-b border-rule pb-4">
         <Link
-          href="/dashboard/experiences"
-          className="hover:text-primary transition-colors flex items-center gap-1"
+          href="/dashboard"
+          className="hover:text-primary transition-colors flex items-center gap-1 font-medium"
         >
-          &larr; {isHindi ? "अनुभव डैशबोर्ड" : "Back to Experiences"}
+          &larr; {isHindi ? "डैशबोर्ड पर लौटें" : "Back to Member Fieldbook"}
         </Link>
         <button
           onClick={() => window.print()}
-          className="hover:text-primary transition-colors flex items-center gap-1.5 font-mono text-[11px]"
+          className="hover:text-primary transition-colors flex items-center gap-1.5 font-mono text-xs px-2.5 py-1 border border-rule rounded-xs bg-surface tactile-button shadow-xs"
         >
           <Printer size={12} strokeWidth={1.5} />
           {isHindi ? "रसीद प्रिंट करें" : "Print Receipt"}
@@ -175,7 +175,7 @@ export function BookingDetailClient({ booking, isHindi }: Props) {
               variant={getStatusVariant(booking.status)}
             />
           </div>
-          <span className="text-xs text-secondary">
+          <span className="text-xs font-mono text-secondary">
             {isHindi ? "आरक्षण तिथि: " : "Booked on: "}
             {new Date(booking.created_at).toLocaleDateString(
               isHindi ? "hi-IN" : "en-IN"
@@ -189,16 +189,16 @@ export function BookingDetailClient({ booking, isHindi }: Props) {
       </header>
 
       {/* Primary Booking Summary Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 border border-rule rounded-sm bg-paper">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 border border-rule rounded-sm postcard-paper shadow-xs">
         {/* Date and Time */}
         <div className="space-y-1">
-          <div className="flex items-center gap-1.5 text-xs text-secondary font-medium uppercase tracking-wider">
+          <div className="flex items-center gap-1.5 text-xs text-secondary font-medium uppercase tracking-wider font-mono">
             <Calendar size={13} strokeWidth={1.5} className="text-forest" />
             <span>{isHindi ? "तारीख और समय" : "Date & Scheduled Time"}</span>
           </div>
-          <p className="text-sm font-medium text-text">{formattedDate}</p>
+          <p className="text-sm font-medium text-text font-heading">{formattedDate}</p>
           {formattedTime && (
-            <p className="text-xs text-secondary flex items-center gap-1">
+            <p className="text-xs text-secondary flex items-center gap-1 font-mono">
               <Clock size={12} strokeWidth={1.5} />
               {formattedTime} ({exp?.duration_minutes || 120} min)
             </p>
@@ -207,14 +207,14 @@ export function BookingDetailClient({ booking, isHindi }: Props) {
 
         {/* Meeting Area */}
         <div className="space-y-1">
-          <div className="flex items-center gap-1.5 text-xs text-secondary font-medium uppercase tracking-wider">
+          <div className="flex items-center gap-1.5 text-xs text-secondary font-medium uppercase tracking-wider font-mono">
             <MapPin size={13} strokeWidth={1.5} className="text-terracotta" />
             <span>{isHindi ? "सार्वजनिक मिलन स्थल" : "Public Assembly Point"}</span>
           </div>
-          <p className="text-sm font-medium text-text">
+          <p className="text-sm font-medium text-text font-mono">
             {exp?.general_meeting_area || "Approved public landmark"}
           </p>
-          <p className="text-[11px] text-secondary">
+          <p className="text-[11px] text-secondary font-heading">
             {isHindi
               ? "पहला मिलन सदैव सार्वजनिक स्थल पर होता है।"
               : "Exact residential addresses are never published."}
@@ -233,7 +233,7 @@ export function BookingDetailClient({ booking, isHindi }: Props) {
           </span>
         </h2>
 
-        <div className="p-4 border border-rule rounded-sm bg-paper space-y-2">
+        <div className="p-5 border border-rule rounded-sm journal-paper space-y-2 shadow-xs">
           {booking.experience_booking_participants &&
           booking.experience_booking_participants.length > 0 ? (
             <ul className="divide-y divide-rule text-xs">
@@ -247,7 +247,7 @@ export function BookingDetailClient({ booking, isHindi }: Props) {
               ))}
             </ul>
           ) : (
-            <p className="text-xs text-secondary">
+            <p className="text-xs text-secondary font-mono">
               {isHindi ? "कोई व्यक्तिगत नाम दर्ज नहीं है।" : "No separate participant names listed."}
             </p>
           )}
@@ -261,7 +261,7 @@ export function BookingDetailClient({ booking, isHindi }: Props) {
           <span>{isHindi ? "भुगतान और रसीद विवरण" : "Financial Details & Receipt"}</span>
         </h2>
 
-        <div className="p-4 border border-rule rounded-sm bg-warm space-y-3 text-xs">
+        <div className="p-5 border border-rule rounded-sm journal-paper space-y-3 text-xs shadow-xs">
           <div className="flex justify-between text-secondary">
             <span>
               {isHindi ? "कुल स्लॉट मूल्य" : "Experience Rate"} ({booking.participant_count} pax):
@@ -301,12 +301,12 @@ export function BookingDetailClient({ booking, isHindi }: Props) {
       </section>
 
       {/* Safety & Helplines */}
-      <section className="p-4 bg-paper border border-rule rounded-sm space-y-2">
-        <div className="flex items-center gap-2 text-xs font-semibold text-text uppercase tracking-wider">
+      <section className="p-5 journal-paper border border-rule rounded-sm space-y-2 shadow-xs">
+        <div className="flex items-center gap-2 text-xs font-semibold text-text uppercase tracking-wider font-mono">
           <ShieldAlert size={14} strokeWidth={1.5} className="text-terracotta" />
           <span>{isHindi ? "सुरक्षा सहायता और हेल्पलाइन" : "Official Safety Helplines"}</span>
         </div>
-        <p className="text-xs text-secondary leading-relaxed">
+        <p className="text-xs text-secondary leading-relaxed font-heading">
           {isHindi
             ? "आपातकालीन स्थिति में तुरंत राष्ट्रीय आपात नंबर 112 पर कॉल करें। महिला हेल्पलाइन 1091, पर्यटक हेल्पलाइन 1363 (24x7 टोल-फ्री)।"
             : "In any emergency, immediately dial 112 (National Emergency). Women's Helpline: 1091. Tourist Support: 1363 (toll-free 24x7)."}
@@ -337,9 +337,9 @@ export function BookingDetailClient({ booking, isHindi }: Props) {
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-text/50 p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-charcoal/60 backdrop-blur-xs p-4"
         >
-          <div className="bg-paper border border-rule max-w-md w-full p-6 rounded-sm shadow-xl space-y-4">
+          <div className="journal-paper border border-rule max-w-md w-full p-6 rounded-sm shadow-xl space-y-4">
             <div className="flex items-center gap-2 border-b border-rule pb-3">
               <AlertTriangle size={18} strokeWidth={1.5} className="text-terracotta" />
               <h3 className="font-heading text-lg text-text">
@@ -347,7 +347,7 @@ export function BookingDetailClient({ booking, isHindi }: Props) {
               </h3>
             </div>
 
-            <p className="text-xs text-secondary leading-relaxed">
+            <p className="text-xs text-secondary leading-relaxed font-heading">
               {isHindi
                 ? "रद्द करने पर आरक्षित स्लॉट तुरंत अन्य यात्रियों के लिए उपलब्ध करा दिया जाएगा। रद्दीकरण कारण ऑडिट लॉग में दर्ज होगा।"
                 : "Cancelling will immediately restore schedule capacity for other travellers. A cancellation reason is required for administrative audit logging."}
@@ -355,7 +355,7 @@ export function BookingDetailClient({ booking, isHindi }: Props) {
 
             <form onSubmit={handleCancel} className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-text mb-1">
+                <label className="block text-xs font-mono uppercase tracking-wider text-text mb-1.5 font-medium">
                   {isHindi ? "रद्दीकरण का कारण (अनिवार्य):" : "Cancellation Reason (Mandatory):"}
                 </label>
                 <textarea
@@ -368,7 +368,7 @@ export function BookingDetailClient({ booking, isHindi }: Props) {
                   }
                   value={cancelReason}
                   onChange={(e) => setCancelReason(e.target.value)}
-                  className="w-full px-3 py-2 text-xs border border-rule rounded-sm bg-paper text-text focus:outline-none focus:border-forest"
+                  className="w-full px-3 py-2 text-xs border border-rule rounded-xs bg-paper text-text focus:outline-hidden focus:border-forest font-heading"
                 />
               </div>
 
@@ -383,6 +383,7 @@ export function BookingDetailClient({ booking, isHindi }: Props) {
                   type="button"
                   variant="secondary"
                   size="small"
+                  className="tactile-button rounded-xs"
                   onClick={() => setIsCancelModalOpen(false)}
                   disabled={isCancelling}
                 >
@@ -392,6 +393,7 @@ export function BookingDetailClient({ booking, isHindi }: Props) {
                   type="submit"
                   variant="primary"
                   size="small"
+                  className="tactile-button rounded-xs"
                   disabled={isCancelling || cancelReason.trim().length < 5}
                 >
                   {isCancelling

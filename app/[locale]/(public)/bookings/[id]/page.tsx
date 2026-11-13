@@ -1,6 +1,6 @@
 import { notFound, redirect } from "next/navigation";
-import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getBookingDetailsAction } from "@/app/actions/bookings";
+import { getAuthenticatedUser } from "@/lib/auth/server-user";
 import { BookingDetailClient } from "./booking-detail-client";
 
 interface Props {
@@ -14,13 +14,10 @@ export default async function BookingDetailPage({ params }: Props) {
   const { locale, id } = await params;
   const isHindi = locale === "hi";
 
-  const supabase = await createServerSupabaseClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getAuthenticatedUser();
 
   if (!user) {
-    redirect(`/${locale}/onboarding`);
+    redirect(`/${locale}/login`);
   }
 
   const result = await getBookingDetailsAction(id);

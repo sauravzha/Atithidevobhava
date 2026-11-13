@@ -19,14 +19,14 @@ export default async function AboutPage({
   return (
     <div className="site-container py-12">
       {/* Breadcrumb */}
-      <nav className="text-xs text-secondary mb-4" aria-label="Breadcrumb">
+      <nav className="text-xs font-mono tracking-wider uppercase text-secondary mb-6" aria-label="Breadcrumb">
         <ol className="flex items-center gap-2">
           <li>
             <Link href="/" className="hover:text-primary transition-colors">
-              {isHindi ? "होम" : "Home"}
+              {isHindi ? "मुखपृष्ठ" : "Dispatch"}
             </Link>
           </li>
-          <li aria-hidden="true">/</li>
+          <li aria-hidden="true" className="text-rule">/</li>
           <li className="text-text font-medium" aria-current="page">
             {isHindi ? "हमारे बारे में" : "About Us"}
           </li>
@@ -34,17 +34,17 @@ export default async function AboutPage({
       </nav>
 
       {/* Header */}
-      <header className="border-b border-rule pb-8 mb-10">
-        <span className="text-xs font-semibold tracking-wider uppercase text-primary block mb-1">
+      <header className="border-b border-rule pb-10 mb-10">
+        <span className="text-xs font-mono font-semibold tracking-wider uppercase text-terracotta block mb-2">
           {isHindi ? "दर्शन और प्रतिबद्धता" : "Philosophy & Architecture"}
         </span>
         <Bi
           hindi="अतिथि देवो भवः"
           english="Atithi Devo Bhava"
           as="h1"
-          className="mb-3"
+          className="text-3xl sm:text-4xl lg:text-5xl font-heading font-medium text-text mb-4 leading-tight"
         />
-        <p className="font-heading text-lg text-secondary max-w-prose">
+        <p className="font-heading text-lg sm:text-xl text-secondary max-w-prose leading-relaxed">
           {isHindi
             ? "भारत को लोगों के साथ महसूस कीजिए। एक सम्मानित, शांत और गैर-व्यावसायिक सांस्कृतिक मंच।"
             : "Experience India through its people. A restrained, human cultural hospitality platform."}
@@ -52,8 +52,8 @@ export default async function AboutPage({
       </header>
 
       {/* Origin Story */}
-      <section className="mb-14 max-w-3xl space-y-4 text-sm text-secondary leading-relaxed">
-        <h2 className="font-heading text-xl font-medium text-text">
+      <section className="mb-14 max-w-3xl space-y-4 text-sm text-secondary leading-relaxed font-heading">
+        <h2 className="font-heading text-2xl font-medium text-text">
           {isHindi ? "प्राचीन परंपरा, आधुनिक तकनीक" : "Ancient Ethos, Modern Architecture"}
         </h2>
         <p>
@@ -69,37 +69,42 @@ export default async function AboutPage({
       </section>
 
       {/* What We Are NOT */}
-      <section className="mb-14 p-6 border border-rule bg-warm/10 rounded-sm">
-        <h2 className="font-heading text-lg font-medium text-text mb-4">
-          {isHindi ? "हम क्या नहीं हैं" : "What We Are Not"}
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-secondary">
-          <div className="p-3 bg-page border border-rule/60 rounded-sm">
-            <span className="font-semibold text-text block mb-1">
+      <section className="mb-14 p-6 sm:p-8 border border-rule journal-paper rounded-sm shadow-xs">
+        <div className="flex items-center gap-2 mb-4">
+          <span className="heritage-stamp text-xs font-mono font-semibold uppercase px-2.5 py-0.5 text-primary">
+            {isHindi ? "मार्गदर्शक सिद्धांत" : "Core Distinctions"}
+          </span>
+          <h2 className="font-heading text-xl font-medium text-text">
+            {isHindi ? "हम क्या नहीं हैं" : "What We Are Not"}
+          </h2>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs text-secondary font-heading">
+          <div className="p-4 bg-paper/80 border border-rule rounded-sm shadow-xs">
+            <span className="font-semibold text-text block mb-1 font-heading text-sm">
               {isHindi ? "कोई होटल बुकिंग साइट नहीं" : "Not a Hotel Booking Engine"}
             </span>
             {isHindi
               ? "हम वाणिज्यिक होटलों या व्यावसायिक रिसॉर्ट्स को सूचीबद्ध नहीं करते।"
               : "We do not list commercial hotels, corporate resorts, or mass tourism packages."}
           </div>
-          <div className="p-3 bg-page border border-rule/60 rounded-sm">
-            <span className="font-semibold text-text block mb-1">
+          <div className="p-4 bg-paper/80 border border-rule rounded-sm shadow-xs">
+            <span className="font-semibold text-text block mb-1 font-heading text-sm">
               {isHindi ? "कोई Airbnb का प्रतिरूप नहीं" : "Not an Airbnb Clone"}
             </span>
             {isHindi
               ? "हमारा प्राथमिक उत्पाद लोगों से मिलना (Meet a Local) है, न कि अचल संपत्ति का किराया।"
               : "Our foundational product is human connection (Meet a Local), not short-term real estate rental."}
           </div>
-          <div className="p-3 bg-page border border-rule/60 rounded-sm">
-            <span className="font-semibold text-text block mb-1">
+          <div className="p-4 bg-paper/80 border border-rule rounded-sm shadow-xs">
+            <span className="font-semibold text-text block mb-1 font-heading text-sm">
               {isHindi ? "कोई सोशल नेटवर्क नहीं" : "Not a Social Network"}
             </span>
             {isHindi
               ? "कोई सार्वजनिक फ़ीड, कोई लाइक या फॉलोअर्स नहीं। केवल प्रामाणिक आमने-सामने संवाद।"
               : "No public feeds, no vanity metrics, and no engagement loops. Only purposeful direct dialogue."}
           </div>
-          <div className="p-3 bg-page border border-rule/60 rounded-sm">
-            <span className="font-semibold text-text block mb-1">
+          <div className="p-4 bg-paper/80 border border-rule rounded-sm shadow-xs">
+            <span className="font-semibold text-text block mb-1 font-heading text-sm">
               {isHindi ? "कोई फ़ोन नंबर निर्देशिका नहीं" : "Not a Phone Directory"}
             </span>
             {isHindi
@@ -112,14 +117,14 @@ export default async function AboutPage({
       {/* Architectural Commitments */}
       <section className="mb-14">
         <div className="border-b border-rule pb-3 mb-6">
-          <h2 className="font-heading text-xl font-medium text-text">
+          <h2 className="font-heading text-2xl font-medium text-text">
             {isHindi ? "डिजिटल संप्रभुता और गोपनीयता सिद्धांत" : "Privacy & Architectural Commitments"}
           </h2>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-xs text-secondary leading-relaxed">
-          <div className="p-4 border border-rule rounded-sm">
-            <h3 className="font-heading text-sm font-medium text-text mb-1">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-xs text-secondary leading-relaxed font-heading">
+          <div className="p-5 border border-rule rounded-sm journal-paper shadow-xs">
+            <h3 className="font-heading text-sm font-medium text-text mb-1.5">
               {isHindi ? "शून्य विज्ञापन और शून्य ट्रैकर" : "Zero Ads & Zero Trackers"}
             </h3>
             <p>
@@ -129,8 +134,8 @@ export default async function AboutPage({
             </p>
           </div>
 
-          <div className="p-4 border border-rule rounded-sm">
-            <h3 className="font-heading text-sm font-medium text-text mb-1">
+          <div className="p-5 border border-rule rounded-sm journal-paper shadow-xs">
+            <h3 className="font-heading text-sm font-medium text-text mb-1.5">
               {isHindi ? "डेटा न्यूनीकरण (Data Minimization)" : "Strict Data Minimization"}
             </h3>
             <p>
@@ -140,8 +145,8 @@ export default async function AboutPage({
             </p>
           </div>
 
-          <div className="p-4 border border-rule rounded-sm">
-            <h3 className="font-heading text-sm font-medium text-text mb-1">
+          <div className="p-5 border border-rule rounded-sm journal-paper shadow-xs">
+            <h3 className="font-heading text-sm font-medium text-text mb-1.5">
               {isHindi ? "मुंबई डेटा सेंटर (ap-south-1)" : "Indian Data Residency"}
             </h3>
             <p>
@@ -154,21 +159,23 @@ export default async function AboutPage({
       </section>
 
       {/* Pilot Region: Mithila */}
-      <section className="p-6 border border-rule bg-warm/20 rounded-sm">
-        <h2 className="font-heading text-lg font-medium text-text mb-2">
+      <section className="p-6 sm:p-8 border border-rule postcard-paper rounded-sm shadow-xs">
+        <h2 className="font-heading text-xl font-medium text-text mb-2">
           {isHindi ? "मिथिला पायलट: दरभंगा और मधुबनी" : "Our Active Pilot: Mithila Region"}
         </h2>
-        <p className="text-xs text-secondary leading-relaxed mb-4 max-w-2xl">
+        <p className="text-xs sm:text-sm text-secondary leading-relaxed mb-5 max-w-2xl font-heading">
           {isHindi
             ? "हमारा पहला चरण बिहार के दरभंगा और मधुबनी जिलों में 40 से अधिक स्थानीय नागरिकों और परिवारों के साथ प्रारंभ हुआ है। हम अंतरराष्ट्रीय मांग के झूठे दावे किए बिना, वास्तविक स्थानीय समुदाय की शक्ति पर विश्वास करते हैं।"
             : "Operations began in Darbhanga and Madhubani districts (Bihar) with over 40 local residents. We value genuine grassroots community grounding over premature claims of unvalidated scale."}
         </p>
-        <div className="flex gap-4 text-xs font-medium">
-          <Link href="/india/bihar/darbhanga" className="text-primary hover:underline">
-            {isHindi ? "दरभंगा जिला देखें" : "Darbhanga District"} →
+        <div className="flex flex-wrap gap-4 text-xs font-mono uppercase tracking-wider">
+          <Link href="/india/bihar/darbhanga" className="inline-flex items-center gap-1.5 px-4 py-2 border border-rule rounded-xs bg-surface hover:bg-warm tactile-button transition-all">
+            <span>{isHindi ? "दरभंगा जिला देखें" : "Darbhanga District"}</span>
+            <span>&rarr;</span>
           </Link>
-          <Link href="/india/bihar/madhubani" className="text-primary hover:underline">
-            {isHindi ? "मधुबनी जिला देखें" : "Madhubani District"} →
+          <Link href="/india/bihar/madhubani" className="inline-flex items-center gap-1.5 px-4 py-2 border border-rule rounded-xs bg-surface hover:bg-warm tactile-button transition-all">
+            <span>{isHindi ? "मधुबनी जिला देखें" : "Madhubani District"}</span>
+            <span>&rarr;</span>
           </Link>
         </div>
       </section>
