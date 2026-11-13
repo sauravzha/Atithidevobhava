@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getAuthenticatedUser } from "@/lib/auth/server-user";
 import {
@@ -25,24 +26,35 @@ export default async function AdminLayout({ children, params }: Props) {
 
   const user = await getAuthenticatedUser();
 
-  // If not authenticated or in dev mode without auth, verify role
-  const adminClient = createAdminClient();
-  let currentRole = "moderator";
+  // 1. If not authenticated, redirect to login
+  if (!user) {
+    redirect(`/${locale}/login?next=/${locale}/admin`);
+  }
 
-  if (user?.role === "admin") {
-    currentRole = "super_admin";
-  } else if (user?.id) {
+  // 2. Strict admin authorization: exclusively jhasaurav562@gmail.com
+  const cleanEmail = (user.email || "").trim().toLowerCase();
+  const isOwnerAdmin = cleanEmail === "jhasaurav562@gmail.com";
+
+  let currentRole = isOwnerAdmin ? "super_admin" : "member";
+
+  if (!isOwnerAdmin) {
+    // Check if explicitly granted in admin_permissions (for delegated operators)
+    const adminClient = createAdminClient();
     try {
       const { data: perm } = await adminClient
         .from("admin_permissions")
         .select("admin_role")
         .eq("user_id", user.id)
         .single();
-      if (perm?.admin_role) {
+
+      if (perm?.admin_role && (perm.admin_role === "super_admin" || perm.admin_role === "moderator")) {
         currentRole = perm.admin_role;
+      } else {
+        // Strict denial: Normal users cannot access admin panel
+        redirect(`/${locale}/dashboard?denied=admin`);
       }
     } catch {
-      // Dev mode fallback
+      redirect(`/${locale}/dashboard?denied=admin`);
     }
   }
 
@@ -67,6 +79,10 @@ export default async function AdminLayout({ children, params }: Props) {
           <span className="text-paper/40">|</span>
           <span className="px-2 py-0.5 bg-paper/10 rounded-sm text-[11px]">
             Role: <strong className="text-paper uppercase">{currentRole}</strong>
+            {isOwnerAdmin && <span className="ml-1 text-forest font-semibold">(Owner)</span>}
+          </span>
+          <span className="text-paper/60 text-[11px] hidden sm:inline">
+            {user.email}
           </span>
           <span className="px-2 py-0.5 bg-forest/20 text-forest rounded-sm text-[11px] flex items-center gap-1">
             <Lock size={10} strokeWidth={1.5} />

@@ -108,9 +108,15 @@ export async function signInWithEmail(email: string, password: string): Promise<
     const cred: UserCredential = await signInWithEmailAndPassword(auth, email.trim(), password);
     const idToken = await cred.user.getIdToken();
 
-    // Retrieve or default profile from Firestore
+    // Retrieve or default profile from Firestore (only jhasaurav562@gmail.com is granted admin)
+    const userEmail = (cred.user.email || email).trim().toLowerCase();
+    const isOwner = userEmail === "jhasaurav562@gmail.com";
     const existingProfile = await getUserProfile(cred.user.uid);
-    const role = existingProfile?.role || "traveller";
+    const role: "traveller" | "local" | "artisan" | "admin" = isOwner
+      ? "admin"
+      : existingProfile?.role === "admin"
+      ? "traveller"
+      : (existingProfile?.role || "traveller");
     const displayName = cred.user.displayName || existingProfile?.displayName || email.split("@")[0] || "User";
 
     const userObj = {
@@ -161,6 +167,12 @@ export async function signUpWithEmail(
     const cred: UserCredential = await createUserWithEmailAndPassword(auth, email.trim(), password);
     const idToken = await cred.user.getIdToken();
 
+    const userEmail = email.trim().toLowerCase();
+    const isOwner = userEmail === "jhasaurav562@gmail.com";
+    const assignedRole: "traveller" | "local" | "artisan" | "admin" = isOwner
+      ? "admin"
+      : role;
+
     // Update Firebase Auth profile
     if (displayName) {
       await updateProfile(cred.user, { displayName });
@@ -171,7 +183,7 @@ export async function signUpWithEmail(
       uid: cred.user.uid,
       email: cred.user.email || email,
       displayName,
-      role,
+      role: assignedRole,
       photoURL: null,
     });
 
@@ -179,7 +191,7 @@ export async function signUpWithEmail(
       uid: cred.user.uid,
       email: cred.user.email || email,
       displayName,
-      role,
+      role: assignedRole,
       verified: false,
       photoURL: null,
     };
@@ -225,9 +237,15 @@ export async function signInWithGoogle(
     const cred: UserCredential = await signInWithPopup(auth, provider);
     const idToken = await cred.user.getIdToken();
 
-    // Retrieve or create profile in Cloud Firestore
+    // Retrieve or create profile in Cloud Firestore (only jhasaurav562@gmail.com is granted admin)
+    const userEmail = (cred.user.email || "").trim().toLowerCase();
+    const isOwner = userEmail === "jhasaurav562@gmail.com";
     const existingProfile = await getUserProfile(cred.user.uid);
-    const role = existingProfile?.role || preferredRole;
+    const role: "traveller" | "local" | "artisan" | "admin" = isOwner
+      ? "admin"
+      : existingProfile?.role === "admin"
+      ? "traveller"
+      : (existingProfile?.role || preferredRole);
     const displayName = cred.user.displayName || "Google User";
 
     if (!existingProfile) {

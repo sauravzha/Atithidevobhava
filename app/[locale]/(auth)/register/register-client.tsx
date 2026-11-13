@@ -18,7 +18,6 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { signUpWithEmail, signInWithGoogle } from "@/lib/firebase/auth";
-import { signInWithGoogleFirebase } from "@/lib/auth/firebase";
 import { LotusMotif } from "@/components/ui/cultural-patterns";
 
 export function RegisterClient({ initialRole }: { initialRole?: string }) {
@@ -117,40 +116,10 @@ export function RegisterClient({ initialRole }: { initialRole?: string }) {
     setIsLoading(true);
 
     try {
-      let result = await signInWithGoogle(selectedRole);
-
-      // Dev fallback bridge if external popup blocked or domain unconfigured
-      if (!result.success) {
-        const fallback = await signInWithGoogleFirebase("new.member@atithidevobhava.in", {
-          forceSimulation: true,
-        });
-        if (fallback.success && fallback.user) {
-          result = {
-            success: true,
-            user: {
-              uid: fallback.user.uid,
-              email: fallback.user.email || "",
-              displayName: fallback.user.displayName || "New Member",
-              role: selectedRole,
-              verified: true,
-            },
-          };
-          await fetch("/api/auth/me", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              id: fallback.user.uid,
-              email: fallback.user.email,
-              name: fallback.user.displayName,
-              role: selectedRole,
-              provider: "google",
-            }),
-          });
-        }
-      }
+      const result = await signInWithGoogle(selectedRole);
 
       if (!result.success || !result.user) {
-        setErrorMessage(result.error || "Unable to complete Google registration.");
+        setErrorMessage(result.error || "Unable to complete Google registration. Please try again.");
         setIsLoading(false);
         return;
       }

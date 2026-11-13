@@ -347,7 +347,7 @@ export function Header() {
                       </p>
                       <span className="inline-flex items-center gap-1 mt-2 px-2 py-0.5 rounded-xs text-[10px] font-mono uppercase tracking-wider bg-forest/10 border border-forest/30 text-forest">
                         <ShieldCheck className="w-3 h-3 text-forest" />
-                        <span>{user.role === "admin" ? "Platform Admin" : "Verified Member"}</span>
+                        <span>{user.role === "admin" || user.email?.trim().toLowerCase() === "jhasaurav562@gmail.com" ? "Platform Admin" : "Verified Member"}</span>
                       </span>
                     </div>
 
@@ -389,7 +389,7 @@ export function Header() {
                         <span>{locale === "hi" ? "सुरक्षा केंद्र" : "Safety Hub & Hotline"}</span>
                       </Link>
 
-                      {user.role === "admin" && (
+                      {(user.role === "admin" || user.email?.trim().toLowerCase() === "jhasaurav562@gmail.com") && (
                         <Link
                           href="/admin"
                           onClick={() => setUserDropdownOpen(false)}
@@ -482,13 +482,24 @@ export function Header() {
                     <p className="text-[11px] text-secondary">{user.email}</p>
                   </div>
                 </div>
-                <Link
-                  href="/dashboard"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="px-3 py-1 bg-primary text-white text-[11px] rounded-xs font-medium uppercase tracking-wider"
-                >
-                  {locale === "hi" ? "डैशबोर्ड" : "Dashboard"}
-                </Link>
+                <div className="flex items-center gap-1.5">
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="px-2.5 py-1 bg-surface border border-rule text-text text-[11px] rounded-xs font-medium uppercase tracking-wider"
+                  >
+                    {locale === "hi" ? "डैशबोर्ड" : "Dashboard"}
+                  </Link>
+                  {(user.role === "admin" || user.email?.trim().toLowerCase() === "jhasaurav562@gmail.com") && (
+                    <Link
+                      href="/admin"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="px-2.5 py-1 bg-primary text-white text-[11px] rounded-xs font-medium uppercase tracking-wider"
+                    >
+                      {locale === "hi" ? "एडमिन" : "Admin"}
+                    </Link>
+                  )}
+                </div>
               </div>
             )}
 

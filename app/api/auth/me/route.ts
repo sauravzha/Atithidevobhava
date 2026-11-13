@@ -44,11 +44,8 @@ export async function POST(request: Request) {
 
     const cleanEmail = String(email).trim().toLowerCase();
     const cleanName = displayName || name ? String(displayName || name).trim() : cleanEmail.split("@")[0] || "Guest";
-    const isAdminEmail =
-      cleanEmail === "jhasaurav562@gmail.com" ||
-      cleanEmail.includes("admin") ||
-      cleanEmail.includes("moderator");
-    const userRole = role || (isAdminEmail ? "admin" : "traveller");
+    const isOwnerAdmin = cleanEmail === "jhasaurav562@gmail.com";
+    const userRole = isOwnerAdmin ? "admin" : (role === "admin" ? "traveller" : (role || "traveller"));
     const uid = userId || id || "usr_" + cleanEmail.replace(/[^a-zA-Z0-9]/g, "").slice(0, 24);
     const authProvider = provider || "credentials";
 

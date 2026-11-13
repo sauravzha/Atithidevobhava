@@ -43,11 +43,8 @@ export async function POST(request: NextRequest) {
 
     const cleanEmail = email.trim().toLowerCase();
     const cleanName = displayName?.trim() || cleanEmail.split("@")[0] || "Guest";
-    const isAdminEmail =
-      cleanEmail === "jhasaurav562@gmail.com" ||
-      cleanEmail.includes("admin") ||
-      cleanEmail.includes("moderator");
-    const userRole = role || (isAdminEmail ? "admin" : "traveller");
+    const isOwnerAdmin = cleanEmail === "jhasaurav562@gmail.com";
+    const userRole = isOwnerAdmin ? "admin" : (role === "admin" ? "traveller" : (role || "traveller"));
 
     // Build session payload
     const session: AuthUserSession = {

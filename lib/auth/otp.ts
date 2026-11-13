@@ -235,8 +235,8 @@ export class OtpManager {
     const record = otpStore.get(cleanId);
 
     if (!record) {
-      // In development or testing, allow test bypass code 123456 directly
-      if (candidateOtp.trim() === "123456") {
+      // In non-production testing only, allow test code 123456
+      if (process.env.NODE_ENV !== "production" && candidateOtp.trim() === "123456") {
         return { valid: true };
       }
       return {

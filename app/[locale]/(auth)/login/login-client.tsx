@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { Link, useRouter } from "@/i18n/routing";
+import { useSearchParams } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import {
   Mail,
@@ -13,21 +14,20 @@ import {
   Loader2,
   ShieldCheck,
   Phone,
-  Sparkles,
   KeyRound,
 } from "lucide-react";
 import { requestOtpAction, verifyOtpAction } from "@/app/actions/onboarding";
-import { PRESET_DEMO_ACCOUNTS, type DemoProfile } from "@/lib/auth/demo-accounts";
 import { signInWithEmail, signInWithGoogle } from "@/lib/firebase/auth";
-import { signInWithGoogleFirebase } from "@/lib/auth/firebase";
 import { LotusMotif } from "@/components/ui/cultural-patterns";
 
-type AuthMethod = "email" | "google" | "demo" | "otp";
+type AuthMethod = "email" | "google" | "otp";
 
 export function LoginClient() {
   const t = useTranslations("Auth");
   const locale = useLocale();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const nextParam = searchParams.get("next");
   const isHindi = locale === "hi";
 
   const [activeMethod, setActiveMethod] = useState<AuthMethod>("email");
@@ -45,6 +45,18 @@ export function LoginClient() {
   const [otpChannel, setOtpChannel] = useState<"mobile" | "email">("mobile");
   const [otpSent, setOtpSent] = useState(false);
   const [otpCode, setOtpCode] = useState("");
+
+  const navigatePostLogin = (userEmail?: string, userRole?: string) => {
+    const isOwner = userEmail?.trim().toLowerCase() === "jhasaurav562@gmail.com";
+    if (nextParam && nextParam.startsWith("/")) {
+      router.push(nextParam);
+    } else if (isOwner || userRole === "admin") {
+      router.push("/admin");
+    } else {
+      router.push("/dashboard");
+    }
+    router.refresh();
+  };
 
   // 1. Firebase Email & Password Authentication
   const handleEmailPasswordSignIn = async (e: React.FormEvent) => {
@@ -79,15 +91,20 @@ export function LoginClient() {
         return;
       }
 
+      const loggedUser = res.user;
+      const isOwner = loggedUser.email?.toLowerCase().trim() === "jhasaurav562@gmail.com";
       setSuccessMessage(
         isHindi
-          ? `नमस्ते, ${res.user.displayName}! आपका स्वागत है।`
-          : `Welcome back, ${res.user.displayName}! Redirecting...`
+          ? isOwner
+            ? "नमस्ते सौरव झा! व्यवस्थापक पोर्टल (Admin Portal) खुल रहा है..."
+            : `नमस्ते, ${loggedUser.displayName}! आपका स्वागत है।`
+          : isOwner
+            ? "Welcome Saurav Jha! Opening Admin Console..."
+            : `Welcome back, ${loggedUser.displayName}! Redirecting...`
       );
 
       setTimeout(() => {
-        router.push("/dashboard");
-        router.refresh();
+        navigatePostLogin(loggedUser.email, loggedUser.role);
       }, 500);
     } catch {
       setErrorMessage("An unexpected error occurred during sign-in.");
@@ -111,100 +128,31 @@ export function LoginClient() {
     setIsLoading(true);
 
     try {
-      let result = await signInWithGoogle();
-
-      // If popup was cancelled or failed in dev simulation environment, try dev bridge
-      if (!result.success) {
-        const fallback = await signInWithGoogleFirebase("traveler.pilot@atithidevobhava.in", {
-          forceSimulation: true,
-        });
-        if (fallback.success && fallback.user) {
-          result = {
-            success: true,
-            user: {
-              uid: fallback.user.uid,
-              email: fallback.user.email || "",
-              displayName: fallback.user.displayName || "Traveller",
-              role: "traveller",
-              verified: true,
-            },
-          };
-          await fetch("/api/auth/me", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              id: fallback.user.uid,
-              email: fallback.user.email,
-              name: fallback.user.displayName,
-              role: "traveller",
-              provider: "google",
-            }),
-          });
-        }
-      }
+      const result = await signInWithGoogle();
 
       if (!result.success || !result.user) {
-        setErrorMessage(result.error || "Unable to complete Google sign-in.");
+        setErrorMessage(result.error || "Unable to complete Google sign-in. Please try again.");
         setIsLoading(false);
         return;
       }
 
+      const loggedGoogleUser = result.user;
+      const isOwner = loggedGoogleUser.email?.toLowerCase().trim() === "jhasaurav562@gmail.com";
       setSuccessMessage(
         isHindi
-          ? `नमस्ते, ${result.user.displayName || "अतिथि"}! आपका स्वागत है।`
-          : `Welcome, ${result.user.displayName || "Guest"}! Redirecting to dashboard...`
+          ? isOwner
+            ? "नमस्ते सौरव झा! व्यवस्थापक पोर्टल (Admin Portal) खुल रहा है..."
+            : `नमस्ते, ${loggedGoogleUser.displayName || "अतिथि"}! आपका स्वागत है।`
+          : isOwner
+            ? "Welcome Saurav Jha! Opening Admin Console..."
+            : `Welcome, ${loggedGoogleUser.displayName || "Guest"}! Redirecting to dashboard...`
       );
 
       setTimeout(() => {
-        router.push("/dashboard");
-        router.refresh();
+        navigatePostLogin(loggedGoogleUser.email, loggedGoogleUser.role);
       }, 500);
     } catch {
       setErrorMessage("Failed to authenticate with Google. Please try again.");
-      setIsLoading(false);
-    }
-  };
-
-  // 3. Quick Demo Preset Logins
-  const handleDemoLogin = async (profile: DemoProfile) => {
-    if (!profile) return;
-
-    setErrorMessage(null);
-    setSuccessMessage(null);
-    setIsLoading(true);
-
-    try {
-      const response = await fetch("/api/auth/me", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          id: profile.id,
-          email: profile.email,
-          name: profile.name,
-          role: profile.role,
-          provider: "demo",
-        }),
-      });
-
-      const data = await response.json();
-      if (!response.ok || !data.success) {
-        setErrorMessage("Demo sign-in failed. Please try again.");
-        setIsLoading(false);
-        return;
-      }
-
-      setSuccessMessage(
-        isHindi
-          ? `नमस्ते, ${profile.name}! आपका स्वागत है।`
-          : `Welcome, ${profile.name}! Redirecting to dashboard...`
-      );
-
-      setTimeout(() => {
-        router.push("/dashboard");
-        router.refresh();
-      }, 500);
-    } catch {
-      setErrorMessage("Demo authentication failed. Please try again.");
       setIsLoading(false);
     }
   };
@@ -243,7 +191,7 @@ export function LoginClient() {
         result.message ||
           (isHindi
             ? "सत्यापन कोड भेज दिया गया है।"
-            : "Verification code sent successfully. (Dev: use 123456)")
+            : "Verification code sent successfully.")
       );
       setIsLoading(false);
     } catch {
@@ -252,7 +200,7 @@ export function LoginClient() {
     }
   };
 
-  // 5. Verify submitted OTP
+  // 4. Verify submitted OTP
   const handleVerifyOtp = async (codeToVerify?: string) => {
     const code = codeToVerify || otpCode;
     if (code.length !== 6) {
@@ -273,13 +221,16 @@ export function LoginClient() {
         return;
       }
 
+      const syncEmail = identifier.includes("@") ? identifier.trim() : `${identifier.trim()}@phone.atithidevobhava.in`;
+      const isOwner = syncEmail.toLowerCase().trim() === "jhasaurav562@gmail.com";
+
       const syncResponse = await fetch("/api/auth/me", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          email: identifier.includes("@") ? identifier : `${identifier}@phone.atithidevobhava.in`,
+          email: syncEmail,
           name: identifier.split("@")[0] || "Verified Member",
-          role: "traveller",
+          role: isOwner ? "admin" : "traveller",
           provider: "otp",
         }),
       });
@@ -292,12 +243,17 @@ export function LoginClient() {
       }
 
       setSuccessMessage(
-        isHindi ? "सत्यापन सफल! आगे बढ़ रहे हैं..." : "Verification successful! Redirecting..."
+        isHindi
+          ? isOwner
+            ? "सत्यापन सफल! व्यवस्थापक पोर्टल खुल रहा है..."
+            : "सत्यापन सफल! आगे बढ़ रहे हैं..."
+          : isOwner
+            ? "Verification successful! Opening Admin Console..."
+            : "Verification successful! Redirecting..."
       );
 
       setTimeout(() => {
-        router.push("/dashboard");
-        router.refresh();
+        navigatePostLogin(syncEmail, syncData.user?.role);
       }, 500);
     } catch {
       setErrorMessage("Verification failed. Please try again.");
@@ -336,7 +292,7 @@ export function LoginClient() {
       {/* Main Authentication Card */}
       <div className="journal-paper border border-rule rounded-sm p-6 sm:p-10 shadow-card space-y-6">
         {/* Method Switcher Tabs */}
-        <div className="grid grid-cols-4 gap-1 p-1 bg-warm/50 border border-rule rounded-xs text-[11px] font-mono uppercase tracking-wider">
+        <div className="grid grid-cols-3 gap-1 p-1 bg-warm/50 border border-rule rounded-xs text-[11px] font-mono uppercase tracking-wider">
           <button
             type="button"
             onClick={() => setActiveMethod("email")}
@@ -378,19 +334,6 @@ export function LoginClient() {
               />
             </svg>
             <span className="truncate">Google</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => setActiveMethod("demo")}
-            className={`py-2 px-2 rounded-xs transition-all duration-150 flex items-center justify-center gap-1 tactile-button ${
-              activeMethod === "demo"
-                ? "bg-primary text-white shadow-xs font-semibold"
-                : "text-secondary hover:text-text"
-            }`}
-          >
-            <Sparkles className="w-3.5 h-3.5 shrink-0" />
-            <span className="truncate">{isHindi ? "डेमो" : "Demo"}</span>
           </button>
 
           <button
@@ -528,46 +471,8 @@ export function LoginClient() {
           </div>
         )}
 
-        {/* TAB 3: Quick Demo Accounts */}
-        {activeMethod === "demo" && (
-          <div className="space-y-3">
-            <div className="flex items-center justify-between text-xs text-secondary mb-1">
-              <span className="font-medium">
-                {isHindi ? "परीक्षण प्रोफाइल चुनें (१-क्लिक):" : "Instant Test Profiles (1-Click):"}
-              </span>
-              <span className="text-[11px] text-forest font-semibold">Dev Ready</span>
-            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              {PRESET_DEMO_ACCOUNTS.map((profile) => (
-                <button
-                  key={profile.id}
-                  type="button"
-                  onClick={() => handleDemoLogin(profile)}
-                  disabled={isLoading}
-                  className="p-3 bg-page hover:bg-surface border border-rule hover:border-forest/40 rounded-2xl text-left transition-all duration-150 flex items-start gap-2.5 group shadow-2xs disabled:opacity-60"
-                >
-                  <div className="w-8 h-8 rounded-xl bg-forest/10 border border-forest/20 text-forest flex items-center justify-center font-heading font-medium text-xs shrink-0 group-hover:bg-forest group-hover:text-white transition-colors">
-                    {profile.name.charAt(0)}
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center justify-between gap-1">
-                      <p className="text-xs font-semibold text-text truncate group-hover:text-forest transition-colors">
-                        {isHindi ? profile.nameHi : profile.name}
-                      </p>
-                      <ArrowRight className="w-3 h-3 text-secondary opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
-                    </div>
-                    <p className="text-[10px] text-secondary truncate">
-                      {isHindi ? profile.roleLabelHi : profile.roleLabelEn}
-                    </p>
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* TAB 4: OTP Authentication */}
+        {/* TAB 3: OTP Authentication */}
         {activeMethod === "otp" && (
           <div className="space-y-4">
             {!otpSent ? (
@@ -670,7 +575,7 @@ export function LoginClient() {
                         handleVerifyOtp(val);
                       }
                     }}
-                    placeholder="123456"
+                    placeholder="••••••"
                     className="w-full tracking-widest text-center text-lg font-mono font-semibold py-2.5 bg-page border border-rule rounded-xl text-text focus:outline-none focus:ring-2 focus:ring-forest/30 focus:border-forest"
                   />
                 </div>

@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { Link, useRouter } from "@/i18n/routing";
+import { useSearchParams } from "next/navigation";
 import {
   ShieldCheck,
   Calendar,
@@ -18,6 +19,8 @@ import {
   FileCheck,
   LogOut,
   ChevronRight,
+  AlertCircle,
+  Sparkles,
 } from "lucide-react";
 import { type AuthenticatedUser } from "@/lib/auth/demo-accounts";
 import {
@@ -32,7 +35,12 @@ interface DashboardClientProps {
 
 export function DashboardClient({ user, locale }: DashboardClientProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isAccessDenied = searchParams.get("denied") === "admin";
   const isHindi = locale === "hi";
+
+  const isOwner = user.email?.trim().toLowerCase() === "jhasaurav562@gmail.com";
+  const isSuperAdmin = isOwner || user.role === "admin";
 
   const [activeTab, setActiveTab] = useState<"itinerary" | "host" | "safety" | "saved">("itinerary");
   const [viewMode, setViewMode] = useState<"traveller" | "host">(
@@ -74,10 +82,29 @@ export function DashboardClient({ user, locale }: DashboardClientProps) {
     admin: { en: "Platform Administrator & Safety Lead", hi: "मंच प्रशासक व सुरक्षा प्रमुख" },
   };
 
-  const currentRoleLabel = roleLabels[user.role] || { en: "Member", hi: "सदस्य" };
+  const currentRoleLabel = isOwner
+    ? { en: "Platform Owner & Super Admin", hi: "प्लेटफ़ॉर्म स्वामी एवं मुख्य प्रशासक" }
+    : (roleLabels[user.role] || { en: "Member", hi: "सदस्य" });
 
   return (
     <div className="space-y-8 sm:space-y-10">
+      {/* Access Denied Warning Banner for Unauthorized Admin attempts */}
+      {isAccessDenied && (
+        <div className="p-4 bg-amber-50/90 dark:bg-amber-950/40 border border-amber-300 dark:border-amber-800 rounded-sm text-xs text-amber-900 dark:text-amber-200 flex items-start gap-3 shadow-xs font-mono">
+          <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <p className="font-semibold">
+              {isHindi ? "व्यवस्थापक पोर्टल तक पहुंच अस्वीकृत" : "Admin Panel Access Restricted"}
+            </p>
+            <p className="text-[11px] leading-relaxed text-amber-800 dark:text-amber-300">
+              {isHindi
+                ? "व्यवस्थापक पोर्टल केवल अधिकृत प्लेटफ़ॉर्म स्वामी (jhasaurav562@gmail.com) के लिए आरक्षित है। आपको आपके सदस्य डैशबोर्ड पर पुनः निर्देशित किया गया है।"
+                : "The Admin Console is strictly reserved for the platform owner (jhasaurav562@gmail.com). You have been safely redirected to your member dashboard."}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* ==================================================================== */}
       {/* 1. HERO PROFILE & WELCOME BANNER                                     */}
       {/* ==================================================================== */}
@@ -146,6 +173,18 @@ export function DashboardClient({ user, locale }: DashboardClientProps) {
                 {isHindi ? "मेज़बान केंद्र" : "Host View"}
               </button>
             </div>
+
+            {/* Exclusive Admin Console Button for jhasaurav562@gmail.com */}
+            {isSuperAdmin && (
+              <Link
+                href="/admin"
+                className="tap-target px-3.5 py-2 rounded-xs bg-[#283827] hover:bg-[#1e2a1d] text-white text-xs font-mono uppercase tracking-wider flex items-center gap-1.5 shadow-xs font-semibold tactile-button"
+                title={isHindi ? "व्यवस्थापक पोर्टल खोलें" : "Open Admin Console"}
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                <span>{isHindi ? "व्यवस्थापक पोर्टल" : "Admin Console"}</span>
+              </Link>
+            )}
 
             {/* Logout Button */}
             <button

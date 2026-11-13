@@ -24,6 +24,7 @@ export interface AdminActionResult<T = unknown> {
 
 /**
  * Asserts that the authenticated user possesses an authorized admin role.
+ * Strictly restricted to platform owner (jhasaurav562@gmail.com) and delegated operators.
  */
 async function assertAdminCaller(allowedRoles: string[]) {
   const user = await getAuthenticatedUser();
@@ -32,7 +33,8 @@ async function assertAdminCaller(allowedRoles: string[]) {
     throw new Error("Authentication required: admin session missing");
   }
 
-  if (user.role === "admin") {
+  const cleanEmail = (user.email || "").trim().toLowerCase();
+  if (cleanEmail === "jhasaurav562@gmail.com") {
     return { adminId: user.id, role: "super_admin" };
   }
 
@@ -48,10 +50,10 @@ async function assertAdminCaller(allowedRoles: string[]) {
       return { adminId: user.id, role: perm.admin_role };
     }
   } catch {
-    // In local dev, allow if user is admin
+    // Permission check failed
   }
 
-  throw new Error(`Unauthorized: requires one of [${allowedRoles.join(", ")}] permissions`);
+  throw new Error("Unauthorized: Admin panel is strictly restricted to the platform owner (jhasaurav562@gmail.com)");
 }
 
 /**

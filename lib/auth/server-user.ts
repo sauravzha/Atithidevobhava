@@ -20,12 +20,20 @@ export async function getAuthenticatedUser(): Promise<AuthenticatedUser | null> 
   try {
     const session: AuthUserSession | null = await getCurrentSession();
     if (session && session.userId) {
+      const cleanEmail = (session.email || "").trim().toLowerCase();
+      const isOwnerAdmin = cleanEmail === "jhasaurav562@gmail.com";
+      const assignedRole = isOwnerAdmin
+        ? "admin"
+        : session.role === "admin"
+        ? "traveller"
+        : ((session.role as AuthenticatedUser["role"]) || "traveller");
+
       return {
         id: session.userId,
         email: session.email,
         displayName: session.displayName,
         photoUrl: session.photoUrl,
-        role: session.role as AuthenticatedUser["role"],
+        role: assignedRole,
         isAdult: session.isAdult,
         provider: session.provider as AuthenticatedUser["provider"],
       };
@@ -42,15 +50,24 @@ export async function getAuthenticatedUser(): Promise<AuthenticatedUser | null> 
     } = await supabase.auth.getUser();
 
     if (user && user.id) {
+      const cleanEmail = (user.email || "").trim().toLowerCase();
+      const isOwnerAdmin = cleanEmail === "jhasaurav562@gmail.com";
+      const rawRole = (user.user_metadata?.role as AuthenticatedUser["role"]) || "traveller";
+      const assignedRole = isOwnerAdmin
+        ? "admin"
+        : rawRole === "admin"
+        ? "traveller"
+        : rawRole;
+
       return {
         id: user.id,
-        email: user.email || "member@atithidevobhava.in",
+        email: user.email || "",
         displayName:
           (user.user_metadata?.displayName as string) ||
           (user.user_metadata?.name as string) ||
           (user.email ? user.email.split("@")[0] || "Verified Member" : "Verified Member"),
         photoUrl: (user.user_metadata?.photoUrl as string) || null,
-        role: (user.user_metadata?.role as AuthenticatedUser["role"]) || "traveller",
+        role: assignedRole,
         isAdult: true,
         provider: "otp",
       };

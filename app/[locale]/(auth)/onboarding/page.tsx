@@ -156,8 +156,8 @@ export default function OnboardingPage() {
     if (res.success) {
       setOtpNotice(
         isHindi
-          ? "6 अंकों का सत्यापन कोड आपके ईमेल पर भेजा गया है। (परीक्षण कोड: 123456)"
-          : "A 6-digit verification code has been dispatched to your email. (Test code: 123456)"
+          ? "6 अंकों का सत्यापन कोड आपके ईमेल पर भेजा गया है।"
+          : "A 6-digit verification code has been dispatched to your email."
       );
     } else {
       setOtpError(res.error || "Failed to dispatch code.");
@@ -201,8 +201,8 @@ export default function OnboardingPage() {
     if (res.success) {
       setOtpNotice(
         isHindi
-          ? "6 अंकों का ओटीपी आपके मोबाइल पर भेजा गया है। (परीक्षण कोड: 123456)"
-          : "A 6-digit SMS OTP has been dispatched to your mobile. (Test code: 123456)"
+          ? "6 अंकों का ओटीपी आपके मोबाइल पर भेजा गया है।"
+          : "A 6-digit SMS OTP has been dispatched to your mobile."
       );
     } else {
       setOtpError(res.error || "Failed to dispatch SMS.");
